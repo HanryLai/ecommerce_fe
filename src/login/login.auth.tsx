@@ -1,9 +1,29 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { LoginProps } from "../common/interface/navigation/navigation.interface";
+import axios from "axios";
 
-export const Login = ({ navigation }) => {
+// import { URL_API } from "@env";
+
+export const Login = ({ navigation }: LoginProps) => {
+    // console.log("process.env.URL_API", process.env.URL_API);
+    async function onPresLogin() {
+        console.log("adfasf");
+        const username = "ldmhieu205dfd";
+        const password = "123f";
+        const res = await axios.get("http://localhost:3030/api/auth", {});
+        console.log(res);
+        // ({
+        //     method: "post",
+        //     url: "http://localhost:3030/api/auth/login",
+        // })
+        // .then((response) => {
+        //     console.log(response.data);
+        // })
+        // .catch((errr) => console.log(errr));
+    }
     return (
         <View>
             <View>
@@ -73,6 +93,7 @@ export const Login = ({ navigation }) => {
                         paddingVertical: 15,
                         backgroundColor: "#1F41BB",
                     }}
+                    onPress={() => onPresLogin()}
                 >
                     <Text
                         style={{

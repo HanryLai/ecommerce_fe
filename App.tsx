@@ -1,11 +1,8 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Register } from "./src/login/register.auth";
+import { StyleSheet } from "react-native";
 import { Login } from "./src/login/login.auth";
+import { Register } from "./src/login/register.auth";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
