@@ -1,28 +1,33 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { LoginProps } from "../common/interface/navigation/navigation.interface";
 import axios from "axios";
+import { useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { IAccountEntity } from "../../interfaces";
+import { NavigationProp } from "@react-navigation/native";
+import { Props } from "../../common/types/props.type";
 
-// import { URL_API } from "@env";
-
-export const Login = ({ navigation }: LoginProps) => {
-    // console.log("process.env.URL_API", process.env.URL_API);
-    async function onPresLogin() {
-        console.log("adfasf");
-        const username = "ldmhieu205dfd";
-        const password = "123f";
-        const res = await axios.get("http://localhost:3030/api/auth", {});
-        console.log(res);
-        // ({
-        //     method: "post",
-        //     url: "http://localhost:3030/api/auth/login",
-        // })
-        // .then((response) => {
-        //     console.log(response.data);
-        // })
-        // .catch((errr) => console.log(errr));
+export const Login = ({ navigation }: Props) => {
+    const [user, setUser] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [account, setAccount] = useState<IAccountEntity>({} as IAccountEntity);
+    function onPresLogin() {
+        axios
+            .post("http://10.0.2.2:3030/api/auth/login", {
+                username: user,
+                email: user,
+                password: password,
+            })
+            .then((response) => response.data.data)
+            .then((data: IAccountEntity) => {
+                setAccount(data);
+                navigation.navigate("homepage", {
+                    id: data.id,
+                    username: data.username,
+                });
+            })
+            .catch((err) => Alert.alert("wrong username,email or password"));
     }
     return (
         <View>
@@ -63,8 +68,13 @@ export const Login = ({ navigation }: LoginProps) => {
                 </Text>
             </View>
             <View>
-                <TextInput placeholder="Email" style={[styles.textInput]}></TextInput>
                 <TextInput
+                    onChangeText={(text) => setUser(text)}
+                    placeholder="Username"
+                    style={[styles.textInput]}
+                ></TextInput>
+                <TextInput
+                    onChangeText={(text) => setPassword(text)}
                     placeholder="Password"
                     secureTextEntry={true}
                     style={[styles.textInput]}
@@ -112,7 +122,7 @@ export const Login = ({ navigation }: LoginProps) => {
 
             <View
                 style={{
-                    marginVertical: 200,
+                    marginVertical: 100,
                 }}
             >
                 <Text style={{ textAlign: "center" }}>Or continue with</Text>
