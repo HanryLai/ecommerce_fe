@@ -43,6 +43,42 @@ const renderCategory: ListRenderItem<Category> = ({ item }) => (
 	</TouchableOpacity>
 )
 
+//recomended product
+type Product = {
+	id: string
+	name: string
+	image: string
+	price: number
+	rate: number
+}
+
+const products: Product[] = [
+	{ id: '1', name: 'Phone', image: 'phone', price: 10, rate: 4.5 },
+	{ id: '2', name: 'Laptop', image: 'laptop', price: 20, rate: 4.5 },
+	{ id: '3', name: 'Tablet', image: 'tablet', price: 30, rate: 4.5 },
+	{ id: '4', name: 'Watch', image: 'watch', price: 40, rate: 4.5 },
+	{ id: '5', name: 'Headphone', image: 'headphone', price: 50, rate: 4.5 },
+	{ id: '6', name: 'Camera', image: 'camera', price: 60, rate: 4.5 },
+	{ id: '7', name: 'Speaker', image: 'speaker', price: 70, rate: 4.5 },
+	{ id: '8', name: 'TV', image: 'tv', price: 80, rate: 4.5 },
+]
+
+const renderProduct: ListRenderItem<Product> = ({ item }) => (
+	<View style={{ width: 130, justifyContent: 'center', alignItems: 'center' }}>
+		<Image source={require('../../../assets/shoes.png')} />
+		<Text style={{ fontSize: 12, fontWeight: 'bold' }}>{item.name}</Text>
+
+		<View style={styles.recommendedProduct}>
+			<View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+				<AntDesign name="star" size={16} color="#FFD700" />
+				<Text style={{ fontSize: 12 }}>{item.rate}</Text>
+			</View>
+
+			<Text style={{ color: '#00BDD6', fontSize: 16, fontWeight: 'bold' }}>${item.price}</Text>
+		</View>
+	</View>
+)
+
 type Props = NativeStackScreenProps<TabStackParamList, 'Home'>
 
 export const Home = ({ navigation, route }: Props) => {
@@ -111,6 +147,19 @@ export const Home = ({ navigation, route }: Props) => {
 						<Image source={require('../../../assets/laptop.png')} style={{ width: '48%' }} />
 					</View>
 				</View>
+
+				{/* recommendation */}
+				<View>
+					<View>
+						<Text style={{ fontSize: 16, fontWeight: 'bold' }}>Recommended for you</Text>
+					</View>
+					<FlatList
+						data={products}
+						renderItem={renderProduct}
+						keyExtractor={(item) => item.id}
+						horizontal={true}
+					/>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	)
@@ -175,5 +224,13 @@ const styles = StyleSheet.create({
 		borderBottomLeftRadius: 10,
 		paddingVertical: 15,
 		gap: 10,
+	},
+	recommendedProduct: {
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		flexDirection: 'row',
+		width: '100%',
+		paddingHorizontal: 10,
+		gap: 2,
 	},
 })
