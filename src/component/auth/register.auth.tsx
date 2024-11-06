@@ -1,13 +1,10 @@
 import axios from "axios";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { IAccountEntity } from "../../interfaces";
-import { useState } from "react";
-import { Props } from "../../common/types/props.type";
+import { PropsNavigate } from "../../utils/types";
 
-export const Register = ({ navigation }: Props) => {
+export const Register = ({ navigation, route }: PropsNavigate) => {
     const [email, setEmail] = useState<string>("");
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -28,7 +25,7 @@ export const Register = ({ navigation }: Props) => {
                         "Register successfully",
                         `Hello  ${data.email} , you can login with this account right now ! `
                     );
-                    navigation.navigate("login", { name: "login" });
+                    navigation.navigate("login");
                 })
                 .catch((error) => Alert.alert("Register failed", JSON.stringify(error)));
         else {
@@ -138,9 +135,7 @@ export const Register = ({ navigation }: Props) => {
                     <Text style={{ textAlign: "center", fontWeight: 600 }}>
                         Already have account ?
                     </Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate("login", { name: "login" })}
-                    >
+                    <TouchableOpacity onPress={() => navigation.navigate("login")}>
                         <Text style={{ color: "#2241b9" }}>Login here</Text>
                     </TouchableOpacity>
                 </View>

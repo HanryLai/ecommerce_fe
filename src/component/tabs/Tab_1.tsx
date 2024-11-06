@@ -1,9 +1,8 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Text, TouchableOpacity, View } from "react-native";
-import { TabStackParamList } from "../../utils/types";
-type Props = NativeStackScreenProps<TabStackParamList, "Tab_1">;
+import { PropsTab, TabStackParamList } from "../../utils/types";
 
-export const Tab_1 = ({ navigation, route }: Props) => {
+export const Tab_1 = ({ navigation, route }: PropsTab<"Tab_1">) => {
     return (
         <View>
             <TouchableOpacity>
