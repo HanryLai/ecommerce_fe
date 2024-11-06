@@ -1,11 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationStackParamList, PropsNavigate } from "../types/Navigation.type";
 import { Login, Register } from "../../component/auth";
-import { HomePage } from "../../component/home";
+import { NavigationStackParamList } from "../types/Navigation.type";
 import { RootTab } from "./RootTab.stack";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
-export const RootNavigation = ({ navigation }: PropsNavigate) => {
+export const RootNavigation = () => {
     return (
         <Stack.Navigator initialRouteName="homepage">
             <Stack.Screen
