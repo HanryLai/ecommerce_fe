@@ -1,16 +1,15 @@
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 
 export type Props = {
-    navigation: NavigationProp<any>;
-};
-
-export type RootStackParamList = {
-    homepage: { id: string; username: string };
+    navigation: NavigationProp<PropsData>;
 };
 
 export type PropsData = {
     homepage: {
         id: string;
         username: string;
+    };
+    login: {
+        name: string;
     };
 };
