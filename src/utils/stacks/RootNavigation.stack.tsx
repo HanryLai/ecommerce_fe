@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Login, Register } from "../../component/auth";
 import { NavigationStackParamList } from "../types/Navigation.type";
 import { RootTab } from "./RootTab.stack";
+import { Category } from "../../component/category";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -21,6 +22,11 @@ export const RootNavigation = () => {
                 name="homepage"
                 component={RootTab}
                 options={{ title: "Homepage" }}
+            ></Stack.Screen>
+            <Stack.Screen
+                name="category"
+                component={Category}
+                options={{ title: "Category" }}
             ></Stack.Screen>
         </Stack.Navigator>
     );

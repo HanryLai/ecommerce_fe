@@ -1,2 +1,2 @@
-export * from "./Navigation.type";
-export * from "./Tab.type";
+export * from './Navigation.type'
+export * from './Tab.type'
