@@ -1,16 +1,18 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type NavigationStackParamList = {
-	homepage: {
-		id: string
-		username: string
-	}
-	login: undefined
-	register: undefined
-	Tab: undefined
-	main: undefined
-	category: undefined
-}
+    homepage: {
+        id: string;
+        username: string;
+    };
+    login: undefined;
+    register: undefined;
+    Tab: undefined;
+    main: undefined;
+    category: {
+        id: string;
+    };
+};
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =
-	NativeStackScreenProps<NavigationStackParamList, NavigationName>
+    NativeStackScreenProps<NavigationStackParamList, NavigationName>;
