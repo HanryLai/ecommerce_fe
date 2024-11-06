@@ -1,16 +1,13 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import axios from "axios";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { IAccountEntity } from "../../interfaces";
-import { NavigationProp } from "@react-navigation/native";
-import { Props } from "../../common/types/props.type";
-import { URL } from "../../../env";
 import api from "../../utils/axios";
+import { PropsNavigate } from "../../utils/types";
 
-export const Login = ({ navigation }: Props) => {
+export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [account, setAccount] = useState<IAccountEntity>({} as IAccountEntity);
@@ -116,7 +113,7 @@ export const Login = ({ navigation }: Props) => {
                     </Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate("register", { name: "register" })}>
+            <TouchableOpacity onPress={() => navigation.navigate("register")}>
                 <Text style={{ textAlign: "center", fontWeight: 600 }}>Create new account</Text>
             </TouchableOpacity>
 
