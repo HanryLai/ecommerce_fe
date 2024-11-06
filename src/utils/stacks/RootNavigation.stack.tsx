@@ -1,13 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationStackParamList, PropsNavigate } from '../types/Navigation.type'
 import { Login, Register } from '../../component/auth'
-import { HomePage } from '../../component/home'
+import { NavigationStackParamList } from '../types/Navigation.type'
 import { RootTab } from './RootTab.stack'
+import { Category } from '../../component/category'
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>()
-export const RootNavigation = ({ navigation }: PropsNavigate) => {
+export const RootNavigation = () => {
 	return (
-		<Stack.Navigator initialRouteName="homepage" screenOptions={{ headerShown: false }}>
+		<Stack.Navigator initialRouteName="category">
 			<Stack.Screen name="login" component={Login} options={{ title: 'Login' }}></Stack.Screen>
 			<Stack.Screen
 				name="register"
@@ -18,6 +18,11 @@ export const RootNavigation = ({ navigation }: PropsNavigate) => {
 				name="homepage"
 				component={RootTab}
 				options={{ title: 'Homepage' }}
+			></Stack.Screen>
+			<Stack.Screen
+				name="category"
+				component={Category}
+				options={{ title: 'Category' }}
 			></Stack.Screen>
 		</Stack.Navigator>
 	)
