@@ -7,39 +7,48 @@ import {
 	TouchableOpacity,
 	FlatList,
 	ListRenderItem,
+	ActivityIndicator,
 } from 'react-native'
-import { PropsNavigate } from '../../utils/types'
-import { RouteProp, useRoute } from '@react-navigation/native'
-import { PropsData } from '../../common/types/props.type'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { AppDispatch, RootState } from '../../utils/redux'
+import { fetchCategoryList, selectCategory } from '../../utils/redux/reducers/category.redux'
+import { CategoryType } from '../../utils/types/type/category.type'
 import AntDesign from '@expo/vector-icons/AntDesign'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-// category
-type Category = {
-	id: string
-	name: string
-	image: string
-}
-
-const categories: Category[] = [
-	{ id: '1', name: 'Phone', image: 'phone' },
-	{ id: '2', name: 'Laptop', image: 'laptop' },
-	{ id: '3', name: 'Tablet', image: 'tablet' },
-	{ id: '4', name: 'Watch', image: 'watch' },
-	{ id: '5', name: 'Headphone', image: 'headphone' },
-	{ id: '6', name: 'Camera', image: 'camera' },
-	{ id: '7', name: 'Speaker', image: 'speaker' },
-	{ id: '8', name: 'TV', image: 'tv' },
-]
-
-const renderCategory: ListRenderItem<Category> = ({ item }) => (
-	<TouchableOpacity style={styles.category}>
-		<Text>Thêm hình dô</Text>
+// Tạo renderCategory bên ngoài func Category và truyền handleCategorySelect vào đó
+const renderCategory = (
+	{ item }: { item: CategoryType },
+	handleCategorySelect: (category: CategoryType) => void
+) => (
+	<TouchableOpacity
+		style={styles.category}
+		onPress={() => handleCategorySelect(item)} // Sử dụng handleCategorySelect từ tham số
+	>
+		<Text>{item.name}</Text>
 	</TouchableOpacity>
 )
 
-export function Category({ navigation }: PropsNavigate<'category'>) {
-	const route = useRoute<RouteProp<PropsData, 'category'>>()
+export function Category() {
+	const dispatch = useDispatch<AppDispatch>()
+	const categories = useSelector((state: RootState) => state.categoryReducer.value)
+	const selectedCategory = useSelector((state: RootState) => state.categoryReducer.selectedCategory)
+	const loading = useSelector((state: RootState) => state.categoryReducer.loading)
+	const error = useSelector((state: RootState) => state.categoryReducer.error)
+
+	// Lấy danh sách category từ Redux khi component render lần đầu
+	useEffect(() => {
+		if (!categories.length) {
+			dispatch(fetchCategoryList()) // Fetch categories if not loaded
+		}
+	}, [dispatch, categories.length])
+
+	// Handle khi người dùng chọn category
+	const handleCategorySelect = (category: CategoryType) => {
+		dispatch(selectCategory(category)) // Dispatch action chọn category
+	}
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView
@@ -74,20 +83,35 @@ export function Category({ navigation }: PropsNavigate<'category'>) {
 					<Text style={styles.TextLight}>See all</Text>
 				</View>
 
-				<View>
+				{/* Category list */}
+				{loading ? (
+					<ActivityIndicator size="large" color="#0000ff" />
+				) : error ? (
+					<Text style={styles.errorText}>{error}</Text>
+				) : (
 					<FlatList
 						data={categories}
-						renderItem={renderCategory}
+						renderItem={({ item }) => renderCategory({ item }, handleCategorySelect)} // Truyền handleCategorySelect vào đây
 						keyExtractor={(item) => item.id}
 						horizontal={true}
+						extraData={selectedCategory}
+						contentContainerStyle={{ paddingLeft: 10 }}
+						ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+						showsHorizontalScrollIndicator={false}
 					/>
-				</View>
+				)}
 
-				{/* Options  */}
+				{/* Other Options */}
 				<View>
-					<TouchableOpacity>Best Sale</TouchableOpacity>
-					<TouchableOpacity>Best Matched</TouchableOpacity>
-					<TouchableOpacity>Pupular</TouchableOpacity>
+					<TouchableOpacity>
+						<Text>Best Sale</Text>
+					</TouchableOpacity>
+					<TouchableOpacity>
+						<Text>Best Matched</Text>
+					</TouchableOpacity>
+					<TouchableOpacity>
+						<Text>Popular</Text>
+					</TouchableOpacity>
 				</View>
 			</ScrollView>
 		</SafeAreaView>
@@ -132,5 +156,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		margin: 4,
 		borderRadius: 10,
+	},
+	errorText: {
+		color: 'red',
+		textAlign: 'center',
 	},
 })
