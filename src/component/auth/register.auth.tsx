@@ -4,6 +4,8 @@ import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "reac
 import { IAccountEntity } from "../../interfaces";
 import { PropsNavigate } from "../../utils/types";
 import api from "../../utils/axios";
+import { Color } from "../../style";
+import { LoginLogo } from "../../common/svg";
 
 export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     const [email, setEmail] = useState<string>("");
@@ -35,6 +37,16 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     }
     return (
         <View>
+            <LoginLogo
+                width={240}
+                height={240}
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    zIndex: 999,
+                    alignSelf: "center",
+                }}
+            />
             <View>
                 <View style={styles.bg_ellipse_in}></View>
                 <View style={styles.bg_ellipse_out}></View>
@@ -49,9 +61,10 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
             >
                 <Text
                     style={{
-                        color: "#1F41BB",
+                        color: Color.primary,
                         fontSize: 30,
                         fontWeight: 600,
+                        marginTop: 140,
                     }}
                 >
                     Create Account
@@ -61,7 +74,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                         width: "90%",
                         textAlign: "center",
                         marginTop: 12,
-                        marginBottom: 64,
+                        marginBottom: 32,
                         fontSize: 20,
                         fontWeight: 600,
                     }}
@@ -94,7 +107,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                 ></TextInput>
             </View>
             <View style={{ width: "100%" }}>
-                <Text
+                {/* <Text
                     style={{
                         textAlign: "right",
                         paddingHorizontal: 12,
@@ -104,7 +117,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                     }}
                 >
                     Forgot your password?
-                </Text>
+                </Text> */}
                 <TouchableOpacity
                     style={{
                         alignSelf: "center",
@@ -114,7 +127,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                         marginVertical: 24,
                         marginHorizontal: 12,
                         paddingVertical: 15,
-                        backgroundColor: "#1F41BB",
+                        backgroundColor: Color.primary,
                     }}
                     onPress={() => onPressRegister()}
                 >
@@ -135,7 +148,16 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                         Already have account ?
                     </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                        <Text style={{ color: "#2241b9" }}>Login here</Text>
+                        <Text
+                            style={{
+                                color: "#2241b9",
+                                fontWeight: 700,
+                                fontSize: 16,
+                                marginLeft: 4,
+                            }}
+                        >
+                            Login here
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>

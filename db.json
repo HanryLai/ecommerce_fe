@@ -13,6 +13,13 @@
       "username": "customer",
       "password": "123",
       "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112"
+    },
+    {
+      "id": "b4a1",
+      "email": "bnm",
+      "username": "bnm",
+      "password": "bnm",
+      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112"
     }
   ],
   "shopping_cart_list": [

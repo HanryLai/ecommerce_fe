@@ -14,14 +14,12 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
     const [password, setPassword] = useState<string>("");
     const [account, setAccount] = useState<IAccountEntity>({} as IAccountEntity);
     function onPresLogin() {
-        console.log("user", user);
         api.get(`/account?username=${user}&password=${password}`, {
             // identifier: user,
             // password: password,
         })
             .then((response) => response.data[0])
             .then((data: IAccountEntity) => {
-                console.log("data", data);
                 if (data === undefined) {
                     Alert.alert("wrong username,email or password");
                     return;
@@ -95,7 +93,7 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
                 ></TextInput>
             </View>
             <View style={{ width: "100%" }}>
-                <Text
+                {/* <Text
                     style={{
                         textAlign: "right",
                         paddingHorizontal: 12,
@@ -105,7 +103,7 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
                     }}
                 >
                     Forgot your password?
-                </Text>
+                </Text> */}
                 <TouchableOpacity
                     style={{
                         alignSelf: "center",
