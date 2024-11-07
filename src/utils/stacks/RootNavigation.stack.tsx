@@ -1,12 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Login, Register } from "../../component/auth";
+import { DetailInformationComponent, Login, Register } from "../../component/auth";
+import { Category } from "../../component/category";
+import { HeaderLeft, HeaderRight } from "../../component/header";
+import { ShoppingCart } from "../../component/shopping-cart/shopping-cart.component";
 import { NavigationStackParamList, PropsNavigate } from "../types/Navigation.type";
 import { RootTab } from "./RootTab.stack";
-import { Category } from "../../component/category";
-import { HeaderLeft } from "../../component/header/headerLeft.component";
-import { HeaderBackButtonProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { HeaderRight } from "../../component/header";
-import { ShoppingCart } from "../../component/shopping-cart/shopping-cart.component";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -30,7 +28,7 @@ export const RootNavigation = () => {
                 component={RootTab}
                 options={({ navigation, route }: PropsNavigate<"homepage">) => ({
                     title: "",
-                    headerLeft: () => <HeaderLeft navigation={navigation} route={route} />,
+                    headerLeft: () => <HeaderLeft />,
                     headerRight: () => <HeaderRight navigation={navigation} route={route} />,
                 })}
             ></Stack.Screen>
@@ -45,6 +43,12 @@ export const RootNavigation = () => {
                 name="shoppingCart"
                 component={ShoppingCart}
                 options={{ title: "Shopping" }}
+            ></Stack.Screen>
+            {/* Detail information */}
+            <Stack.Screen
+                name="detailInformation"
+                component={DetailInformationComponent}
+                options={{ title: "Detail" }}
             ></Stack.Screen>
         </Stack.Navigator>
     );
