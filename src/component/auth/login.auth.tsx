@@ -8,11 +8,14 @@ import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
 import api from "../../utils/axios";
 import { PropsNavigate } from "../../utils/types";
+import { AppDispatch, store, useAppDispatch, useAppSelector } from "../../utils/redux";
+import { AccountSlice } from "../../utils/redux/reducers";
 
-export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
+export const Login = ({ navigation }: PropsNavigate<"login">) => {
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [account, setAccount] = useState<IAccountEntity>({} as IAccountEntity);
+    const selector = useAppSelector((state) => state.accountReducer);
+    const dispatch = useAppDispatch<AppDispatch>();
     function onPresLogin() {
         api.get(`/account?username=${user}&password=${password}`, {
             // identifier: user,
@@ -25,7 +28,7 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
                     return;
                 }
                 // setAccount(data);
-
+                dispatch(AccountSlice.actions.login(data));
                 navigation.navigate("homepage", {
                     ...data,
                 });

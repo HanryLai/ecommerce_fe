@@ -5,6 +5,7 @@ import { HeaderLeft, HeaderRight } from "../../component/header";
 import { ShoppingCart } from "../../component/shopping-cart/shopping-cart.component";
 import { NavigationStackParamList, PropsNavigate } from "../types/Navigation.type";
 import { RootTab } from "./RootTab.stack";
+import { FunctionAuth } from "../../component/header/functionAuth.component";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -49,6 +50,12 @@ export const RootNavigation = () => {
                 name="detailInformation"
                 component={DetailInformationComponent}
                 options={{ title: "Detail" }}
+            ></Stack.Screen>
+            {/* FunctionAuth */}
+            <Stack.Screen
+                name="functionAuth"
+                component={FunctionAuth}
+                options={{ title: "Function" }}
             ></Stack.Screen>
         </Stack.Navigator>
     );

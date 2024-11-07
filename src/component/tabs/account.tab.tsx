@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 import { PropsTab } from "../../utils/types";
-export const Search = ({ navigation, route }: PropsTab<"Search">) => {
+export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     return (
         <View>
-            <Text>Search</Text>
+            <Text>Account</Text>
         </View>
     );
 };

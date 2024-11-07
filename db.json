@@ -22,59 +22,51 @@
       "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112"
     }
   ],
-  "shopping_cart_list": [
+  "shopping-cart": [
     {
-      "id": "31a7b080-112d-4bb2-83af-f1131e4598f3",
-      "name": "Gloves",
-      "description": "The Football Is Good For Training And Recreational Purposes",
-      "images_url": "https://picsum.photos/seed/q8YCH4hVE/640/480",
-      "price": "785.00",
+      "id": "ed481515-9249-469f-88ae-e98e5cf2616e",
+      "name": "Pizza",
+      "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
+      "images_url": "https://picsum.photos/seed/WqtVqm/640/480",
+      "price": "371.00",
       "optionsList": [
         {
-          "id": "f0605a92-b3a2-4767-8a46-db39812f9747",
-          "name": "Concrete"
+          "id": "c8cd343a-33d9-4f78-9662-f2a0485a455b",
+          "name": "Granite"
         }
       ]
     },
     {
-      "shopping_cart": [
+      "id": "46a13e33-2c3e-461e-a706-cacdefcbb052",
+      "name": "Tuna",
+      "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design",
+      "images_url": "https://picsum.photos/seed/ss3Q9Zp/640/480",
+      "price": "536.00",
+      "optionsList": [
         {
-          "id": "52888557-e5e8-4ddd-a36d-70db7d4dbf66",
-          "name": "Cheese",
-          "description": "Boston's most advanced compression wear technology increases muscle oxygenation, stabilizes active muscles",
-          "images_url": "https://loremflickr.com/640/480?lock=4460760856002560",
-          "price": "975.00",
-          "optionsList": [
-            {
-              "id": "aaef2a04-aa91-4685-9f51-ee5a461c4234",
-              "name": "Concrete"
-            },
-            {
-              "id": "a7346075-79cf-4874-bc2a-9821e8aa3774",
-              "name": "Plastic"
-            }
-          ]
+          "id": "0207b99f-76d1-4407-b3dc-40cd984cb28a",
+          "name": "Wooden"
+        },
+        {
+          "id": "e100de69-4933-475c-9c90-ee408d87f6c3",
+          "name": "Bronze"
+        },
+        {
+          "id": "c91883d3-db76-4b0d-acdf-0a69b99071dd",
+          "name": "Rubber"
         }
       ]
     },
     {
-      "shopping_cart": [
+      "id": "809c52d0-7ed7-417d-924c-1ab09af8eb10",
+      "name": "Chips",
+      "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
+      "images_url": "https://picsum.photos/seed/dI7pwR5g/640/480",
+      "price": "697.00",
+      "optionsList": [
         {
-          "id": "a2c1cec0-52c0-4432-9b9b-3cd823ca80e0",
-          "name": "Bacon",
-          "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support",
-          "images_url": "https://loremflickr.com/640/480?lock=4190727571505152",
-          "price": "65.00",
-          "optionsList": [
-            {
-              "id": "59e04934-c574-4739-861d-ae03f6ee20c6",
-              "name": "Bronze"
-            },
-            {
-              "id": "b3339011-0273-49f5-817d-c8cb1dc5b39c",
-              "name": "Cotton"
-            }
-          ]
+          "id": "1c32afa6-7d38-4b27-b5de-1faa8c2a6ae8",
+          "name": "Bronze"
         }
       ]
     }
