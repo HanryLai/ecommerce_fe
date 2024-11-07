@@ -82,6 +82,13 @@ export function Category({ navigation }: PropsNavigate<'category'>) {
 						horizontal={true}
 					/>
 				</View>
+
+				{/* Options  */}
+				<View>
+					<TouchableOpacity>Best Sale</TouchableOpacity>
+					<TouchableOpacity>Best Matched</TouchableOpacity>
+					<TouchableOpacity>Pupular</TouchableOpacity>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	)
