@@ -3,6 +3,9 @@ import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { IAccountEntity } from "../../interfaces";
 import { PropsNavigate } from "../../utils/types";
+import api from "../../utils/axios";
+import { Color } from "../../style";
+import { LoginLogo } from "../../common/svg";
 
 export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     const [email, setEmail] = useState<string>("");
@@ -11,14 +14,14 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     function onPressRegister() {
         if (password === confirmPassword)
-            axios
-                .post("http://10.0.2.2:3030/api/auth/register", {
-                    email: email.trim(),
-                    username: username.trim(),
-                    password: password.trim(),
-                })
+            api.post("/account", {
+                email: email.trim(),
+                username: username.trim(),
+                password: password.trim(),
+                url_avatar: "https://loremflickr.com/640/480?lock=4089431155802112",
+            })
                 .then((res) => {
-                    return res.data.data;
+                    return res.data;
                 })
                 .then((data: IAccountEntity) => {
                     Alert.alert(
@@ -34,10 +37,18 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     }
     return (
         <View>
+            <LoginLogo
+                width={240}
+                height={240}
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    zIndex: 999,
+                    alignSelf: "center",
+                }}
+            />
             <View>
-                <View style={styles.bg_ellipse_in}>
-                    <Text></Text>
-                </View>
+                <View style={styles.bg_ellipse_in}></View>
                 <View style={styles.bg_ellipse_out}></View>
                 <View></View>
                 <View></View>
@@ -50,9 +61,10 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
             >
                 <Text
                     style={{
-                        color: "#1F41BB",
+                        color: Color.primary,
                         fontSize: 30,
                         fontWeight: 600,
+                        marginTop: 140,
                     }}
                 >
                     Create Account
@@ -62,7 +74,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                         width: "90%",
                         textAlign: "center",
                         marginTop: 12,
-                        marginBottom: 64,
+                        marginBottom: 32,
                         fontSize: 20,
                         fontWeight: 600,
                     }}
@@ -95,7 +107,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                 ></TextInput>
             </View>
             <View style={{ width: "100%" }}>
-                <Text
+                {/* <Text
                     style={{
                         textAlign: "right",
                         paddingHorizontal: 12,
@@ -105,7 +117,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                     }}
                 >
                     Forgot your password?
-                </Text>
+                </Text> */}
                 <TouchableOpacity
                     style={{
                         alignSelf: "center",
@@ -115,7 +127,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                         marginVertical: 24,
                         marginHorizontal: 12,
                         paddingVertical: 15,
-                        backgroundColor: "#1F41BB",
+                        backgroundColor: Color.primary,
                     }}
                     onPress={() => onPressRegister()}
                 >
@@ -136,7 +148,16 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                         Already have account ?
                     </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                        <Text style={{ color: "#2241b9" }}>Login here</Text>
+                        <Text
+                            style={{
+                                color: "#2241b9",
+                                fontWeight: 700,
+                                fontSize: 16,
+                                marginLeft: 4,
+                            }}
+                        >
+                            Login here
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>
