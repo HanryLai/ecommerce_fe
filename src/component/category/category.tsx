@@ -1,23 +1,21 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
 import {
-    Text,
-    View,
-    StyleSheet,
-    ScrollView,
-    TextInput,
-    TouchableOpacity,
+    Button,
     FlatList,
     ListRenderItem,
-    Button,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
-import { PropsNavigate } from "../../utils/types";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { PropsData } from "../../common/types/props.type";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { CategoryType } from "../../utils/types/type/category.type";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState, store, useAppDispatch } from "../../utils/redux";
 import { show } from "../../utils/redux/reducers/category.redux";
+import { PropsNavigate } from "../../utils/types";
+import { CategoryType } from "../../utils/types/type/category.type";
 
 // category
 
