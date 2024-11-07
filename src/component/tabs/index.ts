@@ -1,2 +1,3 @@
-export * from './Home'
-export * from './Tab_2'
+export * from "./Home";
+export * from "./search.tab";
+export * from "./favorite.tab";
