@@ -13,6 +13,7 @@ export type NavigationStackParamList = {
     category: {
         id: string;
     };
+    detailInformation: undefined;
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =
