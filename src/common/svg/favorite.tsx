@@ -5,7 +5,7 @@ interface SvgPropsScale extends SvgProps {
     size: number;
 }
 
-export const Favorite = ({ size, ...props }: SvgPropsScale) => (
+export const FavoriteSVG = ({ size, ...props }: SvgPropsScale) => (
     <Svg fill="none" viewBox="0 0 25 25" width={size} height={size}>
         <Path
             fillRule="evenodd"
