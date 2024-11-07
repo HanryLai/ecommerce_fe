@@ -9,6 +9,10 @@ export type NavigationStackParamList = {
     register: undefined;
     Tab: undefined;
     main: undefined;
+    shoppingCart: undefined;
+    category: {
+        id: string;
+    };
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =

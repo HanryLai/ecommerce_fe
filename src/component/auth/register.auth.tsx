@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "reac
 import { IAccountEntity } from "../../interfaces";
 import { PropsNavigate } from "../../utils/types";
 
-export const Register = ({ navigation, route }: PropsNavigate) => {
+export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     const [email, setEmail] = useState<string>("");
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
