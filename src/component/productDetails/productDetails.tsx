@@ -86,7 +86,6 @@ export function ProductDetails() {
 						style={{ width: '100%', height: 300 }}
 					/>
 				</View>
-
 				{/* price and rate  */}
 				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 					<Text style={styles.TextBold}>Product 1</Text>
@@ -95,7 +94,6 @@ export function ProductDetails() {
 						<Text style={styles.TextBold}>4.5</Text>
 					</View>
 				</View>
-
 				{/* description */}
 				<Text style={styles.TextBold}>Description</Text>
 				<Text style={styles.TextLight}>
@@ -104,6 +102,25 @@ export function ProductDetails() {
 					nunc ultricies ultricies. Sed nec arcu ac nunc ultricies ultricies. Sed nec arcu ac nunc
 					ultricies ultricies.
 				</Text>
+				{/* service group */}
+				<View style={styles.services}>
+					<View style={styles.service}>
+						<AntDesign name="hearto" size={24} color="#00BDD6" />
+						<Text style={styles.textService}>Express</Text>
+					</View>
+					<View style={styles.service}>
+						<AntDesign name="hearto" size={24} color="#00BDD6" />
+						<Text style={styles.textService}>30 days free return</Text>
+					</View>
+					<View style={styles.service}>
+						<AntDesign name="hearto" size={24} color="#00BDD6" />
+						<Text style={styles.textService}>Good review</Text>
+					</View>
+					<View style={styles.service}>
+						<AntDesign name="hearto" size={24} color="#00BDD6" />
+						<Text style={styles.textService}>Express</Text>
+					</View>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	)
@@ -176,5 +193,25 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		padding: 10,
+	},
+	services: {
+		alignItems: 'center',
+		marginTop: 10,
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		alignContent: 'center',
+	},
+	service: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		width: '45%',
+		gap: 10,
+		padding: 8,
+	},
+	textService: {
+		color: 'gray',
+		fontSize: 12,
+		fontWeight: 'light',
 	},
 })
