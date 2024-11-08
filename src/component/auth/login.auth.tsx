@@ -3,35 +3,52 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
+import { Color } from "../../style";
 import api from "../../utils/axios";
 import { PropsNavigate } from "../../utils/types";
+import { AppDispatch, store, useAppDispatch, useAppSelector } from "../../utils/redux";
+import { AccountSlice } from "../../utils/redux/reducers";
 
-export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
+export const Login = ({ navigation }: PropsNavigate<"login">) => {
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [account, setAccount] = useState<IAccountEntity>({} as IAccountEntity);
+    const selector = useAppSelector((state) => state.accountReducer);
+    const dispatch = useAppDispatch<AppDispatch>();
     function onPresLogin() {
-        api.post("api/auth/login", {
-            identifier: user,
-            password: password,
+        api.get(`/account?username=${user}&password=${password}`, {
+            // identifier: user,
+            // password: password,
         })
-            .then((response) => response.data.data)
+            .then((response) => response.data[0])
             .then((data: IAccountEntity) => {
-                setAccount(data);
+                if (data === undefined) {
+                    Alert.alert("wrong username,email or password");
+                    return;
+                }
+                // setAccount(data);
+                dispatch(AccountSlice.actions.login(data));
                 navigation.navigate("homepage", {
-                    id: data.id,
-                    username: data.username,
+                    ...data,
                 });
             })
             .catch((err) => Alert.alert("wrong username,email or password"));
     }
     return (
         <View>
+            <LoginLogo
+                width={240}
+                height={240}
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    zIndex: 999,
+                    alignSelf: "center",
+                }}
+            />
             <View>
-                <View style={styles.bg_ellipse_in}>
-                    <Text></Text>
-                </View>
+                <View style={styles.bg_ellipse_in}></View>
                 <View style={styles.bg_ellipse_out}></View>
                 <View></View>
                 <View></View>
@@ -44,9 +61,10 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
             >
                 <Text
                     style={{
-                        color: "#1F41BB",
+                        color: Color.primary,
                         fontSize: 30,
                         fontWeight: 600,
+                        marginTop: 160,
                     }}
                 >
                     Login here
@@ -78,7 +96,7 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
                 ></TextInput>
             </View>
             <View style={{ width: "100%" }}>
-                <Text
+                {/* <Text
                     style={{
                         textAlign: "right",
                         paddingHorizontal: 12,
@@ -88,7 +106,7 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
                     }}
                 >
                     Forgot your password?
-                </Text>
+                </Text> */}
                 <TouchableOpacity
                     style={{
                         alignSelf: "center",
@@ -98,7 +116,7 @@ export const Login = ({ navigation, route }: PropsNavigate<"login">) => {
                         marginVertical: 24,
                         marginHorizontal: 12,
                         paddingVertical: 15,
-                        backgroundColor: "#1F41BB",
+                        backgroundColor: Color.primary,
                     }}
                     onPress={() => onPresLogin()}
                 >
