@@ -19,6 +19,32 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ProductType } from '../../utils/types/type/product.type'
 
+//review
+interface ReviewType {
+	id: string
+	productId: string
+	userName: string
+	rating: number
+	comment: string
+}
+
+const listReview: ReviewType[] = [
+	{
+		id: '1',
+		productId: '1',
+		userName: 'John',
+		rating: 5,
+		comment: 'Good product',
+	},
+	{
+		id: '2',
+		productId: '1',
+		userName: 'Jane',
+		rating: 4,
+		comment: 'Good product',
+	},
+]
+
 const products: ProductType[] = [
 	// id: string
 	// name: string
@@ -72,7 +98,7 @@ export function ProductDetails() {
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView
-				contentContainerStyle={{ flexGrow: 1 }}
+				contentContainerStyle={{ flexGrow: 1, gap: 10 }}
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
 			>
@@ -119,6 +145,26 @@ export function ProductDetails() {
 					<View style={styles.service}>
 						<AntDesign name="hearto" size={24} color="#00BDD6" />
 						<Text style={styles.textService}>Express</Text>
+					</View>
+				</View>
+
+				{/* separator */}
+				<View style={styles.separator}></View>
+
+				{/* review  */}
+				<View>
+					<View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+						<Text style={styles.TextBold}>Review</Text>
+						<Text style={styles.TextLight}>SeeAll</Text>
+					</View>
+
+					<View>
+						{listReview.map((item) => (
+							<View key={item.id}>
+								<Text style={styles.TextBold}>{item.userName}</Text>
+								<Text>{item.comment}</Text>
+							</View>
+						))}
 					</View>
 				</View>
 			</ScrollView>
@@ -213,5 +259,10 @@ const styles = StyleSheet.create({
 		color: 'gray',
 		fontSize: 12,
 		fontWeight: 'light',
+	},
+	separator: {
+		marginVertical: 10,
+		borderBottomColor: '#EFEEEE',
+		borderBottomWidth: 1,
 	},
 })
