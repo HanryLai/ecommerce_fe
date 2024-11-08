@@ -1,14 +1,14 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CartSVG, PersonalSVG } from "../../common/svg";
-import { PropsNavigate } from "../../utils/types";
+import { PropsNavigate, TabStackParamList } from "../../utils/types";
 import { useSelector } from "react-redux";
 import { AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
 import { useState } from "react";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) => {
     const selector = useAppSelector((state) => state.accountReducer);
-    const dispatch = useAppDispatch<AppDispatch>();
-    const [sidebar, setSidebar] = useState<boolean>(false);
+    const navigationHook = useNavigation<NavigationProp<TabStackParamList>>();
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.navigate("shoppingCart")}>
@@ -16,7 +16,7 @@ export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) =>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("login")}>
                 {selector.value.url_avatar ? (
-                    <TouchableOpacity onPress={() => navigation.navigate("functionAuth")}>
+                    <TouchableOpacity onPress={() => navigationHook.navigate("Account")}>
                         <Image
                             style={{ width: 32, height: 32, borderWidth: 2, borderRadius: 50 }}
                             source={{ uri: selector.value.url_avatar }}
