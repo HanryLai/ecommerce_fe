@@ -7,7 +7,7 @@ import { Category } from '../../component/category'
 const Stack = createNativeStackNavigator<NavigationStackParamList>()
 export const RootNavigation = () => {
 	return (
-		<Stack.Navigator initialRouteName="category">
+		<Stack.Navigator initialRouteName="category" screenOptions={{ headerShown: false }}>
 			<Stack.Screen name="login" component={Login} options={{ title: 'Login' }}></Stack.Screen>
 			<Stack.Screen
 				name="register"
