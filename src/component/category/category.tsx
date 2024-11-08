@@ -3,7 +3,6 @@ import {
     Text,
     View,
     StyleSheet,
-    ScrollView,
     TextInput,
     TouchableOpacity,
     FlatList,
@@ -18,6 +17,7 @@ import { fetchCategoryList, selectCategory } from "../../utils/redux/reducers/ca
 import { CategoryType } from "../../utils/types/type/category.type";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductType } from "../../utils/types/type/product.type";
+import { ScrollView } from "react-native-virtualized-view";
 
 const products: ProductType[] = [
     // id: string

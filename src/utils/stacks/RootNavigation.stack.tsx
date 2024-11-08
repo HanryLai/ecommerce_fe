@@ -7,6 +7,7 @@ import { NavigationStackParamList, PropsNavigate } from "../types/Navigation.typ
 import { RootTab } from "./RootTab.stack";
 import { FunctionAuth } from "../../component/header/functionAuth.component";
 import { ProductDetails } from "../../component/productDetails";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -66,3 +67,5 @@ export const RootNavigation = () => {
         </Stack.Navigator>
     );
 };
+
+// export const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
