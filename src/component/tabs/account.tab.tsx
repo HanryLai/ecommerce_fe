@@ -23,6 +23,12 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
         }
     });
 
+    useEffect(() => {
+        if (Object.keys(accountSelector).length !== 0) {
+            setIsLoading(true);
+        }
+    }, []);
+
     function randomColor() {
         return Math.floor(Math.random() * colorRan.length);
     }
