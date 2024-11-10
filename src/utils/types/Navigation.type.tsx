@@ -15,6 +15,9 @@ export type NavigationStackParamList = {
     };
     detailInformation: undefined;
     functionAuth: undefined;
+    productDetails: {
+        id: string;
+    };
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =

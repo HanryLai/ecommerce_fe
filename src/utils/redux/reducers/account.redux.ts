@@ -5,7 +5,7 @@ import { IAccountEntity } from "../../../interfaces";
 export const AccountSlice = createSlice({
     name: "account",
     initialState: {
-        value: {} as IAccountEntity,
+        value: {},
     },
     reducers: {
         login: (state, value: PayloadAction<IAccountEntity>) => {

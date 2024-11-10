@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "screen": "scrcpy -m1968",
-    "db": "json-server --watch db.json --port 4000 --host  192.168.1.5",
+    "db": "json-server --watch db.json --port 4000 --host   192.168.1.95",
     "db_Zy": "json-server --watch db.json --port 4000 --host (ip wifi của Zy)"
   },
   "dependencies": {
@@ -31,6 +31,7 @@
     "react-native-screens": "^3.34.0",
     "react-native-svg": "^15.8.0",
     "react-native-vector-icons": "^10.2.0",
+    "react-native-virtualized-view": "^1.0.0",
     "react-native-web": "^0.19.13",
     "react-redux": "^9.1.2",
     "redux": "^5.0.1"

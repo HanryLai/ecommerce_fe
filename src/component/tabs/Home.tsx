@@ -3,7 +3,6 @@ import {
     FlatList,
     Image,
     ListRenderItem,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -11,8 +10,10 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { PropsTab } from "../../utils/types";
-import { Category } from "../category";
+import { NavigationStackParamList, PropsTab } from "../../utils/types";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-virtualized-view";
+// import { navigationHook } from "../../utils/stacks/RootNavigation.stack";
 
 // category
 export type Category = {
@@ -32,14 +33,9 @@ const categories: Category[] = [
     { id: "8", name: "TV", image: "tv" },
 ];
 
-const renderCategory: ListRenderItem<Category> = ({ item }) => (
-    <TouchableOpacity style={styles.category}>
-        <View style={styles.circle}>
-            <Image source={require("../../../assets/categoryPhone.png")} />
-        </View>
-        <Text style={{ textAlign: "center" }}>{item.name}</Text>
-    </TouchableOpacity>
-);
+// const renderCategory: ListRenderItem<Category> = ({ item }) => (
+
+// );
 
 //recomended product
 type Product = {
@@ -61,31 +57,15 @@ const products: Product[] = [
     { id: "8", name: "TV", image: "tv", price: 80, rate: 4.5 },
 ];
 
-const renderProduct: ListRenderItem<Product> = ({ item }) => (
-    <View style={{ width: 130, justifyContent: "center", alignItems: "center" }}>
-        <Image source={require("../../../assets/shoes.png")} />
-        <Text style={{ fontSize: 12, fontWeight: "bold" }}>{item.name}</Text>
-
-        <View style={styles.recommendedProduct}>
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                <AntDesign name="star" size={16} color="#FFD700" />
-                <Text style={{ fontSize: 12 }}>{item.rate}</Text>
-            </View>
-
-            <Text style={{ color: "#00BDD6", fontSize: 16, fontWeight: "bold" }}>
-                ${item.price}
-            </Text>
-        </View>
-    </View>
-);
-
 export const Home = ({ navigation, route }: PropsTab<"Home">) => {
+    const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
+                nestedScrollEnabled={true}
             >
                 {/* search bar */}
                 <View style={styles.SearchBar}>
@@ -112,7 +92,23 @@ export const Home = ({ navigation, route }: PropsTab<"Home">) => {
                 <View style={styles.categories}>
                     <FlatList
                         data={categories}
-                        renderItem={renderCategory}
+                        renderItem={({ item }) => {
+                            return (
+                                <TouchableOpacity
+                                    style={styles.category}
+                                    onPress={() => {
+                                        navigationHook.navigate("category", { id: item.id });
+                                    }}
+                                >
+                                    <View style={styles.circle}>
+                                        <Image
+                                            source={require("../../../assets/categoryPhone.png")}
+                                        />
+                                    </View>
+                                    <Text style={{ textAlign: "center" }}>{item.name}</Text>
+                                </TouchableOpacity>
+                            );
+                        }}
                         keyExtractor={(item) => item.id}
                         horizontal={true}
                     />
@@ -163,7 +159,45 @@ export const Home = ({ navigation, route }: PropsTab<"Home">) => {
                     </View>
                     <FlatList
                         data={products}
-                        renderItem={renderProduct}
+                        renderItem={({ item }) => {
+                            return (
+                                <View
+                                    style={{
+                                        width: 130,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Image source={require("../../../assets/shoes.png")} />
+                                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                                        {item.name}
+                                    </Text>
+
+                                    <View style={styles.recommendedProduct}>
+                                        <View
+                                            style={{
+                                                flexDirection: "row",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <AntDesign name="star" size={16} color="#FFD700" />
+                                            <Text style={{ fontSize: 12 }}>{item.rate}</Text>
+                                        </View>
+
+                                        <Text
+                                            style={{
+                                                color: "#00BDD6",
+                                                fontSize: 16,
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            ${item.price}
+                                        </Text>
+                                    </View>
+                                </View>
+                            );
+                        }}
                         keyExtractor={(item) => item.id}
                         horizontal={true}
                     />

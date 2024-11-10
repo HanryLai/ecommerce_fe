@@ -1,14 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { counterSlice } from "./reducers/reducer.redux";
-import { CategorySlice } from "./reducers/category.redux";
-import { AccountSlice } from "./reducers/account.redux";
-import { ShoppingCart } from "../../component/shopping-cart/shopping-cart.component";
+import categoryReducer from "../redux/reducers/category.redux";
 import { ShoppingCartSlice } from "./reducers";
+import { AccountSlice } from "./reducers/account.redux";
+import { counterSlice } from "./reducers/reducer.redux";
 
 export const store = configureStore({
     reducer: {
         counter: counterSlice.reducer,
-        categoryReducer: CategorySlice.reducer,
+        categoryReducer: categoryReducer,
         accountReducer: AccountSlice.reducer,
         shoppingCartReducer: ShoppingCartSlice.reducer,
     },

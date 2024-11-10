@@ -1,28 +1,48 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store.redux";
-import { CategoryType } from "../../types/type/category.type";
+// reducers/category.redux.ts
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { CategoryType } from '../../types/type/category.type'
+import axios from 'axios'
 
-export const CategorySlice = createSlice({
-    name: "category",
-    initialState: {
-        value: [] as unknown as CategoryType,
-        chose: null,
-    },
-    reducers: {
-        show: (state) => {
-            state.value = {
-                id: "123",
-                name: "!23",
-                image: "123",
-            };
-        },
-        chose: (state) => {
-            // state.chose = {}
-        },
-    },
-});
+// Fetch categories from API
+export const fetchCategoryList = createAsyncThunk('category/fetchCategoryList', async () => {
+	const response = await axios.get<CategoryType[]>(
+		'https://6703a656ab8a8f89273107fe.mockapi.io/api/category'
+	)
+	return response.data // Trả về dữ liệu danh sách category
+})
 
-export const { show } = CategorySlice.actions;
+// Tạo slice cho category
+const categorySlice = createSlice({
+	name: 'category',
+	initialState: {
+		value: [] as CategoryType[], // Danh sách category
+		selectedCategory: null as CategoryType | null, // Category đã chọn
+		loading: false,
+		error: null as string | null,
+	},
+	reducers: {
+		selectCategory: (state, action) => {
+			state.selectedCategory = action.payload
+		},
+	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(fetchCategoryList.pending, (state) => {
+				state.loading = true
+				state.error = null
+			})
+			.addCase(fetchCategoryList.fulfilled, (state, action) => {
+				state.value = action.payload // Lưu danh sách category sau khi thành công
+				state.loading = false
+			})
+			.addCase(fetchCategoryList.rejected, (state, action) => {
+				state.loading = false
+				state.error = action.error.message || 'Failed to fetch categories'
+			})
+	},
+})
 
-// Other code such as selectors can use the imported `RootState` type
-export const selectCategory = (state: RootState) => state.counter.value;
+// Xuất reducer của slice này
+export const { selectCategory } = categorySlice.actions
+
+export default categorySlice.reducer // Đây chính là categoryReducer mà bạn cần

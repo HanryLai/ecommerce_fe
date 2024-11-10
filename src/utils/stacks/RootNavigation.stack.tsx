@@ -6,6 +6,8 @@ import { ShoppingCart } from "../../component/shopping-cart/shopping-cart.compon
 import { NavigationStackParamList, PropsNavigate } from "../types/Navigation.type";
 import { RootTab } from "./RootTab.stack";
 import { FunctionAuth } from "../../component/header/functionAuth.component";
+import { ProductDetails } from "../../component/productDetails";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -57,6 +59,13 @@ export const RootNavigation = () => {
                 component={FunctionAuth}
                 options={{ title: "Function" }}
             ></Stack.Screen>
+            <Stack.Screen
+                name="productDetails"
+                component={ProductDetails}
+                options={{ title: "ProductDetails" }}
+            ></Stack.Screen>
         </Stack.Navigator>
     );
 };
+
+// export const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
