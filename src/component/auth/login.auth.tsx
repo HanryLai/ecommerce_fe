@@ -21,23 +21,28 @@ export const Login = ({ navigation }: PropsNavigate<"login">) => {
     const [password, setPassword] = useState<string>("");
     const dispatch = useAppDispatch<AppDispatch>();
     function onPresLogin() {
-        api.get(`/account?username=${user}&password=${password}`, {
-            // identifier: user,
-            // password: password,
-        })
-            .then((response) => response.data[0])
-            .then((data: IAccountEntity) => {
-                if (data === undefined) {
-                    Alert.alert("wrong username,email or password");
-                    return;
-                }
-                dispatch(AccountSlice.actions.login(data));
-                navigation.navigate("homepage", {
-                    ...data,
-                    screen: "Home",
-                });
+        console.log("user", JSON.stringify(user));
+        if (user === "" || password === "") {
+            Alert.alert("wrong username,email or password");
+        } else {
+            api.get(`/account?username=${user}&password=${password}`, {
+                // identifier: user,
+                // password: password,
             })
-            .catch((err) => Alert.alert("wrong username,email or password"));
+                .then((response) => response.data[0])
+                .then((data: IAccountEntity) => {
+                    if (data === undefined) {
+                        Alert.alert("wrong username,email or password");
+                        return;
+                    }
+                    dispatch(AccountSlice.actions.login(data));
+                    navigation.navigate("homepage", {
+                        ...data,
+                        screen: "Home",
+                    });
+                })
+                .catch((err) => Alert.alert("wrong username,email or password"));
+        }
     }
     return (
         <ScrollView keyboardShouldPersistTaps={"never"}>
