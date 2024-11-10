@@ -15,71 +15,15 @@ import { useEffect } from 'react'
 import { AppDispatch, RootState, useAppSelector } from '../../utils/redux'
 import { CategoryType } from '../../utils/types/type/category.type'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ProductType } from '../../utils/types/type/product.type'
 import { ScrollView } from 'react-native-virtualized-view'
 import axios from 'axios'
 import api from '../../utils/axios'
 import productSlice from '../../utils/redux/reducers/product.redux'
-
-// const products: ProductType[] = [
-// 	// id: string
-// 	// name: string
-// 	// image: string
-// 	// price: number
-// 	{
-// 		id: '1',
-// 		name: 'Product 1',
-// 		image: 'https://picsum.photos/200/300',
-// 		price: 100,
-// 	},
-// 	{
-// 		id: '2',
-// 		name: 'Product 2',
-// 		image: 'https://picsum.photos/200/300',
-// 		price: 200,
-// 	},
-// 	{
-// 		id: '3',
-// 		name: 'Product 3',
-// 		image: 'https://picsum.photos/200/300',
-// 		price: 300,
-// 	},
-// 	{
-// 		id: '4',
-// 		name: 'Product 4',
-// 		image: 'https://picsum.photos/200/300',
-// 		price: 400,
-// 	},
-// ]
-
-const renderProduct = ({ item }: { item: ProductType }) => (
-	<TouchableOpacity style={styles.product}>
-		<View style={{ flexDirection: 'row' }}>
-			<Image
-				source={{ uri: item.images_url }}
-				style={{ width: 60, height: 60, borderRadius: 10 }}
-			/>
-			<View>
-				<View>
-					<Text style={styles.TextBold}>{item.name}</Text>
-					<View style={{ flexDirection: 'row' }}>
-						<AntDesign name="star" size={12} color="yellow" />
-						<AntDesign name="star" size={12} color="yellow" />
-						<AntDesign name="star" size={12} color="yellow" />
-						<AntDesign name="star" size={12} color="yellow" />
-						<AntDesign name="star" size={12} color="yellow" />
-					</View>
-				</View>
-			</View>
-		</View>
-		<View>
-			<AntDesign name="plus" size={24} color="black" />
-			<Text style={styles.TextBold}>${item.price}</Text>
-		</View>
-	</TouchableOpacity>
-)
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { NavigationStackParamList } from '../../utils/types'
 
 export function Category() {
+	const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>()
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedCategory = useAppSelector((state) => state.categoryReducer.selectedCategory)
 	const products = useAppSelector((state) => state.productReducer.value)
@@ -142,7 +86,38 @@ export function Category() {
 				<View style={styles.products}>
 					<FlatList
 						data={products}
-						renderItem={({ item }) => renderProduct({ item })} // Truyền handleCategorySelect vào đây
+						renderItem={({ item }) => (
+							<TouchableOpacity
+								style={styles.product}
+								onPress={() => {
+									navigationHook.navigate('productDetails', { id: item.id })
+									dispatch(productSlice.actions.selectproduct(item))
+								}}
+							>
+								<View style={{ flexDirection: 'row' }}>
+									<Image
+										source={{ uri: item.images_url }}
+										style={{ width: 60, height: 60, borderRadius: 10 }}
+									/>
+									<View>
+										<View>
+											<Text style={styles.TextBold}>{item.name}</Text>
+											<View style={{ flexDirection: 'row' }}>
+												<AntDesign name="star" size={12} color="yellow" />
+												<AntDesign name="star" size={12} color="yellow" />
+												<AntDesign name="star" size={12} color="yellow" />
+												<AntDesign name="star" size={12} color="yellow" />
+												<AntDesign name="star" size={12} color="yellow" />
+											</View>
+										</View>
+									</View>
+								</View>
+								<View>
+									<AntDesign name="plus" size={24} color="black" />
+									<Text style={styles.TextBold}>${item.price}</Text>
+								</View>
+							</TouchableOpacity>
+						)} // Truyền handleCategorySelect vào đây
 						keyExtractor={(item) => item.id}
 						ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
 						showsHorizontalScrollIndicator={false}
