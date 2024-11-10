@@ -1,4 +1,4 @@
-import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { IAccountEntity } from "../../interfaces";
@@ -8,18 +8,12 @@ import { NavigationStackParamList, PropsTab, TabStackParamList } from "../../uti
 export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
-    const navigationTab = useNavigation<NavigationProp<TabStackParamList>>();
     const accountSelector = useAppSelector(accountHook) as IAccountEntity;
 
     function logout() {
         dispatch(AccountSlice.actions.logout());
     }
-    useFocusEffect(() => {
-        console.log("FocusEffect" + JSON.stringify(accountSelector));
-        if (Object.keys(accountSelector).length === 0) {
-            navigationHook.navigate("login");
-        }
-    });
+
     useEffect(() => {
         console.log("Effect" + JSON.stringify(accountSelector));
         if (Object.keys(accountSelector).length === 0) {

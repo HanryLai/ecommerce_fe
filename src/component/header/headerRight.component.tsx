@@ -8,10 +8,11 @@ export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) =>
     const selector = useAppSelector((state) => state.accountReducer);
     const navigationHook = useNavigation<NavigationProp<TabStackParamList>>();
     function moveToCart() {
-        if (selector.value.id) {
+        if (Object.keys(selector.value).length !== 0) {
             navigation.navigate("shoppingCart");
+        } else {
+            navigation.navigate("login");
         }
-        navigation.navigate("login");
     }
     return (
         <View style={styles.container}>

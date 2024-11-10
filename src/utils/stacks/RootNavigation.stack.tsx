@@ -33,7 +33,7 @@ export const RootNavigation = () => {
                             >
                                 <Image
                                     source={require("../../../assets/auth/goback.png")}
-                                    style={{ width: 28, height: 28, paddingRight: 10 }}
+                                    style={{ width: 24, height: 24, paddingRight: 10 }}
                                 />
                             </TouchableOpacity>
                         );
