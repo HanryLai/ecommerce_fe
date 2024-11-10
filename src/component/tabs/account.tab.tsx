@@ -1,18 +1,32 @@
-import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { NavigationStackParamList, PropsTab } from "../../utils/types";
-import { accountHook, AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
-import { AccountSlice } from "../../utils/redux/reducers";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+    ActivityIndicator,
+    Image,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { IAccountEntity } from "../../interfaces";
+import { accountHook, AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
+import { NavigationStackParamList, PropsTab } from "../../utils/types";
+import { useState } from "react";
+import { AccountSlice } from "../../utils/redux/reducers";
 export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
     const accountSelector = useAppSelector(accountHook) as IAccountEntity;
+
     function logout() {
         dispatch(AccountSlice.actions.logout());
-        navigation.navigate("Home");
     }
-
+    useFocusEffect(() => {
+        if (Object.keys(accountSelector).length === 0) {
+            navigationHook.navigate("homepage", { screen: "Home" });
+            navigationHook.navigate("login");
+        }
+    });
     function randomColor() {
         return Math.floor(Math.random() * colorRan.length);
     }
@@ -20,8 +34,8 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const colorRan = ["#ff8d76", "#213a58", "#09d1c7", "#f04772", "#c3c7f4", "#e3aadd"];
 
     return (
-        <View>
-            {Object.keys(accountSelector).length ? (
+        <>
+            <View>
                 <View style={styles.container}>
                     <View
                         style={[
@@ -59,7 +73,10 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         </View>
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.btn_function}>
+                        <TouchableOpacity
+                            style={styles.btn_function}
+                            onPress={() => navigation.navigate("Home")}
+                        >
                             <Text style={styles.txt_function}>Go Back Home</Text>
                         </TouchableOpacity>
 
@@ -67,17 +84,14 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                             style={styles.btn_function}
                             onPress={() => {
                                 logout();
-                                // navigationHook.navigate("login");
                             }}
                         >
                             <Text style={styles.txt_function}>Logout</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            ) : (
-                <>{navigationHook.navigate("login")}</>
-            )}
-        </View>
+            </View>
+        </>
     );
 };
 

@@ -1,13 +1,18 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
 import api from "../../utils/axios";
-import { AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
+import { AppDispatch, useAppDispatch } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
 import { PropsNavigate } from "../../utils/types";
 
@@ -26,16 +31,16 @@ export const Login = ({ navigation }: PropsNavigate<"login">) => {
                     Alert.alert("wrong username,email or password");
                     return;
                 }
-                // setAccount(data);
                 dispatch(AccountSlice.actions.login(data));
                 navigation.navigate("homepage", {
                     ...data,
+                    screen: "Home",
                 });
             })
             .catch((err) => Alert.alert("wrong username,email or password"));
     }
     return (
-        <View>
+        <ScrollView keyboardShouldPersistTaps={"never"}>
             <LoginLogo
                 width={240}
                 height={240}
@@ -162,7 +167,7 @@ export const Login = ({ navigation }: PropsNavigate<"login">) => {
                     </TouchableOpacity>
                 </View>
             </View> */}
-        </View>
+        </ScrollView>
     );
 };
 
