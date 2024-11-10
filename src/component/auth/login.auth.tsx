@@ -7,14 +7,13 @@ import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
 import api from "../../utils/axios";
-import { PropsNavigate } from "../../utils/types";
-import { AppDispatch, store, useAppDispatch, useAppSelector } from "../../utils/redux";
+import { AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
+import { PropsNavigate } from "../../utils/types";
 
 export const Login = ({ navigation }: PropsNavigate<"login">) => {
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const selector = useAppSelector((state) => state.accountReducer);
     const dispatch = useAppDispatch<AppDispatch>();
     function onPresLogin() {
         api.get(`/account?username=${user}&password=${password}`, {
@@ -135,7 +134,7 @@ export const Login = ({ navigation }: PropsNavigate<"login">) => {
                 <Text style={{ textAlign: "center", fontWeight: 600 }}>Create new account</Text>
             </TouchableOpacity>
 
-            <View
+            {/* <View
                 style={{
                     marginVertical: 100,
                 }}
@@ -162,7 +161,7 @@ export const Login = ({ navigation }: PropsNavigate<"login">) => {
                         <FontAwesome name="apple" size={24} color="black" />
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View> */}
         </View>
     );
 };

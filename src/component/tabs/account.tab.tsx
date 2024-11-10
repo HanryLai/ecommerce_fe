@@ -8,10 +8,9 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
     const accountSelector = useAppSelector(accountHook) as IAccountEntity;
-    console.log("accountSelector" + JSON.stringify(accountSelector));
     function logout() {
-        navigation.navigate("Home");
         dispatch(AccountSlice.actions.logout());
+        navigation.navigate("Home");
     }
 
     function randomColor() {
@@ -67,8 +66,8 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         <TouchableOpacity
                             style={styles.btn_function}
                             onPress={() => {
-                                dispatch(AccountSlice.actions.logout());
-                                navigation.navigate("Home");
+                                logout();
+                                // navigationHook.navigate("login");
                             }}
                         >
                             <Text style={styles.txt_function}>Logout</Text>
@@ -76,7 +75,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                     </View>
                 </View>
             ) : (
-                <TouchableOpacity onPress={logout}></TouchableOpacity>
+                <>{navigationHook.navigate("login")}</>
             )}
         </View>
     );
