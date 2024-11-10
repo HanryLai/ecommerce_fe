@@ -28,8 +28,6 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
         console.log("Effect" + JSON.stringify(accountSelector));
         if (Object.keys(accountSelector).length === 0) {
             navigationHook.navigate("login");
-        } else {
-            setIsLoading(true);
         }
     });
 
