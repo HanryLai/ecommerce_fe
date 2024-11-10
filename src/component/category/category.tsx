@@ -53,12 +53,12 @@ import productSlice from '../../utils/redux/reducers/product.redux'
 // ]
 
 const renderProduct = ({ item }: { item: ProductType }) => (
-	<TouchableOpacity
-		style={styles.product}
-		// onPress={() => handleCategorySelect(item)} // Sử dụng handleCategorySelect từ tham số
-	>
+	<TouchableOpacity style={styles.product}>
 		<View style={{ flexDirection: 'row' }}>
-			<Image source={require('../../../assets/categoryPhone.png')} />
+			<Image
+				source={{ uri: item.images_url }}
+				style={{ width: 60, height: 60, borderRadius: 10 }}
+			/>
 			<View>
 				<View>
 					<Text style={styles.TextBold}>{item.name}</Text>
@@ -85,13 +85,14 @@ export function Category() {
 	const products = useAppSelector((state) => state.productReducer.value)
 
 	useEffect(() => {
-		api
-			.get(`/products/${selectedCategory?.id}`)
-			.then((res) => {
-				res.data
-			})
+		const categories = api
+			.get('/products')
+			.then((response) => response.data)
 			.then((data) => {
 				dispatch(productSlice.actions.storeproduct(data))
+			})
+			.catch((error) => {
+				console.error(error)
 			})
 	}, [])
 

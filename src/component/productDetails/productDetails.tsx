@@ -13,82 +13,15 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { AppDispatch, RootState } from '../../utils/redux'
-import {  selectCategory } from '../../utils/redux/reducers/category.redux'
+import { selectCategory } from '../../utils/redux/reducers/category.redux'
 import { CategoryType } from '../../utils/types/type/category.type'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ProductType } from '../../utils/types/type/product.type'
 
-//review
-interface ReviewType {
-	id: string
-	productId: string
-	userName: string
-	rating: number
-	comment: string
-}
-
-const listReview: ReviewType[] = [
-	{
-		id: '1',
-		productId: '1',
-		userName: 'John',
-		rating: 5,
-		comment: 'Good product',
-	},
-	{
-		id: '2',
-		productId: '1',
-		userName: 'Jane',
-		rating: 4,
-		comment: 'Good product',
-	},
-]
-
-const products: ProductType[] = [
-	// id: string
-	// name: string
-	// image: string
-	// price: number
-	{
-		id: '1',
-		name: 'Product 1',
-		image: 'https://picsum.photos/200/300',
-		price: 100,
-	},
-	{
-		id: '2',
-		name: 'Product 2',
-		image: 'https://picsum.photos/200/300',
-		price: 200,
-	},
-	{
-		id: '3',
-		name: 'Product 3',
-		image: 'https://picsum.photos/200/300',
-		price: 300,
-	},
-	{
-		id: '4',
-		name: 'Product 4',
-		image: 'https://picsum.photos/200/300',
-		price: 400,
-	},
-]
-
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
-	const categories = useSelector((state: RootState) => state.categoryReducer.value)
 	const selectedCategory = useSelector((state: RootState) => state.categoryReducer.selectedCategory)
-	const loading = useSelector((state: RootState) => state.categoryReducer.loading)
-	const error = useSelector((state: RootState) => state.categoryReducer.error)
-
-	// Lấy danh sách category từ Redux khi component render lần đầu
-	useEffect(() => {
-		if (!categories.length) {
-			dispatch(fetchCategoryList()) // Fetch categories if not loaded
-		}
-	}, [dispatch, categories.length])
 
 	// Handle khi người dùng chọn category
 	const handleCategorySelect = (category: CategoryType) => {
