@@ -11,7 +11,9 @@ export type NavigationStackParamList = {
     register: undefined;
     Tab: undefined;
     main: undefined;
-    shoppingCart: undefined;
+    shoppingCart: {
+        id: string;
+    };
     category: {
         id: string;
     };

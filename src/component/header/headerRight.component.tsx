@@ -9,7 +9,7 @@ export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) =>
     const navigationHook = useNavigation<NavigationProp<TabStackParamList>>();
     function moveToCart() {
         if (Object.keys(selector.value).length !== 0) {
-            navigation.navigate("shoppingCart");
+            navigation.navigate("shoppingCart", { id: selector.value.id });
         } else {
             navigation.navigate("login");
         }
