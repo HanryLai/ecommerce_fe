@@ -44,7 +44,25 @@ export const RootNavigation = () => {
             <Stack.Screen
                 name="register"
                 component={Register}
-                options={{ title: "Register" }}
+                options={{
+                    headerTitleAlign: "center",
+                    headerLeft: () => {
+                        return (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.navigate("homepage", {
+                                        screen: "Home",
+                                    })
+                                }
+                            >
+                                <Image
+                                    source={require("../../../assets/auth/goback.png")}
+                                    style={{ width: 24, height: 24, paddingRight: 10 }}
+                                />
+                            </TouchableOpacity>
+                        );
+                    },
+                }}
             ></Stack.Screen>
             {/* Homepage */}
             <Stack.Screen
