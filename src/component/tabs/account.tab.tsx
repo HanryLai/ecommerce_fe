@@ -1,10 +1,19 @@
 import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Image,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { IAccountEntity } from "../../interfaces";
 import { accountHook, AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
 import { NavigationStackParamList, PropsTab, TabStackParamList } from "../../utils/types";
+import { Color } from "../../style";
 export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
@@ -15,6 +24,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     }
 
     useFocusEffect(() => {
+        setIsLoading(false);
         console.log("Effect" + JSON.stringify(accountSelector));
         if (Object.keys(accountSelector).length === 0) {
             navigationHook.navigate("login");
@@ -37,7 +47,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
 
     return (
         <>
-            {isLoading && (
+            {isLoading ? (
                 <View>
                     <View style={styles.container}>
                         <View
@@ -92,6 +102,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                             <TouchableOpacity
                                 style={styles.btn_function}
                                 onPress={() => {
+                                    setIsLoading(false);
                                     logout();
                                 }}
                             >
@@ -100,6 +111,8 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         </View>
                     </View>
                 </View>
+            ) : (
+                <ActivityIndicator size="large" color={Color.primary} />
             )}
         </>
     );
