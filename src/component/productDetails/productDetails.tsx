@@ -12,88 +12,18 @@ import {
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { AppDispatch, RootState } from '../../utils/redux'
-import { fetchCategoryList, selectCategory } from '../../utils/redux/reducers/category.redux'
+import { AppDispatch, RootState, useAppSelector } from '../../utils/redux'
+import { selectCategory } from '../../utils/redux/reducers/category.redux'
 import { CategoryType } from '../../utils/types/type/category.type'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ProductType } from '../../utils/types/type/product.type'
-
-//review
-interface ReviewType {
-	id: string
-	productId: string
-	userName: string
-	rating: number
-	comment: string
-}
-
-const listReview: ReviewType[] = [
-	{
-		id: '1',
-		productId: '1',
-		userName: 'John',
-		rating: 5,
-		comment: 'Good product',
-	},
-	{
-		id: '2',
-		productId: '1',
-		userName: 'Jane',
-		rating: 4,
-		comment: 'Good product',
-	},
-]
-
-const products: ProductType[] = [
-	// id: string
-	// name: string
-	// image: string
-	// price: number
-	{
-		id: '1',
-		name: 'Product 1',
-		image: 'https://picsum.photos/200/300',
-		price: 100,
-	},
-	{
-		id: '2',
-		name: 'Product 2',
-		image: 'https://picsum.photos/200/300',
-		price: 200,
-	},
-	{
-		id: '3',
-		name: 'Product 3',
-		image: 'https://picsum.photos/200/300',
-		price: 300,
-	},
-	{
-		id: '4',
-		name: 'Product 4',
-		image: 'https://picsum.photos/200/300',
-		price: 400,
-	},
-]
+import api from '../../utils/axios'
+import productSlice from '../../utils/redux/reducers/product.redux'
 
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
-	const categories = useSelector((state: RootState) => state.categoryReducer.value)
-	const selectedCategory = useSelector((state: RootState) => state.categoryReducer.selectedCategory)
-	const loading = useSelector((state: RootState) => state.categoryReducer.loading)
-	const error = useSelector((state: RootState) => state.categoryReducer.error)
-
-	// Lấy danh sách category từ Redux khi component render lần đầu
-	useEffect(() => {
-		if (!categories.length) {
-			dispatch(fetchCategoryList()) // Fetch categories if not loaded
-		}
-	}, [dispatch, categories.length])
-
-	// Handle khi người dùng chọn category
-	const handleCategorySelect = (category: CategoryType) => {
-		dispatch(selectCategory(category)) // Dispatch action chọn category
-	}
+	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -102,19 +32,18 @@ export function ProductDetails() {
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
 			>
-				<Text style={styles.TextBold}>Product Details</Text>
 				{/* show img */}
 				<View style={{ flexDirection: 'row' }}>
 					<Image
-						source={{
-							uri: 'https://khothietke.net/wp-content/uploads/2021/04/PNGKhothietke.net-02351.png',
-						}}
+						source={{ uri: selectedProduct?.images_url }}
 						style={{ width: '100%', height: 300 }}
 					/>
 				</View>
+				{/* name */}
+				<Text style={styles.TextBold}>{selectedProduct?.name}</Text>
 				{/* price and rate  */}
 				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-					<Text style={styles.TextBold}>Product 1</Text>
+					<Text style={styles.TextBold}>${selectedProduct?.price}</Text>
 					<View style={{ flexDirection: 'row' }}>
 						<AntDesign name="star" size={16} color="yellow" />
 						<Text style={styles.TextBold}>4.5</Text>
@@ -158,14 +87,14 @@ export function ProductDetails() {
 						<Text style={styles.TextLight}>SeeAll</Text>
 					</View>
 
-					<View>
+					{/* <View>
 						{listReview.map((item) => (
 							<View key={item.id}>
 								<Text style={styles.TextBold}>{item.userName}</Text>
 								<Text>{item.comment}</Text>
 							</View>
 						))}
-					</View>
+					</View> */}
 				</View>
 			</ScrollView>
 		</SafeAreaView>
