@@ -4,8 +4,8 @@ import { ScrollView } from "react-native-virtualized-view";
 import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
-import api from "../../utils/axios";
 import { PropsNavigate } from "../../utils/types";
+import api from "../../utils/axios/apiCuaHiu";
 
 export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     const [email, setEmail] = useState<string>("");

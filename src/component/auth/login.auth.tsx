@@ -11,10 +11,10 @@ import {
 import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
-import api from "../../utils/axios";
 import { AppDispatch, useAppDispatch } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
 import { PropsNavigate } from "../../utils/types";
+import api from "../../utils/axios/apiCuaHiu";
 
 export const Login = ({ navigation }: PropsNavigate<"login">) => {
     const [user, setUser] = useState<string>("");

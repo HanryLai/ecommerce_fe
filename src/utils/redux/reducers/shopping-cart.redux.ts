@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import api from "../../axios";
 import { RootState } from "../store.redux";
+import api from "../../axios/apiCuaHiu";
 
 export const ShoppingCartSlice = createSlice({
     name: "shopping-cart",

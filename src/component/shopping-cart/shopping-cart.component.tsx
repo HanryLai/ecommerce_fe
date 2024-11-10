@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { PropsNavigate } from "../../utils/types";
-import api from "../../utils/axios";
 import { Product } from "../../interfaces/shopping-cart.interface";
 import { ScrollView } from "react-native-virtualized-view";
 import { EditShoppingCartSVG } from "../../common/svg";
+import api from "../../utils/axios/apiCuaHiu";
 
 export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
     // const id = route.params.id;
