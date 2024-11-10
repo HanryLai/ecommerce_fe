@@ -8,16 +8,37 @@ import { RootTab } from "./RootTab.stack";
 import { FunctionAuth } from "../../component/header/functionAuth.component";
 import { ProductDetails } from "../../component/productDetails";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { TabStackParamList } from "../types";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
+    const navigation = useNavigation<NavigationProp<NavigationStackParamList>>();
     return (
         <Stack.Navigator initialRouteName="homepage">
             {/* Login */}
             <Stack.Screen
                 name="login"
                 component={Login}
-                options={{ title: "Login" }}
+                options={{
+                    headerTitleAlign: "center",
+                    headerLeft: () => {
+                        return (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.navigate("homepage", {
+                                        screen: "Home",
+                                    })
+                                }
+                            >
+                                <Image
+                                    source={require("../../../assets/auth/goback.png")}
+                                    style={{ width: 28, height: 28, paddingRight: 10 }}
+                                />
+                            </TouchableOpacity>
+                        );
+                    },
+                }}
             ></Stack.Screen>
             {/* Register */}
             <Stack.Screen

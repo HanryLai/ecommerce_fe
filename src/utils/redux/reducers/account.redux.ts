@@ -7,7 +7,7 @@ import { NavigationStackParamList } from "../../types";
 export const AccountSlice = createSlice({
     name: "account",
     initialState: {
-        value: {},
+        value: {} as IAccountEntity,
     },
     reducers: {
         login: (state, value: PayloadAction<IAccountEntity>) => {

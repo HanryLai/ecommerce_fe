@@ -1,29 +1,28 @@
 import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
-import {
-    ActivityIndicator,
-    Image,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { useEffect } from "react";
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { IAccountEntity } from "../../interfaces";
 import { accountHook, AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
-import { NavigationStackParamList, PropsTab } from "../../utils/types";
-import { useState } from "react";
 import { AccountSlice } from "../../utils/redux/reducers";
+import { NavigationStackParamList, PropsTab, TabStackParamList } from "../../utils/types";
 export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
+    const navigationTab = useNavigation<NavigationProp<TabStackParamList>>();
     const accountSelector = useAppSelector(accountHook) as IAccountEntity;
 
     function logout() {
         dispatch(AccountSlice.actions.logout());
     }
     useFocusEffect(() => {
+        console.log("FocusEffect" + JSON.stringify(accountSelector));
         if (Object.keys(accountSelector).length === 0) {
-            navigationHook.navigate("homepage", { screen: "Home" });
+            navigationHook.navigate("login");
+        }
+    });
+    useEffect(() => {
+        console.log("Effect" + JSON.stringify(accountSelector));
+        if (Object.keys(accountSelector).length === 0) {
             navigationHook.navigate("login");
         }
     });
