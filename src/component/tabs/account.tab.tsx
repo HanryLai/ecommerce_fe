@@ -1,5 +1,5 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { useEffect } from "react";
+import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { IAccountEntity } from "../../interfaces";
 import { accountHook, AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
@@ -9,17 +9,20 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
     const accountSelector = useAppSelector(accountHook) as IAccountEntity;
-
+    const [isLoading, setIsLoading] = useState(false);
     function logout() {
         dispatch(AccountSlice.actions.logout());
     }
 
-    useEffect(() => {
+    useFocusEffect(() => {
         console.log("Effect" + JSON.stringify(accountSelector));
         if (Object.keys(accountSelector).length === 0) {
             navigationHook.navigate("login");
+        } else {
+            setIsLoading(true);
         }
     });
+
     function randomColor() {
         return Math.floor(Math.random() * colorRan.length);
     }
@@ -28,62 +31,70 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
 
     return (
         <>
-            <View>
-                <View style={styles.container}>
-                    <View
-                        style={[
-                            styles.containerAvatar,
-                            {
-                                backgroundColor: colorRan[randomColor()],
-                                paddingVertical: 24,
-                            },
-                        ]}
-                    >
-                        <Image style={styles.avatar} source={{ uri: accountSelector.url_avatar }} />
-                    </View>
-                    <View style={[styles.infors]}>
-                        <View style={styles.input_container}>
-                            <Text style={styles.txt_username}>username</Text>
-                            <View style={styles.container_txt_input}>
-                                <TextInput style={styles.input} value={accountSelector.username} />
-                            </View>
-                        </View>
-                        <View style={styles.input_container}>
-                            <Text style={styles.txt_email}>email</Text>
-                            <View style={styles.container_txt_input}>
-                                <TextInput style={styles.input} value={accountSelector.email} />
-                            </View>
-                        </View>
-                        <View style={styles.input_container}>
-                            <Text style={styles.txt_password}>password</Text>
-                            <View style={styles.container_txt_input}>
-                                <TextInput
-                                    style={styles.input}
-                                    secureTextEntry={true}
-                                    value={accountSelector.password}
-                                />
-                            </View>
-                        </View>
-                    </View>
-                    <View>
-                        <TouchableOpacity
-                            style={styles.btn_function}
-                            onPress={() => navigation.navigate("Home")}
+            {isLoading && (
+                <View>
+                    <View style={styles.container}>
+                        <View
+                            style={[
+                                styles.containerAvatar,
+                                {
+                                    backgroundColor: colorRan[randomColor()],
+                                    paddingVertical: 24,
+                                },
+                            ]}
                         >
-                            <Text style={styles.txt_function}>Go Back Home</Text>
-                        </TouchableOpacity>
+                            <Image
+                                style={styles.avatar}
+                                source={{ uri: accountSelector.url_avatar }}
+                            />
+                        </View>
+                        <View style={[styles.infors]}>
+                            <View style={styles.input_container}>
+                                <Text style={styles.txt_username}>username</Text>
+                                <View style={styles.container_txt_input}>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={accountSelector.username}
+                                    />
+                                </View>
+                            </View>
+                            <View style={styles.input_container}>
+                                <Text style={styles.txt_email}>email</Text>
+                                <View style={styles.container_txt_input}>
+                                    <TextInput style={styles.input} value={accountSelector.email} />
+                                </View>
+                            </View>
+                            <View style={styles.input_container}>
+                                <Text style={styles.txt_password}>password</Text>
+                                <View style={styles.container_txt_input}>
+                                    <TextInput
+                                        style={styles.input}
+                                        secureTextEntry={true}
+                                        value={accountSelector.password}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+                        <View>
+                            <TouchableOpacity
+                                style={styles.btn_function}
+                                onPress={() => navigation.navigate("Home")}
+                            >
+                                <Text style={styles.txt_function}>Go Back Home</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={styles.btn_function}
-                            onPress={() => {
-                                logout();
-                            }}
-                        >
-                            <Text style={styles.txt_function}>Logout</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.btn_function}
+                                onPress={() => {
+                                    logout();
+                                }}
+                            >
+                                <Text style={styles.txt_function}>Logout</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
+            )}
         </>
     );
 };
