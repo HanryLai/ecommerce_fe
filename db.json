@@ -50,6 +50,7 @@
       "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
       "images_url": "https://picsum.photos/seed/WqtVqm/640/480",
       "price": "371.00",
+      "quantity": 2,
       "optionsList": [
         {
           "id": "c8cd343a-33d9-4f78-9662-f2a0485a455b",
@@ -63,6 +64,7 @@
       "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design",
       "images_url": "https://picsum.photos/seed/ss3Q9Zp/640/480",
       "price": "536.00",
+      "quantity": 4,
       "optionsList": [
         {
           "id": "0207b99f-76d1-4407-b3dc-40cd984cb28a",
@@ -84,6 +86,7 @@
       "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
       "images_url": "https://picsum.photos/seed/dI7pwR5g/640/480",
       "price": "697.00",
+      "quantity": 1,
       "optionsList": [
         {
           "id": "1c32afa6-7d38-4b27-b5de-1faa8c2a6ae8",

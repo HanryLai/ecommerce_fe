@@ -66,7 +66,10 @@ export const RootNavigation = () => {
             <Stack.Screen
                 name="shoppingCart"
                 component={ShoppingCart}
-                options={{ title: "Shopping" }}
+                options={{
+                    title: "Checkout",
+                    headerTitleAlign: "center",
+                }}
             ></Stack.Screen>
             {/* Detail information */}
             <Stack.Screen

@@ -8,4 +8,5 @@ export interface Product {
     images_url: string;
     price: string;
     optionsList: OptionList[];
+    quantity: number;
 }
