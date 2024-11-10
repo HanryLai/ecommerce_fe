@@ -2,6 +2,7 @@ import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
+    Alert,
     Image,
     StyleSheet,
     Text,
@@ -27,7 +28,21 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
         setIsLoading(false);
         console.log("Effect" + JSON.stringify(accountSelector));
         if (Object.keys(accountSelector).length === 0) {
-            navigationHook.navigate("login");
+            Alert.alert(
+                "Inform",
+                "Please Sign In to check your profile, and you can Sign Up if not have account",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => navigation.navigate("Home"),
+                        style: "cancel",
+                    },
+                    { text: "Sign in", onPress: () => navigationHook.navigate("login") },
+                    { text: "Sign up", onPress: () => navigationHook.navigate("register") },
+                ]
+            );
+        } else {
+            setIsLoading(true);
         }
     });
 
