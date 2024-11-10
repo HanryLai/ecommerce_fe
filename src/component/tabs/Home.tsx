@@ -126,10 +126,13 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 							return (
 								<TouchableOpacity
 									style={styles.category}
-									
+									onPress={() => {
+										navigationHook.navigate('category', { id: item.id })
+										dispatch(categorySlice.actions.selectCategory(item))
+									}}
 								>
 									<View style={styles.circle}>
-										<Image source={{uri: item.image}} style={{width: 50, height:50}} />
+										<Image source={{ uri: item.image }} style={{ width: 50, height: 50 }} />
 									</View>
 									<Text style={{ textAlign: 'center' }}>{item.name}</Text>
 								</TouchableOpacity>

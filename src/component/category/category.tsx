@@ -12,13 +12,14 @@ import {
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { AppDispatch, RootState } from '../../utils/redux'
-import { fetchCategoryList, selectCategory } from '../../utils/redux/reducers/category.redux'
+import { AppDispatch, RootState, useAppSelector } from '../../utils/redux'
 import { CategoryType } from '../../utils/types/type/category.type'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ProductType } from '../../utils/types/type/product.type'
 import { ScrollView } from 'react-native-virtualized-view'
 import axios from 'axios'
+import api from '../../utils/axios'
+import productSlice from '../../utils/redux/reducers/product.redux'
 
 // const products: ProductType[] = [
 // 	// id: string
@@ -52,7 +53,6 @@ import axios from 'axios'
 // ]
 
 const renderProduct = ({ item }: { item: ProductType }) => (
-	// handleCategorySelect: (category: CategoryType) => void
 	<TouchableOpacity
 		style={styles.product}
 		// onPress={() => handleCategorySelect(item)} // Sử dụng handleCategorySelect từ tham số
@@ -81,33 +81,22 @@ const renderProduct = ({ item }: { item: ProductType }) => (
 
 export function Category() {
 	const dispatch = useDispatch<AppDispatch>()
-	const selectedCategory = useSelector((state: RootState) => state.categoryReducer.selectedCategory)
+	const selectedCategory = useAppSelector((state) => state.categoryReducer.selectedCategory)
+	const products = useAppSelector((state) => state.productReducer.value)
+
+	useEffect(() => {
+		api
+			.get(`/products/${selectedCategory?.id}`)
+			.then((res) => {
+				res.data
+			})
+			.then((data) => {
+				dispatch(productSlice.actions.storeproduct(data))
+			})
+	}, [])
 
 	// Lấy danh sách products, trạng thái loading và error từ store
-	const products = useSelector((state: RootState) => state.productReducer.value)
-	const loading = useSelector((state: RootState) => state.productReducer.loading)
-	const error = useSelector((state: RootState) => state.productReducer.error)
 
-	// Fetch danh sách sản phẩm khi component mount hoặc khi categoryId thay đổi
-	useEffect(() => {
-		dispatch(fetchProductByCategoryId(selectedCategory?.id))
-	}, [dispatch, selectedCategory?.id])
-
-	// Hàm xử lý chọn sản phẩm
-	const handleSelectProduct = (product: ProductType) => {
-		dispatch(selectProduct(product))
-		// Điều hướng hoặc xử lý khác khi chọn product
-	}
-
-	// Hiển thị trạng thái loading
-	if (loading) {
-		return <ActivityIndicator size="large" color="#0000ff" />
-	}
-
-	// Hiển thị thông báo lỗi nếu có
-	if (error) {
-		return <Text style={{ color: 'red' }}>Error: {error}</Text>
-	}
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView
@@ -150,19 +139,13 @@ export function Category() {
 
 				{/* products */}
 				<View style={styles.products}>
-					{loading ? (
-						<ActivityIndicator size="large" color="#0000ff" />
-					) : error ? (
-						<Text style={styles.errorText}>{error}</Text>
-					) : (
-						<FlatList
-							data={products}
-							renderItem={({ item }) => renderProduct({ item })} // Truyền handleCategorySelect vào đây
-							keyExtractor={(item) => item.id}
-							ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
-							showsHorizontalScrollIndicator={false}
-						/>
-					)}
+					<FlatList
+						data={products}
+						renderItem={({ item }) => renderProduct({ item })} // Truyền handleCategorySelect vào đây
+						keyExtractor={(item) => item.id}
+						ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
+						showsHorizontalScrollIndicator={false}
+					/>
 				</View>
 
 				{/* button see all */}

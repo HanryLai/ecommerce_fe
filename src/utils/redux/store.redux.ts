@@ -5,6 +5,7 @@ import { ShoppingCartSlice } from './reducers'
 import { AccountSlice } from './reducers/account.redux'
 import { counterSlice } from './reducers/reducer.redux'
 import categorySlice from '../redux/reducers/category.redux'
+import productSlice from '../redux/reducers/product.redux'
 
 export const store = configureStore({
 	reducer: {
@@ -12,7 +13,7 @@ export const store = configureStore({
 		categoryReducer: categorySlice.reducer,
 		accountReducer: AccountSlice.reducer,
 		shoppingCartReducer: ShoppingCartSlice.reducer,
-		productReducer: productReducer,
+		productReducer: productSlice.reducer,
 	},
 })
 export type RootState = ReturnType<typeof store.getState>

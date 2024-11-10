@@ -13,7 +13,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { AppDispatch, RootState } from '../../utils/redux'
-import { fetchCategoryList, selectCategory } from '../../utils/redux/reducers/category.redux'
+import {  selectCategory } from '../../utils/redux/reducers/category.redux'
 import { CategoryType } from '../../utils/types/type/category.type'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { SafeAreaView } from 'react-native-safe-area-context'
