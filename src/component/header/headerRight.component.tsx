@@ -16,19 +16,19 @@ export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) =>
     }
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => moveToCart()}>
-                <CartSVG width={32} height={32} />
+            <TouchableOpacity style={{ marginHorizontal: 16 }} onPress={() => moveToCart()}>
+                <CartSVG width={44} height={44} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("login")}>
                 {selector.value.url_avatar ? (
                     <TouchableOpacity onPress={() => navigationHook.navigate("Account")}>
                         <Image
-                            style={{ width: 32, height: 32, borderWidth: 2, borderRadius: 50 }}
+                            style={{ width: 44, height: 44, borderWidth: 2, borderRadius: 50 }}
                             source={{ uri: selector.value.url_avatar }}
                         />
                     </TouchableOpacity>
                 ) : (
-                    <PersonalSVG width={32} height={32} />
+                    <PersonalSVG width={44} height={32} />
                 )}
             </TouchableOpacity>
         </View>

@@ -37,7 +37,8 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     }
 
     return (
-        <ScrollView keyboardShouldPersistTaps={"never"}>
+        // <ScrollView keyboardShouldPersistTaps={"never"}>
+        <View>
             <LoginLogo
                 width={240}
                 height={240}
@@ -162,8 +163,11 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </ScrollView>
+        </View>
     );
+    {
+        /* </ScrollView> */
+    }
 };
 
 const styles = StyleSheet.create({

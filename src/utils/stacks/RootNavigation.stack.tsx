@@ -10,6 +10,7 @@ import { ProductDetails } from "../../component/productDetails";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { TabStackParamList } from "../types";
+import { PaymentComponent } from "../../component/payment";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -105,6 +106,11 @@ export const RootNavigation = () => {
                 name="productDetails"
                 component={ProductDetails}
                 options={{ title: "ProductDetails" }}
+            ></Stack.Screen>
+            <Stack.Screen
+                name="PaymentComponent"
+                component={PaymentComponent}
+                options={{ title: "Payment", headerTitleAlign: "center" }}
             ></Stack.Screen>
         </Stack.Navigator>
     );

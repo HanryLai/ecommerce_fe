@@ -41,6 +41,8 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                     { text: "Sign up", onPress: () => navigationHook.navigate("register") },
                 ]
             );
+        } else {
+            setIsLoading(true);
         }
     });
 
@@ -58,7 +60,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
 
     return (
         <>
-            {isLoading ? (
+            {isLoading && (
                 <View>
                     <View style={styles.container}>
                         <View
@@ -122,8 +124,6 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         </View>
                     </View>
                 </View>
-            ) : (
-                <ActivityIndicator size="large" color={Color.primary} />
             )}
         </>
     );
