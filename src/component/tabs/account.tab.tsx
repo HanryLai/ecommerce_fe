@@ -15,6 +15,7 @@ import { accountHook, AppDispatch, useAppDispatch, useAppSelector } from "../../
 import { AccountSlice } from "../../utils/redux/reducers";
 import { NavigationStackParamList, PropsTab, TabStackParamList } from "../../utils/types";
 import { Color } from "../../style";
+import { EditShoppingCartSVG } from "../../common/svg";
 export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
@@ -33,7 +34,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                 "Please Sign In to check your profile, and you can Sign Up if not have account",
                 [
                     {
-                        text: "Cancel",
+                        text: "Home Page",
                         onPress: () => navigation.navigate("Home"),
                         style: "cancel",
                     },
@@ -67,17 +68,28 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                             style={[
                                 styles.containerAvatar,
                                 {
-                                    backgroundColor: colorRan[randomColor()],
+                                    backgroundColor: "#fe8c77",
                                     paddingVertical: 24,
                                 },
                             ]}
                         >
-                            <Image
-                                style={styles.avatar}
-                                source={{ uri: accountSelector.url_avatar }}
-                            />
+                            <View style={styles.container_nameAndAvatar}>
+                                <View style={styles.borderAvatar}>
+                                    <Image
+                                        style={styles.avatar}
+                                        source={{ uri: accountSelector.url_avatar }}
+                                    />
+                                </View>
+                                <Text style={styles.bigName}>{accountSelector.username}</Text>
+                            </View>
                         </View>
                         <View style={[styles.infors]}>
+                            <View style={styles.input_container}>
+                                <Text style={styles.txt_email}>email</Text>
+                                <View style={styles.container_txt_input}>
+                                    <TextInput style={styles.input} value={accountSelector.email} />
+                                </View>
+                            </View>
                             <View style={styles.input_container}>
                                 <Text style={styles.txt_username}>username</Text>
                                 <View style={styles.container_txt_input}>
@@ -87,20 +99,30 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                                     />
                                 </View>
                             </View>
-                            <View style={styles.input_container}>
-                                <Text style={styles.txt_email}>email</Text>
-                                <View style={styles.container_txt_input}>
-                                    <TextInput style={styles.input} value={accountSelector.email} />
-                                </View>
-                            </View>
-                            <View style={styles.input_container}>
+
+                            <View
+                                style={[
+                                    styles.input_container,
+                                    {
+                                        justifyContent: "space-between",
+                                    },
+                                ]}
+                            >
                                 <Text style={styles.txt_password}>password</Text>
-                                <View style={styles.container_txt_input}>
+                                <View
+                                    style={[
+                                        styles.container_txt_input,
+                                        {
+                                            justifyContent: "space-between",
+                                        },
+                                    ]}
+                                >
                                     <TextInput
                                         style={styles.input}
                                         secureTextEntry={true}
                                         value={accountSelector.password}
                                     />
+                                    <EditShoppingCartSVG width={24} height={24} />
                                 </View>
                             </View>
                         </View>
@@ -131,20 +153,40 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#ccc",
+        backgroundColor: "#fff",
         height: "100%",
     },
     containerAvatar: {
         width: "100%",
+        height: 140,
     },
     avatar: {
-        width: 200,
-        height: 200,
-        borderWidth: 1,
-        borderRadius: 200,
+        width: 140,
+        height: 140,
+        borderRadius: 100,
         margin: "auto",
     },
+    borderAvatar: {
+        width: 147,
+        height: 147,
+        borderRadius: 200,
+        backgroundColor: "#fff",
+        margin: "auto",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    container_nameAndAvatar: {
+        position: "relative",
+        top: 40,
+        height: 200,
+    },
+    bigName: {
+        textAlign: "center",
+        fontSize: 28,
+        fontWeight: "400",
+    },
     infors: {
+        marginTop: 200,
         width: "80%",
         marginHorizontal: 44,
         marginVertical: 24,
@@ -162,6 +204,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
     },
     container_txt_input: {
+        flexDirection: "row",
         borderWidth: 1,
         paddingHorizontal: 4,
         marginVertical: 4,
