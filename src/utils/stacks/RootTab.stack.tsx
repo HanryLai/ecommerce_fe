@@ -16,40 +16,51 @@ const Tab = createBottomTabNavigator<TabStackParamList>();
 
 export const RootTab = () => {
     return (
-        <Tab.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+        <Tab.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+                headerShown: false,
+                tabBarLabelStyle: {
+                    fontSize: 16,
+                },
+                tabBarStyle: {
+                    paddingVertical: 4,
+                },
+            }}
+        >
             <Tab.Screen
                 name="Home"
                 component={Home}
                 options={{
-                    tabBarIcon: () => <HomeIconSVG width={32} height={32} />,
+                    tabBarIcon: () => <HomeIconSVG width={28} height={28} />,
                 }}
             />
             <Tab.Screen
                 name="Search"
                 component={Search}
                 options={{
-                    tabBarIcon: () => <SearchSVG width={42} height={42} />,
+                    tabBarIcon: () => <SearchSVG width={28} height={28} color={"red"} />,
                 }}
             />
             <Tab.Screen
                 name="Favorite"
                 component={Favorite}
                 options={{
-                    tabBarIcon: () => <FavoriteSVG size={32} color={Color.primary} />,
+                    tabBarIcon: () => <FavoriteSVG size={28} color={Color.primary} />,
                 }}
             />
             <Tab.Screen
                 name="Inbox"
                 component={Inbox}
                 options={{
-                    tabBarIcon: () => <InboxSVG width={32} height={32} color={Color.primary} />,
+                    tabBarIcon: () => <InboxSVG width={28} height={28} color={Color.primary} />,
                 }}
             />
             <Tab.Screen
                 name="Account"
                 component={Account}
                 options={{
-                    tabBarIcon: () => <AccountIconSVG width={32} height={32} />,
+                    tabBarIcon: () => <AccountIconSVG width={28} height={28} color="red" />,
                 }}
             />
         </Tab.Navigator>

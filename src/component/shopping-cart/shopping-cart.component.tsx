@@ -48,7 +48,10 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
             </ScrollView>
 
             <View>
-                <TouchableOpacity style={styles.btn_payment}>
+                <TouchableOpacity
+                    style={styles.btn_payment}
+                    onPress={() => navigation.navigate("PaymentComponent")}
+                >
                     <Text style={styles.txt_payment}>Payment</Text>
                 </TouchableOpacity>
             </View>

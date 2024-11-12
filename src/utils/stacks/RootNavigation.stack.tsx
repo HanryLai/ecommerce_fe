@@ -1,5 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { DetailInformationComponent, Login, Register } from "../../component/auth";
+import {
+    DetailInformationComponent,
+    Login,
+    MyComment,
+    MyOrder,
+    Register,
+} from "../../component/auth";
 import { Category } from "../../component/category";
 import { HeaderLeft, HeaderRight } from "../../component/header";
 import { ShoppingCart } from "../../component/shopping-cart/shopping-cart.component";
@@ -10,6 +16,7 @@ import { ProductDetails } from "../../component/productDetails";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { TabStackParamList } from "../types";
+import { PaymentComponent } from "../../component/payment";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -44,7 +51,25 @@ export const RootNavigation = () => {
             <Stack.Screen
                 name="register"
                 component={Register}
-                options={{ title: "Register" }}
+                options={{
+                    headerTitleAlign: "center",
+                    headerLeft: () => {
+                        return (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.navigate("homepage", {
+                                        screen: "Home",
+                                    })
+                                }
+                            >
+                                <Image
+                                    source={require("../../../assets/auth/goback.png")}
+                                    style={{ width: 24, height: 24, paddingRight: 10 }}
+                                />
+                            </TouchableOpacity>
+                        );
+                    },
+                }}
             ></Stack.Screen>
             {/* Homepage */}
             <Stack.Screen
@@ -75,7 +100,7 @@ export const RootNavigation = () => {
             <Stack.Screen
                 name="detailInformation"
                 component={DetailInformationComponent}
-                options={{ title: "Detail" }}
+                options={{ title: "My Information", headerTitleAlign: "center" }}
             ></Stack.Screen>
             {/* FunctionAuth */}
             <Stack.Screen
@@ -83,10 +108,29 @@ export const RootNavigation = () => {
                 component={FunctionAuth}
                 options={{ title: "Function" }}
             ></Stack.Screen>
+            {/* Product detail */}
             <Stack.Screen
                 name="productDetails"
                 component={ProductDetails}
                 options={{ title: "ProductDetails" }}
+            ></Stack.Screen>
+            {/* Payment  */}
+            <Stack.Screen
+                name="PaymentComponent"
+                component={PaymentComponent}
+                options={{ title: "Payment", headerTitleAlign: "center" }}
+            ></Stack.Screen>
+            {/* My Order */}
+            <Stack.Screen
+                name="MyOrder"
+                component={MyOrder}
+                options={{ title: "My Order", headerTitleAlign: "center" }}
+            ></Stack.Screen>
+            {/* My Comment */}
+            <Stack.Screen
+                name="MyComment"
+                component={MyComment}
+                options={{ title: "My Comment", headerTitleAlign: "center" }}
             ></Stack.Screen>
         </Stack.Navigator>
     );
