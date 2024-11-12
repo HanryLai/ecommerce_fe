@@ -23,6 +23,8 @@ export type NavigationStackParamList = {
         id: string;
     };
     PaymentComponent: undefined;
+    MyOrder: undefined;
+    MyComment: undefined;
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =
