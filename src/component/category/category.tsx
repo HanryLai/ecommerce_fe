@@ -27,6 +27,7 @@ export function Category() {
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedCategory = useAppSelector((state) => state.categoryReducer.selectedCategory)
 	const products = useAppSelector((state) => state.productReducer.value)
+	const feedbacks = useAppSelector((state) => state.feedbackReducer.value)
 
 	useEffect(() => {
 		const categories = api
@@ -96,8 +97,10 @@ export function Category() {
 							>
 								<View style={{ flexDirection: 'row' }}>
 									<Image
-										source={{ uri: item.images_url }}
-										style={{ width: 60, height: 60, borderRadius: 10 }}
+										source={{ uri: item.image_url }}
+										width={60}
+										height={60}
+										style={{ marginHorizontal: 4 }}
 									/>
 									<View>
 										<View>

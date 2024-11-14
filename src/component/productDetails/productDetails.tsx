@@ -20,10 +20,23 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { ProductType } from '../../utils/types/type/product.type'
 import api from '../../utils/axios'
 import productSlice from '../../utils/redux/reducers/product.redux'
+import feedbackSlice from '../../utils/redux/reducers/feekback.redux'
 
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
+	const feedbacks = useAppSelector((state) => state.feedbackReducer.value)
+	useEffect(() => {
+		const feekbacks = api
+			.get('/feedbacks')
+			.then((response) => response.data)
+			.then((data) => {
+				dispatch(feedbackSlice.actions.storefeedback(data))
+			})
+			.catch((error) => {
+				console.error(error)
+			})
+	}, [])
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -35,7 +48,7 @@ export function ProductDetails() {
 				{/* show img */}
 				<View style={{ flexDirection: 'row' }}>
 					<Image
-						source={{ uri: selectedProduct?.images_url }}
+						source={{ uri: selectedProduct?.image_url }}
 						style={{ width: '100%', height: 300 }}
 					/>
 				</View>
@@ -86,15 +99,31 @@ export function ProductDetails() {
 						<Text style={styles.TextBold}>Review</Text>
 						<Text style={styles.TextLight}>SeeAll</Text>
 					</View>
-
-					{/* <View>
-						{listReview.map((item) => (
-							<View key={item.id}>
-								<Text style={styles.TextBold}>{item.userName}</Text>
-								<Text>{item.comment}</Text>
+				</View>
+				<View style={{ flex: 1 }}>
+					{feedbacks.map((item) => (
+						<View
+							style={{
+								flexDirection: 'row',
+								gap: 10,
+								justifyContent: 'space-between',
+								margin: 4,
+								padding: 10,
+							}}
+						>
+							<View>
+								<Image
+									source={{ uri: item.image_url }}
+									style={{ width: 50, height: 50, borderRadius: 50 }}
+								/>
 							</View>
-						))}
-					</View> */}
+							<View style={{ flexDirection: 'column', flex: 1 }}>
+								<Text style={styles.TextBold}>{item.account}</Text>
+								<Text numberOfLines={5}> {item.comment}</Text>
+							</View>
+							<View style={styles.separator}></View>
+						</View>
+					))}
 				</View>
 			</ScrollView>
 		</SafeAreaView>
