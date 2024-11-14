@@ -125,6 +125,34 @@ export function ProductDetails() {
 						</View>
 					))}
 				</View>
+
+				{/* button */}
+				<View style={{ flexDirection: 'row', gap: 10 }}>
+					<TouchableOpacity
+						style={{
+							backgroundColor: '#00BDD6',
+							width: '15%',
+							height: 50,
+							justifyContent: 'center',
+							alignItems: 'center',
+							borderRadius: 5,
+						}}
+					>
+						<AntDesign name="shoppingcart" size={30} color="black" />
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							backgroundColor: '#00BDD6',
+							flex: 1,
+							height: 50,
+							justifyContent: 'center',
+							alignItems: 'center',
+							borderRadius: 5,
+						}}
+					>
+						<Text style={styles.TextBold}>Mua ngay</Text>
+					</TouchableOpacity>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	)
