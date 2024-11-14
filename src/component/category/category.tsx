@@ -105,6 +105,7 @@ export function Category() {
 									<View>
 										<View>
 											<Text style={styles.TextBold}>{item.name}</Text>
+
 											<View style={{ flexDirection: 'row' }}>
 												<AntDesign name="star" size={12} color="yellow" />
 												<AntDesign name="star" size={12} color="yellow" />
@@ -115,9 +116,20 @@ export function Category() {
 										</View>
 									</View>
 								</View>
-								<View>
-									<AntDesign name="plus" size={24} color="black" />
-									<Text style={styles.TextBold}>${item.price}</Text>
+								<View style={{ alignItems: 'flex-end', alignSelf: 'center' }}>
+									<TouchableOpacity
+										style={{
+											backgroundColor: '#00BDD6',
+											width: 30,
+											height: 30,
+											justifyContent: 'center',
+											alignItems: 'center',
+											borderRadius: 5,
+										}}
+									>
+										<AntDesign name="shoppingcart" size={20} color="black" />
+									</TouchableOpacity>
+									<Text style={{ fontSize: 15, fontWeight: 500 }}>${item.price}</Text>
 								</View>
 							</TouchableOpacity>
 						)} // Truyền handleCategorySelect vào đây
