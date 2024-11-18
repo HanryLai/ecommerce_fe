@@ -132,7 +132,10 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 									}}
 								>
 									<View style={styles.circle}>
-										<Image source={{ uri: item.image }} style={{ width: 50, height: 50 }} />
+										<Image
+											source={{ uri: item.image }}
+											style={{ width: 85, height: 85, borderRadius: 50 }}
+										/>
 									</View>
 									<Text style={{ textAlign: 'center' }}>{item.name}</Text>
 								</TouchableOpacity>

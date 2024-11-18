@@ -84,7 +84,7 @@ export function Category() {
 				</View>
 
 				{/* products */}
-				<View style={styles.products}>
+				{/* <View style={styles.products}>
 					<FlatList
 						data={products}
 						renderItem={({ item }) => (
@@ -136,6 +136,69 @@ export function Category() {
 						keyExtractor={(item) => item.id}
 						ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
 						showsHorizontalScrollIndicator={false}
+					/>
+				</View> */}
+
+				<View>
+					<FlatList
+						data={products}
+						renderItem={({ item }) => (
+							<TouchableOpacity
+								style={{
+									width: '48%',
+									padding: 10,
+									backgroundColor: 'white',
+									borderWidth: 1,
+									borderColor: '#F3F4F6',
+									borderRadius: 10,
+									justifyContent: 'center',
+									alignItems: 'center',
+									margin: 4,
+								}}
+							>
+								<Image
+									source={{ uri: item.image_url }}
+									width={140}
+									height={140}
+									style={{ marginHorizontal: 4, borderRadius: 10 }}
+								/>
+
+								<View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+									<View style={{ gap: 5 }}>
+										<Text style={{ fontSize: 18, fontWeight: 700, textAlign: 'left' }}>
+											{item.name}
+										</Text>
+										<Text style={{ color: '#00BDD6', fontWeight: 500 }}>${item.price}</Text>
+									</View>
+
+									<View
+										style={{
+											flex: 1,
+											alignItems: 'flex-end',
+											justifyContent: 'center',
+											gap: 5,
+										}}
+									>
+										<TouchableOpacity
+											style={{
+												justifyContent: 'center',
+												alignItems: 'center',
+												borderRadius: 5,
+											}}
+										>
+											<AntDesign name="shoppingcart" size={20} color="#00BDD6" />
+										</TouchableOpacity>
+
+										<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+											<AntDesign name="star" size={12} color="#FFD700" />
+											<Text style={{ fontSize: 12 }}>4.5</Text>
+										</View>
+									</View>
+								</View>
+							</TouchableOpacity>
+						)}
+						keyExtractor={(item) => item.id}
+						numColumns={2}
 					/>
 				</View>
 
