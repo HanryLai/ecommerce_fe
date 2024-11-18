@@ -155,6 +155,10 @@ export function Category() {
 									alignItems: 'center',
 									margin: 4,
 								}}
+								onPress={() => {
+									navigationHook.navigate('productDetails', { id: item.id })
+									dispatch(productSlice.actions.selectproduct(item))
+								}}
 							>
 								<Image
 									source={{ uri: item.image_url }}

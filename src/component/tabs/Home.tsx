@@ -175,6 +175,10 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 									alignItems: 'center',
 									margin: 4,
 								}}
+								onPress={() => {
+									navigationHook.navigate('productDetails', { id: item.id })
+									dispatch(productSlice.actions.selectproduct(item))
+								}}
 							>
 								<Image
 									source={{ uri: item.image_url }}
@@ -231,9 +235,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		backgroundColor: 'white',
-		padding: 10,
-		gap: 20,
+		backgroundColor: 'pink',
+		paddingHorizontal: 10,
+		paddingVertical: 0,
 	},
 	search: {
 		flexDirection: 'row',

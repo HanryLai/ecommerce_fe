@@ -91,30 +91,41 @@ export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 									width: '48%',
 									padding: 10,
 									backgroundColor: 'white',
-									borderWidth: 2,
+									borderWidth: 1,
 									borderColor: '#F3F4F6',
-									borderRadius: 4,
+									borderRadius: 10,
 									justifyContent: 'center',
 									alignItems: 'center',
 									margin: 4,
 								}}
+								onPress={() => {
+									navigationHook.navigate('productDetails', { id: item.id })
+									dispatch(productSlice.actions.selectproduct(item))
+								}}
 							>
 								<Image
 									source={{ uri: item.image_url }}
-									width={150}
-									height={120}
-									style={{ marginHorizontal: 4 }}
+									width={140}
+									height={140}
+									style={{ marginHorizontal: 4, borderRadius: 10 }}
 								/>
 
 								<View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-									<View>
-										<Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'left' }}>
+									<View style={{ gap: 5 }}>
+										<Text style={{ fontSize: 18, fontWeight: 700, textAlign: 'left' }}>
 											{item.name}
 										</Text>
-										<Text>${item.price}</Text>
+										<Text style={{ color: '#00BDD6', fontWeight: 500 }}>${item.price}</Text>
 									</View>
 
-									<View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
+									<View
+										style={{
+											flex: 1,
+											alignItems: 'flex-end',
+											justifyContent: 'center',
+											gap: 5,
+										}}
+									>
 										<TouchableOpacity
 											style={{
 												justifyContent: 'center',
@@ -122,8 +133,13 @@ export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 												borderRadius: 5,
 											}}
 										>
-											<AntDesign name="shoppingcart" size={25} color="black" />
+											<AntDesign name="shoppingcart" size={20} color="#00BDD6" />
 										</TouchableOpacity>
+
+										<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+											<AntDesign name="star" size={12} color="#FFD700" />
+											<Text style={{ fontSize: 12 }}>4.5</Text>
+										</View>
 									</View>
 								</View>
 							</TouchableOpacity>
