@@ -11,7 +11,7 @@ import {
 	Image,
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { AppDispatch, RootState, useAppSelector } from '../../utils/redux'
 import { selectCategory } from '../../utils/redux/reducers/category.redux'
 import { CategoryType } from '../../utils/types/type/category.type'
@@ -26,6 +26,7 @@ export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
 	const feedbacks = useAppSelector((state) => state.feedbackReducer.value)
+	const [feedback, setFeedback] = useState('')
 	useEffect(() => {
 		const feekbacks = api
 			.get('/feedbacks')
@@ -37,6 +38,25 @@ export function ProductDetails() {
 				console.error(error)
 			})
 	}, [])
+
+	function sendFeedback(feedback: string) {
+		console.log('feedback', feedback)
+
+		const data = {
+			comment: feedback,
+			account: 'user',
+			image_url: 'https://picsum.photos/200',
+
+			product_id: 1,
+		}
+		api.post('/feedbacks', data)
+
+		api.get('/feedbacks').then((response) => {
+			dispatch(feedbackSlice.actions.storefeedback(response.data))
+		})
+
+		setFeedback('')
+	}
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -103,6 +123,7 @@ export function ProductDetails() {
 				<View style={{ flex: 1 }}>
 					{feedbacks.map((item) => (
 						<View
+							key={item.id}
 							style={{
 								flexDirection: 'row',
 								gap: 10,
@@ -124,6 +145,43 @@ export function ProductDetails() {
 							<View style={styles.separator}></View>
 						</View>
 					))}
+
+					{/* input review */}
+					<View>
+						<View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+							<Image
+								source={{ uri: 'https://picsum.photos/200' }}
+								style={{ width: 50, height: 50, borderRadius: 50 }}
+							/>
+							<View style={{ flex: 1 }}>
+								<TextInput
+									placeholder="Your comment...."
+									style={{
+										borderRadius: 5,
+										padding: 5,
+									}}
+									onChangeText={(text) => setFeedback(text)}
+									value={feedback}
+								/>
+							</View>
+
+							<TouchableOpacity
+								style={{
+									width: 50,
+									height: 50,
+									justifyContent: 'center',
+									alignItems: 'center',
+									borderRadius: 5,
+								}}
+								onPress={() => {
+									sendFeedback(feedback)
+								}}
+							>
+								{/* icon send */}
+								<AntDesign name="arrowright" size={24} color="#00BDD6" />
+							</TouchableOpacity>
+						</View>
+					</View>
 				</View>
 
 				{/* button */}

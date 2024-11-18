@@ -17,10 +17,13 @@ const feedbackSlice = createSlice({
 		storefeedback: (state, action) => {
 			state.value = action.payload
 		},
+		addFeedback: (state, action) => {
+			state.value.push(action.payload)
+		},
 	},
 })
 
 // Xuất reducer của slice này
-export const { selectfeedback } = feedbackSlice.actions
+export const { selectfeedback, addFeedback } = feedbackSlice.actions
 
 export default feedbackSlice // Đây chính là feedbackReducer mà bạn cần
