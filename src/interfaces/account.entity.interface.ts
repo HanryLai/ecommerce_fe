@@ -1,13 +1,15 @@
 import { IBaseEntity } from "./base.entities.interface";
+import { IDetailInformationEntity } from "./detail_information.interface";
+import { IRoleEntity } from "./role.entity.interface";
 
 export interface IAccountEntity extends IBaseEntity {
-    id: string;
     email: string;
     username: string;
     password: string;
-    url_avatar: string;
-    address: string;
-    phone: string;
-    role: string;
-    fullname: string;
+    isVerify: boolean;
+    isActive: boolean;
+    accessToken: string;
+    refreshToken: string;
+    detail_information_id: IDetailInformationEntity;
+    role: IRoleEntity;
 }

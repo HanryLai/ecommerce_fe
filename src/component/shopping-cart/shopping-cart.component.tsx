@@ -1,14 +1,40 @@
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { PropsNavigate } from "../../utils/types";
-import { Product } from "../../interfaces/shopping-cart.interface";
+import { RadioButton } from "react-native-paper";
 import { ScrollView } from "react-native-virtualized-view";
 import { EditShoppingCartSVG } from "../../common/svg";
+import { Option } from "../../interfaces/option.interface";
+import { Product } from "../../interfaces/product.interface";
 import api from "../../utils/axios/apiCuaHiu";
+import { PropsNavigate } from "../../utils/types";
+const codImg = require("../../../assets/components/payment/cod.png");
+const momoImg = require("../../../assets/components/payment/momo.png");
 
 export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
-    // const id = route.params.id;
     const [productList, setProductList] = useState<Product[]>([]);
+    const [checked, setChecked] = useState(0);
+    function checkMethod(index: number) {
+        console.log("checked");
+    }
+
+    function priceAdjust(option: Option[]) {
+        let price = 0;
+        option.forEach((item) => {
+            price += parseInt(item.optionsList.adjust);
+        });
+        return price;
+    }
+
+    function priceItem(product: Product) {
+        return parseInt(product.price) - priceAdjust(product.option);
+    }
+    function totalPrice() {
+        let total = 0;
+        productList.forEach((item) => {
+            total += priceItem(item) * item.quantity;
+        });
+        return total;
+    }
     useEffect(() => {
         api.get("/shopping-cart/")
             .then((res) => {
@@ -23,7 +49,7 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
             });
     }, []);
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <ScrollView style={{ height: "50%" }}>
                 <FlatList
                     data={productList}
@@ -34,8 +60,26 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                                 <Image style={styles.img_item} source={{ uri: item.images_url }} />
                                 <View style={styles.container_info}>
                                     <Text style={styles.title}>{item.name}</Text>
-                                    <Text style={styles.description}>{item.description}</Text>
-                                    <Text style={styles.price}>{item.price}</Text>
+                                    <FlatList
+                                        data={item.option}
+                                        renderItem={({ item }) => {
+                                            return (
+                                                <View style={styles.container_option}>
+                                                    <Text style={styles.option_name}>
+                                                        {item.name}:
+                                                    </Text>
+                                                    <Text style={styles.optionList_name}>
+                                                        {item.optionsList.name}
+                                                    </Text>
+                                                </View>
+                                            );
+                                        }}
+                                        style={styles.flatList}
+                                    />
+                                    <View style={styles.container_priceItem}>
+                                        <Text style={styles.txt_priceItem}>Price:</Text>
+                                        <Text style={styles.price}>{priceItem(item)}$</Text>
+                                    </View>
                                 </View>
                                 <View style={styles.container_right}>
                                     <EditShoppingCartSVG width={32} height={32} color={"red"} />
@@ -46,6 +90,30 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                     }}
                 />
             </ScrollView>
+            <View style={styles.container_total}>
+                <Text style={styles.txt_total}>Total:</Text>
+                <Text style={styles.txt_price}>$ {totalPrice()}</Text>
+            </View>
+            <View style={styles.container_listmethod}>
+                <View style={styles.container_method}>
+                    <Image style={styles.method_image} source={momoImg} />
+                    <Text style={styles.method_name}>Momo</Text>
+                    <RadioButton
+                        value="1"
+                        status={checked === 1 ? "checked" : "unchecked"}
+                        onPress={() => setChecked(1)}
+                    />
+                </View>
+                <View style={styles.container_method}>
+                    <Image style={styles.method_image} source={codImg} />
+                    <Text style={styles.method_name}>Thanh toán khi giao hàng</Text>
+                    <RadioButton
+                        value="first"
+                        status={checked === 2 ? "checked" : "unchecked"}
+                        onPress={() => setChecked(2)}
+                    />
+                </View>
+            </View>
 
             <View>
                 <TouchableOpacity
@@ -55,7 +123,7 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                     <Text style={styles.txt_payment}>Payment</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -88,8 +156,26 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 13,
     },
-    price: {},
-    option_name: {},
+    price: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    container_option: {
+        flexDirection: "row",
+    },
+    option_name: {
+        fontWeight: "bold",
+    },
+    optionList_name: {},
+    flatList: {
+        height: 55, // Set a fixed height for the FlatList
+    },
+    container_priceItem: {
+        flexDirection: "row",
+        gap: 12,
+        position: "absolute",
+        bottom: 0,
+    },
     container_right: {
         margin: "auto",
     },
@@ -97,6 +183,48 @@ const styles = StyleSheet.create({
         marginTop: 12,
         textAlign: "center",
         fontSize: 20,
+    },
+
+    txt_priceItem: {
+        fontWeight: "bold",
+        fontSize: 16,
+    },
+
+    container_total: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        marginTop: 62,
+    },
+    container_listmethod: {
+        flexDirection: "column",
+        // backgroundColor: "#ccc",
+        width: "80%",
+        margin: "auto",
+        gap: 12,
+    },
+    container_method: {
+        flexDirection: "row",
+        padding: 10,
+        justifyContent: "space-between",
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        borderWidth: 1,
+    },
+    method_image: {
+        width: 50,
+        height: 50,
+        borderRadius: 12,
+    },
+    method_name: {
+        width: 200,
+    },
+    txt_total: {
+        fontSize: 24,
+        textAlign: "center",
+    },
+    txt_price: {
+        fontSize: 32,
+        textAlign: "center",
     },
     btn_payment: {
         backgroundColor: "#4296FF",
