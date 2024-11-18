@@ -30,7 +30,7 @@ export function Category() {
 	const feedbacks = useAppSelector((state) => state.feedbackReducer.value)
 
 	useEffect(() => {
-		const categories = api
+		api
 			.get('/products')
 			.then((response) => response.data)
 			.then((data) => {
