@@ -22,7 +22,7 @@ import api from '../../utils/axios'
 import productSlice from '../../utils/redux/reducers/product.redux'
 import feedbackSlice from '../../utils/redux/reducers/feekback.redux'
 
-export function ProductDetails() {
+export function Feedback() {
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
 	const feedbacks = useAppSelector((state) => state.feedbackReducer.value)

@@ -25,6 +25,7 @@ export type NavigationStackParamList = {
     PaymentComponent: undefined;
     MyOrder: undefined;
     MyComment: undefined;
+    feedback: undefined;
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =

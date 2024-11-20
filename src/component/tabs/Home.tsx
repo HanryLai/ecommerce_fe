@@ -29,6 +29,7 @@ import { CategoryType } from '../../utils/types/type/category.type'
 import axios from 'axios'
 import api from '../../utils/axios'
 import categorySlice from '../../utils/redux/reducers/category.redux'
+import productSlice from '../../utils/redux/reducers/product.redux'
 // import { navigationHook } from "../../utils/stacks/RootNavigation.stack";
 
 // category
@@ -38,49 +39,29 @@ export type Category = {
 	image: string
 }
 
-// const categories: Category[] = [
-//     { id: "1", name: "Phone", image: "phone" },
-//     { id: "2", name: "Laptop", image: "laptop" },
-//     { id: "3", name: "Tablet", image: "tablet" },
-//     { id: "4", name: "Watch", image: "watch" },
-//     { id: "5", name: "Headphone", image: "headphone" },
-//     { id: "6", name: "Camera", image: "camera" },
-//     { id: "7", name: "Speaker", image: "speaker" },
-//     { id: "8", name: "TV", image: "tv" },
-// ];
-
-// const renderCategory: ListRenderItem<Category> = ({ item }) => (
-
-// );
-
-//recomended product
-type Product = {
-	id: string
-	name: string
-	image: string
-	price: number
-	rate: number
-}
-
-const products: Product[] = [
-	{ id: '1', name: 'Phone', image: 'phone', price: 10, rate: 4.5 },
-	{ id: '2', name: 'Laptop', image: 'laptop', price: 20, rate: 4.5 },
-	{ id: '3', name: 'Tablet', image: 'tablet', price: 30, rate: 4.5 },
-	{ id: '4', name: 'Watch', image: 'watch', price: 40, rate: 4.5 },
-	{ id: '5', name: 'Headphone', image: 'headphone', price: 50, rate: 4.5 },
-	{ id: '6', name: 'Camera', image: 'camera', price: 60, rate: 4.5 },
-	{ id: '7', name: 'Speaker', image: 'speaker', price: 70, rate: 4.5 },
-	{ id: '8', name: 'TV', image: 'tv', price: 80, rate: 4.5 },
-]
-
 export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 	const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>()
 	const dispatch = useAppDispatch<AppDispatch>()
 	const selectCategory = useAppSelector(selectedCategory)
 	const storeCategoriescont = useAppSelector(storeCategories)
+
+	const products = useAppSelector((state) => state.productReducer.value)
+
+	useEffect(() => {
+		api
+			.get('/products')
+			.then((response) => response.data)
+			.then((data) => {
+				dispatch(productSlice.actions.storeproduct(data))
+			})
+			.catch((error) => {
+				console.error(error)
+			})
+	}, [])
+
 	useEffect(() => {
 		const categories = api
-			.get('/category')
+			.get('/categories')
 			.then((response) => response.data)
 			.then((data) => {
 				dispatch(categorySlice.actions.storeCategory(data))
@@ -132,7 +113,10 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 									}}
 								>
 									<View style={styles.circle}>
-										<Image source={{ uri: item.image }} style={{ width: 50, height: 50 }} />
+										<Image
+											source={{ uri: item.image }}
+											style={{ width: 85, height: 85, borderRadius: 50 }}
+										/>
 									</View>
 									<Text style={{ textAlign: 'center' }}>{item.name}</Text>
 								</TouchableOpacity>
@@ -178,43 +162,65 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 					</View>
 					<FlatList
 						data={products}
-						renderItem={({ item }) => {
-							return (
-								<View
-									style={{
-										width: 130,
-										justifyContent: 'center',
-										alignItems: 'center',
-									}}
-								>
-									<Image source={require('../../../assets/shoes.png')} />
-									<Text style={{ fontSize: 12, fontWeight: 'bold' }}>{item.name}</Text>
+						renderItem={({ item }) => (
+							<TouchableOpacity
+								style={{
+									width: 160,
+									padding: 10,
+									backgroundColor: 'white',
+									borderWidth: 1,
+									borderColor: '#F3F4F6',
+									borderRadius: 10,
+									justifyContent: 'center',
+									alignItems: 'center',
+									margin: 4,
+								}}
+								onPress={() => {
+									navigationHook.navigate('productDetails', { id: item.id })
+									dispatch(productSlice.actions.selectproduct(item))
+								}}
+							>
+								<Image
+									source={{ uri: item.image_url }}
+									width={140}
+									height={140}
+									style={{ marginHorizontal: 4, borderRadius: 10 }}
+								/>
 
-									<View style={styles.recommendedProduct}>
-										<View
+								<View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+									<View style={{ gap: 5 }}>
+										<Text style={{ fontSize: 18, fontWeight: 700, textAlign: 'left' }}>
+											{item.name}
+										</Text>
+										<Text style={{ color: '#00BDD6', fontWeight: 500 }}>${item.price}</Text>
+									</View>
+
+									<View
+										style={{
+											flex: 1,
+											alignItems: 'flex-end',
+											justifyContent: 'center',
+											gap: 5,
+										}}
+									>
+										<TouchableOpacity
 											style={{
-												flexDirection: 'row',
 												justifyContent: 'center',
 												alignItems: 'center',
+												borderRadius: 5,
 											}}
 										>
-											<AntDesign name="star" size={16} color="#FFD700" />
-											<Text style={{ fontSize: 12 }}>{item.rate}</Text>
-										</View>
+											<AntDesign name="shoppingcart" size={20} color="#00BDD6" />
+										</TouchableOpacity>
 
-										<Text
-											style={{
-												color: '#00BDD6',
-												fontSize: 16,
-												fontWeight: 'bold',
-											}}
-										>
-											${item.price}
-										</Text>
+										<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+											<AntDesign name="star" size={12} color="#FFD700" />
+											<Text style={{ fontSize: 12 }}>4.5</Text>
+										</View>
 									</View>
 								</View>
-							)
-						}}
+							</TouchableOpacity>
+						)}
 						keyExtractor={(item) => item.id}
 						horizontal={true}
 					/>
@@ -229,9 +235,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		backgroundColor: 'white',
-		padding: 10,
-		gap: 20,
+		backgroundColor: 'pink',
+		paddingHorizontal: 10,
+		paddingVertical: 0,
 	},
 	search: {
 		flexDirection: 'row',

@@ -6,6 +6,7 @@ import { AccountSlice } from './reducers/account.redux'
 import { counterSlice } from './reducers/reducer.redux'
 import categorySlice from '../redux/reducers/category.redux'
 import productSlice from '../redux/reducers/product.redux'
+import feedbackSlice from './reducers/feekback.redux'
 
 export const store = configureStore({
 	reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
 		accountReducer: AccountSlice.reducer,
 		shoppingCartReducer: ShoppingCartSlice.reducer,
 		productReducer: productSlice.reducer,
+		feedbackReducer: feedbackSlice.reducer,
 	},
 })
 export type RootState = ReturnType<typeof store.getState>
