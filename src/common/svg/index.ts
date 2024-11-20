@@ -1,7 +1,7 @@
 export * from "./cart";
-export * from "./favorite";
+export * from "./tab-icon";
 export * from "./logo";
 export * from "./person";
 export * from "./login-logo";
-// export * from "./home-Icon";
-export * from "./search";
+export * from "./shopping-cart";
+export * from "./payment";

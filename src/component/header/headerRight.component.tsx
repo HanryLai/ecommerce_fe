@@ -1,29 +1,41 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { CartSVG, PersonalSVG } from "../../common/svg";
-import { PropsNavigate, TabStackParamList } from "../../utils/types";
-import { useSelector } from "react-redux";
-import { AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
-import { useState } from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { CartSVG, PersonalSVG } from "../../common/svg";
+import { useAppSelector } from "../../utils/redux";
+import { PropsNavigate, TabStackParamList } from "../../utils/types";
 
 export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) => {
     const selector = useAppSelector((state) => state.accountReducer);
     const navigationHook = useNavigation<NavigationProp<TabStackParamList>>();
+    function moveToCart() {
+        if (Object.keys(selector.value).length !== 0) {
+            navigation.navigate("shoppingCart", { id: selector.value.id });
+        } else {
+            navigation.navigate("login");
+        }
+    }
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => navigation.navigate("shoppingCart")}>
-                <CartSVG width={32} height={32} />
+            <TouchableOpacity style={{ marginHorizontal: 16 }} onPress={() => moveToCart()}>
+                <CartSVG width={44} height={44} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                {selector.value.url_avatar ? (
+                {selector.detail ? (
                     <TouchableOpacity onPress={() => navigationHook.navigate("Account")}>
-                        <Image
-                            style={{ width: 32, height: 32, borderWidth: 2, borderRadius: 50 }}
-                            source={{ uri: selector.value.url_avatar }}
-                        />
+                        {selector.detail.avatar_url ? (
+                            <Image
+                                style={{ width: 44, height: 44, borderWidth: 2, borderRadius: 50 }}
+                                source={{ uri: selector.detail.avatar_url }}
+                            />
+                        ) : (
+                            <Image
+                                style={{ width: 44, height: 44, borderWidth: 2, borderRadius: 50 }}
+                                source={require("../../../assets/auth/default-avatar.png")}
+                            />
+                        )}
                     </TouchableOpacity>
                 ) : (
-                    <PersonalSVG width={32} height={32} />
+                    <PersonalSVG width={44} height={32} />
                 )}
             </TouchableOpacity>
         </View>

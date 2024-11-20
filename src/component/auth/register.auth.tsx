@@ -1,11 +1,11 @@
-import axios from "axios";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { IAccountEntity } from "../../interfaces";
-import { PropsNavigate } from "../../utils/types";
-import api from "../../utils/axios";
-import { Color } from "../../style";
+import { ScrollView } from "react-native-virtualized-view";
 import { LoginLogo } from "../../common/svg";
+import { IAccountEntity } from "../../interfaces";
+import { Color } from "../../style";
+import { PropsNavigate } from "../../utils/types";
+import api from "../../utils/axios/apiCuaHiu";
 
 export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     const [email, setEmail] = useState<string>("");
@@ -19,6 +19,10 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                 username: username.trim(),
                 password: password.trim(),
                 url_avatar: "https://loremflickr.com/640/480?lock=4089431155802112",
+                role: "customer",
+                address: "",
+                phone: "",
+                fullname: username.trim(),
             })
                 .then((res) => {
                     return res.data;
@@ -35,7 +39,9 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
             Alert.alert("Register failed", "Password and confirm password not match");
         }
     }
+
     return (
+        // <ScrollView keyboardShouldPersistTaps={"never"}>
         <View>
             <LoginLogo
                 width={240}
@@ -163,6 +169,9 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
             </View>
         </View>
     );
+    {
+        /* </ScrollView> */
+    }
 };
 
 const styles = StyleSheet.create({

@@ -5,75 +5,161 @@
       "email": "ldmhieudev@gmail.com",
       "username": "admin",
       "url_avatar": "https://loremflickr.com/640/480?lock=5399763360940032",
-      "password": "123"
+      "password": "123",
+      "address": "Lê Lợi,Gò Vấp, Hồ Chí Minh ad",
+      "phone": "013123gggg1231",
+      "role": "admin",
+      "fullname": "Hieu Lai"
     },
     {
       "id": "12fc",
       "email": "ldmhieu@gmail.com",
       "username": "customer",
       "password": "123",
-      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112"
+      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112",
+      "address": "17 Lê Lợi,Gò Vấp, Hồ Chí Minh",
+      "phone": "0123456789",
+      "role": "customer",
+      "fullname": "Hieu Lai"
     },
     {
-      "id": "b4a1",
-      "email": "bnm",
-      "username": "bnm",
-      "password": "bnm",
-      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112"
-    },
-    {
-      "id": "543d",
-      "email": "tyu",
-      "username": "tyu",
-      "password": "tyu",
-      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112"
+      "id": "54f0",
+      "email": "ldmhieu",
+      "username": "hieu",
+      "password": "123",
+      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112",
+      "role": "customer",
+      "address": "",
+      "phone": "",
+      "fullname": "hieu"
     }
   ],
   "shopping-cart": [
     {
-      "id": "ed481515-9249-469f-88ae-e98e5cf2616e",
-      "name": "Pizza",
-      "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
-      "images_url": "https://picsum.photos/seed/WqtVqm/640/480",
-      "price": "371.00",
-      "optionsList": [
+      "id": "673423afb671b04f66b83790",
+      "name": "Modern Metal Tuna",
+      "description": "The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J",
+      "images_url": "https://picsum.photos/seed/x6ZDPswGXr/640/480",
+      "price": "178.00",
+      "quantity": "17",
+      "option": [
         {
-          "id": "c8cd343a-33d9-4f78-9662-f2a0485a455b",
-          "name": "Granite"
+          "id": "673423afb671b04f66b83791",
+          "name": "Intelligent",
+          "optionsList": {
+            "id": "673423afb671b04f66b83792",
+            "name": "Awesome",
+            "adjust": "14.4"
+          }
         }
       ]
     },
     {
-      "id": "46a13e33-2c3e-461e-a706-cacdefcbb052",
-      "name": "Tuna",
+      "id": "673423afb671b04f66b83793",
+      "name": "Licensed Fresh Chair",
+      "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
+      "images_url": "https://picsum.photos/seed/uWAZkwr/640/480",
+      "price": "455.00",
+      "quantity": "11",
+      "option": [
+        {
+          "id": "673423afb671b04f66b83794",
+          "name": "Fantastic",
+          "optionsList": {
+            "id": "673423afb671b04f66b83795",
+            "name": "Electronic",
+            "adjust": "50.28"
+          }
+        },
+        {
+          "id": "673423afb671b04f66b83796",
+          "name": "Modern",
+          "optionsList": {
+            "id": "673423afb671b04f66b83797",
+            "name": "Elegant",
+            "adjust": "22.87"
+          }
+        }
+      ]
+    },
+    {
+      "id": "673423afb671b04f66b83798",
+      "name": "Modern Metal Salad",
       "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design",
-      "images_url": "https://picsum.photos/seed/ss3Q9Zp/640/480",
-      "price": "536.00",
-      "optionsList": [
+      "images_url": "https://loremflickr.com/640/480?lock=2932907509284864",
+      "price": "25.00",
+      "quantity": "22",
+      "option": [
         {
-          "id": "0207b99f-76d1-4407-b3dc-40cd984cb28a",
-          "name": "Wooden"
+          "id": "673423afb671b04f66b83799",
+          "name": "Sleek",
+          "optionsList": {
+            "id": "673423afb671b04f66b8379a",
+            "name": "Small",
+            "adjust": "89.56"
+          }
         },
         {
-          "id": "e100de69-4933-475c-9c90-ee408d87f6c3",
-          "name": "Bronze"
+          "id": "673423afb671b04f66b8379b",
+          "name": "Unbranded",
+          "optionsList": {
+            "id": "673423afb671b04f66b8379c",
+            "name": "Fantastic",
+            "adjust": "11.99"
+          }
         },
         {
-          "id": "c91883d3-db76-4b0d-acdf-0a69b99071dd",
-          "name": "Rubber"
+          "id": "673zxc423afb671b0d4f66b8379d",
+          "name": "Sleek",
+          "optionsList": {
+            "id": "67zxc3423afb671b04f66b8379e",
+            "name": "Ergonomic",
+            "adjust": "30.71"
+          }
         }
       ]
-    },
+    }
+  ],
+  "room": [
     {
-      "id": "809c52d0-7ed7-417d-924c-1ab09af8eb10",
-      "name": "Chips",
-      "description": "The slim & simple Maple Gaming Keyboard from Dev Byte comes with a sleek body and 7- Color RGB LED Back-lighting for smart functionality",
-      "images_url": "https://picsum.photos/seed/dI7pwR5g/640/480",
-      "price": "697.00",
-      "optionsList": [
+      "id": "1",
+      "name": "Room 1",
+      "messages": [
         {
-          "id": "1c32afa6-7d38-4b27-b5de-1faa8c2a6ae8",
-          "name": "Bronze"
+          "id": "673497e4c2db08f2c3ee26fe",
+          "content": "Hadley.Streich69@hotmail.com",
+          "user": {
+            "id": "673497e4c2db08f2c3ee26ff",
+            "url_avatar": "https://picsum.photos/seed/mb77ENMqmr/640/480",
+            "username": "Wilmer8"
+          }
+        },
+        {
+          "id": "673497e4c2db08f2c3ee2700",
+          "content": "Issac_Pfeffer@gmail.com",
+          "user": {
+            "id": "673497e4c2db08f2c3ee2701",
+            "url_avatar": "https://loremflickr.com/640/480?lock=2827045325242368",
+            "username": "Nelda.Bode24"
+          }
+        },
+        {
+          "id": "673497e4c2db08f2c3ee2702",
+          "content": "Teresa.Heller@yahoo.com",
+          "user": {
+            "id": "673497e4c2db08f2c3ee2703",
+            "url_avatar": "https://picsum.photos/seed/PbVTWL/640/480",
+            "username": "Merle.Reynolds"
+          }
+        },
+        {
+          "id": "673497e4c2db08f2c3ee2704",
+          "content": "Dayana_McGlynn74@hotmail.com",
+          "user": {
+            "id": "673497e4c2db08f2c3ee2705",
+            "url_avatar": "https://loremflickr.com/640/480?lock=3655018787897344",
+            "username": "Novella.Senger"
+          }
         }
       ]
     }

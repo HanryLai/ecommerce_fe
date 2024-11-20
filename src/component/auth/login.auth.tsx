@@ -1,42 +1,69 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
-import api from "../../utils/axios";
-import { PropsNavigate } from "../../utils/types";
-import { AppDispatch, store, useAppDispatch, useAppSelector } from "../../utils/redux";
+import { accountHook, AppDispatch, useAppDispatch } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
+import { PropsNavigate } from "../../utils/types";
+import api from "../../utils/axios/api-be";
+import { setAccessToken } from "../../utils/axios";
 
 export const Login = ({ navigation }: PropsNavigate<"login">) => {
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const selector = useAppSelector((state) => state.accountReducer);
     const dispatch = useAppDispatch<AppDispatch>();
     function onPresLogin() {
-        api.get(`/account?username=${user}&password=${password}`, {
-            // identifier: user,
-            // password: password,
-        })
-            .then((response) => response.data[0])
-            .then((data: IAccountEntity) => {
-                if (data === undefined) {
-                    Alert.alert("wrong username,email or password");
-                    return;
-                }
-                // setAccount(data);
-                dispatch(AccountSlice.actions.login(data));
-                navigation.navigate("homepage", {
-                    ...data,
-                });
+        const success = true;
+        if (user === "" || password === "") {
+            Alert.alert("wrong username,email or password");
+        } else {
+            api.post(`/auth/login`, {
+                identifier: user,
+                password: password,
             })
-            .catch((err) => Alert.alert("wrong username,email or password"));
+                .then((response) => {
+                    if (response.status != 200) {
+                        Alert.alert("wrong username,email or password");
+                    }
+                    return response.data.data;
+                })
+                .then((data: any) => {
+                    const dataAccount: IAccountEntity = {
+                        ...data,
+                        role: data.role.name,
+                    };
+                    dispatch(AccountSlice.actions.login(dataAccount));
+
+                    dispatch(
+                        AccountSlice.actions.saveDetail({
+                            ...data.detailInformation,
+                        })
+                    );
+
+                    setAccessToken(data.accessToken);
+
+                    navigation.navigate("homepage", {
+                        ...data,
+                        screen: "Home",
+                    });
+                })
+                .catch((err) => {
+                    console.log("err:" + JSON.stringify(err));
+                    Alert.alert("Something wrong");
+                });
+        }
     }
     return (
-        <View>
+        <ScrollView keyboardShouldPersistTaps={"never"}>
             <LoginLogo
                 width={240}
                 height={240}
@@ -135,7 +162,7 @@ export const Login = ({ navigation }: PropsNavigate<"login">) => {
                 <Text style={{ textAlign: "center", fontWeight: 600 }}>Create new account</Text>
             </TouchableOpacity>
 
-            <View
+            {/* <View
                 style={{
                     marginVertical: 100,
                 }}
@@ -162,8 +189,8 @@ export const Login = ({ navigation }: PropsNavigate<"login">) => {
                         <FontAwesome name="apple" size={24} color="black" />
                     </TouchableOpacity>
                 </View>
-            </View>
-        </View>
+            </View> */}
+        </ScrollView>
     );
 };
 
