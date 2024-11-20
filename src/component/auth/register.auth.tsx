@@ -19,6 +19,10 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                 username: username.trim(),
                 password: password.trim(),
                 url_avatar: "https://loremflickr.com/640/480?lock=4089431155802112",
+                role: "customer",
+                address: "",
+                phone: "",
+                fullname: username.trim(),
             })
                 .then((res) => {
                     return res.data;
@@ -37,7 +41,8 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
     }
 
     return (
-        <ScrollView keyboardShouldPersistTaps={"never"}>
+        // <ScrollView keyboardShouldPersistTaps={"never"}>
+        <View>
             <LoginLogo
                 width={240}
                 height={240}
@@ -162,8 +167,11 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </ScrollView>
+        </View>
     );
+    {
+        /* </ScrollView> */
+    }
 };
 
 const styles = StyleSheet.create({
