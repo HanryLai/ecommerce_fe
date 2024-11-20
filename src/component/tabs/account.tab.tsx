@@ -8,7 +8,13 @@ import {
     RatingAuthSVG,
 } from "../../common/svg/auth";
 import { IAccountEntity } from "../../interfaces";
-import { accountHook, AppDispatch, useAppDispatch, useAppSelector } from "../../utils/redux";
+import {
+    accountHook,
+    AppDispatch,
+    detailInformationHook,
+    useAppDispatch,
+    useAppSelector,
+} from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
 import { NavigationStackParamList, PropsTab } from "../../utils/types";
 import { LogOutAuthSVG } from "../../common/svg/auth/log-out";
@@ -16,6 +22,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
     const accountSelector = useAppSelector(accountHook) as IAccountEntity;
+    const detailSelector = useAppSelector(detailInformationHook);
     const [isLoading, setIsLoading] = useState(false);
     function logout() {
         dispatch(AccountSlice.actions.logout());
@@ -71,12 +78,23 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         >
                             <View style={styles.container_nameAndAvatar}>
                                 <View style={styles.borderAvatar}>
-                                    <Image
-                                        style={styles.avatar}
-                                        source={{ uri: accountSelector.url_avatar }}
-                                    />
+                                    {detailSelector.avatar_url ? (
+                                        <Image
+                                            style={styles.avatar}
+                                            source={{ uri: detailSelector.avatar_url }}
+                                        />
+                                    ) : (
+                                        <Image
+                                            style={styles.avatar}
+                                            source={require("../../../assets/auth/default-avatar.png")}
+                                        />
+                                    )}
                                 </View>
-                                <Text style={styles.bigName}>{accountSelector.username}</Text>
+                                <Text style={styles.bigName}>
+                                    {detailSelector?.full_name
+                                        ? detailSelector.full_name
+                                        : accountSelector.username}
+                                </Text>
                             </View>
                         </View>
 

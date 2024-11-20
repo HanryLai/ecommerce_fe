@@ -7,6 +7,7 @@ import { RootState } from "../store.redux";
  */
 export const sample = (e: RootState) => e.counter.value;
 export const accountHook = (e: RootState) => e.accountReducer.value;
+export const detailInformationHook = (e: RootState) => e.accountReducer.detail;
 export const accountHook_status = (e: RootState) => e.accountReducer.status;
 export const accountHook_error = (e: RootState) => e.accountReducer.error;
 export const shoppingCartHook = (e: RootState) => e.shoppingCartReducer.value;

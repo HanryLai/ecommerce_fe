@@ -11,37 +11,55 @@ import {
 import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
-import { AppDispatch, useAppDispatch } from "../../utils/redux";
+import { accountHook, AppDispatch, useAppDispatch } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
 import { PropsNavigate } from "../../utils/types";
-import api from "../../utils/axios/apiCuaHiu";
+import api from "../../utils/axios/api-be";
+import { setAccessToken } from "../../utils/axios";
 
 export const Login = ({ navigation }: PropsNavigate<"login">) => {
     const [user, setUser] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const dispatch = useAppDispatch<AppDispatch>();
     function onPresLogin() {
-        console.log("user", JSON.stringify(user));
+        const success = true;
         if (user === "" || password === "") {
             Alert.alert("wrong username,email or password");
         } else {
-            api.get(`/account?username=${user}&password=${password}`, {
-                // identifier: user,
-                // password: password,
+            api.post(`/auth/login`, {
+                identifier: user,
+                password: password,
             })
-                .then((response) => response.data[0])
-                .then((data: IAccountEntity) => {
-                    if (data === undefined) {
+                .then((response) => {
+                    if (response.status != 200) {
                         Alert.alert("wrong username,email or password");
-                        return;
                     }
-                    dispatch(AccountSlice.actions.login(data));
+                    return response.data.data;
+                })
+                .then((data: any) => {
+                    const dataAccount: IAccountEntity = {
+                        ...data,
+                        role: data.role.name,
+                    };
+                    dispatch(AccountSlice.actions.login(dataAccount));
+
+                    dispatch(
+                        AccountSlice.actions.saveDetail({
+                            ...data.detailInformation,
+                        })
+                    );
+
+                    setAccessToken(data.accessToken);
+
                     navigation.navigate("homepage", {
                         ...data,
                         screen: "Home",
                     });
                 })
-                .catch((err) => Alert.alert("wrong username,email or password"));
+                .catch((err) => {
+                    console.log("err:" + JSON.stringify(err));
+                    Alert.alert("Something wrong");
+                });
         }
     }
     return (

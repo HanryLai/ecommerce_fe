@@ -1,8 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store.redux";
-import { IAccountEntity } from "../../../interfaces";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { NavigationStackParamList } from "../../types";
+import { IAccountEntity, IDetailInformationEntity } from "../../../interfaces";
 import api from "../../axios/apiCuaHiu";
 
 export const AccountSlice = createSlice({
@@ -11,6 +8,7 @@ export const AccountSlice = createSlice({
         value: {} as IAccountEntity,
         status: "off",
         error: {},
+        detail: {} as IDetailInformationEntity,
     },
     reducers: {
         login: (state, value: PayloadAction<IAccountEntity>) => {
@@ -18,6 +16,9 @@ export const AccountSlice = createSlice({
         },
         logout: (state) => {
             state.value = {} as IAccountEntity;
+        },
+        saveDetail: (state, value: PayloadAction<IDetailInformationEntity>) => {
+            state.detail = value.payload;
         },
     },
     extraReducers(builder) {
@@ -36,7 +37,6 @@ export const AccountSlice = createSlice({
     },
 });
 
-// Create an async thunk for fetching account data
 export const fetchAccountById = createAsyncThunk("account/fetchAccountById", async (id: string) => {
     const response = await api.get(`/account/${id}`);
     return response.data;

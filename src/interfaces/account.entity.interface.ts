@@ -2,7 +2,8 @@ import { IBaseEntity } from "./base.entities.interface";
 import { IDetailInformationEntity } from "./detail_information.interface";
 import { IRoleEntity } from "./role.entity.interface";
 
-export interface IAccountEntity extends IBaseEntity {
+export interface IAccountEntity {
+    id: string;
     email: string;
     username: string;
     password: string;
@@ -10,6 +11,5 @@ export interface IAccountEntity extends IBaseEntity {
     isActive: boolean;
     accessToken: string;
     refreshToken: string;
-    detail_information_id: IDetailInformationEntity;
-    role: IRoleEntity;
+    role: string;
 }

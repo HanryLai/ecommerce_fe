@@ -20,12 +20,19 @@ export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) =>
                 <CartSVG width={44} height={44} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                {selector.value.url_avatar ? (
+                {selector.detail ? (
                     <TouchableOpacity onPress={() => navigationHook.navigate("Account")}>
-                        <Image
-                            style={{ width: 44, height: 44, borderWidth: 2, borderRadius: 50 }}
-                            source={{ uri: selector.value.url_avatar }}
-                        />
+                        {selector.detail.avatar_url ? (
+                            <Image
+                                style={{ width: 44, height: 44, borderWidth: 2, borderRadius: 50 }}
+                                source={{ uri: selector.detail.avatar_url }}
+                            />
+                        ) : (
+                            <Image
+                                style={{ width: 44, height: 44, borderWidth: 2, borderRadius: 50 }}
+                                source={require("../../../assets/auth/default-avatar.png")}
+                            />
+                        )}
                     </TouchableOpacity>
                 ) : (
                     <PersonalSVG width={44} height={32} />
