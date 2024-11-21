@@ -3,6 +3,6 @@ import axios from 'axios'
 
 export type CategoryType = {
 	id: string
-	name: string
+	title: string
 	image: string
 }
