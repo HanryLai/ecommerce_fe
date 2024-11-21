@@ -53,6 +53,8 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 			.get('/products')
 			.then((response) => response.data.data)
 			.then((data) => {
+				console.log(data)
+
 				dispatch(productSlice.actions.storeproduct(data))
 			})
 			.catch((error) => {

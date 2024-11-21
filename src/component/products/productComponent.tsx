@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
@@ -7,10 +7,22 @@ import { ProductType } from '../../utils/types/type/product.type'
 import { NavigationStackParamList } from '../../utils/types'
 import { AppDispatch, useAppDispatch } from '../../utils/redux'
 import productSlice from '../../utils/redux/reducers/product.redux'
+import api from '../../utils/axios'
 
 const ProductComponent = ({ item }: { item: ProductType }) => {
 	const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>()
 	const dispatch = useAppDispatch<AppDispatch>()
+
+	const handleSelectProduct = async (id: string) => {
+		try {
+			const response = await api.get(`/products/${id}`)
+			const data = response.data.data
+			dispatch(productSlice.actions.selectproduct(data))
+			navigationHook.navigate('productDetails', { id: id })
+		} catch (error) {
+			console.error(error)
+		}
+	}
 
 	return (
 		<TouchableOpacity
@@ -25,8 +37,7 @@ const ProductComponent = ({ item }: { item: ProductType }) => {
 				margin: 4,
 			}}
 			onPress={() => {
-				navigationHook.navigate('productDetails', { id: item.id })
-				dispatch(productSlice.actions.selectproduct(item))
+				handleSelectProduct(item.id)
 			}}
 		>
 			<Image

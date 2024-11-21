@@ -9,7 +9,7 @@
 		"web": "expo start --web",
 		"screen": "scrcpy -m1968",
 		"db": "json-server --watch db.json --port 4000 --host 192.168.1.3",
-		"db_Zy": "json-server --watch db.json --port 4000 --host  192.168.1.37"
+		"db_Zy": "json-server --watch db.json --port 4000 --host  172.27.160.1"
 	},
 	"dependencies": {
 		"@expo/metro-runtime": "~3.2.3",
