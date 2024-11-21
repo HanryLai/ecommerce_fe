@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Checkbox, RadioButton } from "react-native-paper";
+import { Checkbox } from "react-native-paper";
 import { ScrollView } from "react-native-virtualized-view";
-import { EditShoppingCartSVG } from "../../common/svg";
 import { Option } from "../../interfaces/option.interface";
 import { Product } from "../../interfaces/product.interface";
 import api from "../../utils/axios/apiCuaHiu";
 import { PropsNavigate } from "../../utils/types";
-const codImg = require("../../../assets/components/payment/cod.png");
-const momoImg = require("../../../assets/components/payment/momo.png");
 
 export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
     const [productList, setProductList] = useState<Product[]>([]);
     const [listChecked, setListChecked] = useState<boolean[]>([]);
-    const [checked, setChecked] = useState(0);
-
+    const [chooseList, setChooseList] = useState<boolean[]>([]);
+    const [total, setTotal] = useState<number>(0);
     function priceAdjust(option: Option[]) {
         let price = 0;
         option.forEach((item) => {
@@ -28,8 +25,10 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
     }
     function totalPrice() {
         let total = 0;
-        productList.forEach((item) => {
-            total += priceItem(item) * item.quantity;
+        productList.forEach((item, index) => {
+            if (chooseList[index]) {
+                total += priceItem(item) * parseInt(item.quantity as unknown as string);
+            }
         });
         return total;
     }
@@ -43,6 +42,29 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
         const quantityItem = parseInt(list[index].quantity as unknown as string);
         list[index].quantity = quantityItem + quantity;
         setProductList([...list]);
+        setTotal(totalPrice());
+    }
+
+    function checkChoose(index: number) {
+        let list = listChecked;
+        let choose = chooseList;
+        list[index] = !list[index];
+        choose[index] = !chooseList[index];
+        setListChecked([...list]);
+        setChooseList([...chooseList]);
+        setTotal(totalPrice());
+    }
+
+    function paymentNavigation() {
+        const productOrder = productList.filter((item, index) => {
+            if (chooseList[index]) {
+                return item;
+            }
+        });
+        navigation.navigate("PaymentComponent", {
+            productOrder: productOrder,
+            total: total,
+        });
     }
     useEffect(() => {
         api.get("/shopping-cart/")
@@ -50,9 +72,10 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                 return res.data;
             })
             .then((data) => {
-                console.log(data);
                 setListChecked(new Array(data.length).fill(false));
+                setChooseList(new Array(data.length).fill(false));
                 setProductList(data);
+                setTotal(totalPrice());
             })
             .catch((err) => {
                 console.log(err);
@@ -60,7 +83,7 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
     }, []);
     return (
         <ScrollView style={styles.container}>
-            <ScrollView style={{ height: "50%" }}>
+            <ScrollView style={[styles.container]}>
                 <FlatList
                     data={productList}
                     style={styles.container_cart}
@@ -70,9 +93,7 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                                 <Checkbox
                                     status={listChecked[index] ? "checked" : "unchecked"}
                                     onPress={() => {
-                                        let list = listChecked;
-                                        list[index] = !list[index];
-                                        setListChecked([...list]);
+                                        checkChoose(index);
                                     }}
                                 />
                                 <Image style={styles.img_item} source={{ uri: item.images_url }} />
@@ -127,38 +148,20 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                     }}
                 />
             </ScrollView>
-            <View style={styles.container_total}>
-                <Text style={styles.txt_total}>Total:</Text>
-                <Text style={styles.txt_price}>$ {totalPrice()}</Text>
-            </View>
-            <View style={styles.container_listmethod}>
-                <View style={styles.container_method}>
-                    <Image style={styles.method_image} source={momoImg} />
-                    <Text style={styles.method_name}>Momo</Text>
-                    <RadioButton
-                        value="1"
-                        status={checked === 1 ? "checked" : "unchecked"}
-                        onPress={() => setChecked(1)}
-                    />
-                </View>
-                <View style={styles.container_method}>
-                    <Image style={styles.method_image} source={codImg} />
-                    <Text style={styles.method_name}>Thanh toán khi giao hàng</Text>
-                    <RadioButton
-                        value="first"
-                        status={checked === 2 ? "checked" : "unchecked"}
-                        onPress={() => setChecked(2)}
-                    />
-                </View>
-            </View>
-
             <View>
-                <TouchableOpacity
-                    style={styles.btn_payment}
-                    onPress={() => navigation.navigate("PaymentComponent")}
-                >
-                    <Text style={styles.txt_payment}>Payment</Text>
-                </TouchableOpacity>
+                <View style={styles.container_total}>
+                    <Text style={styles.txt_total}>Total:</Text>
+                    <Text style={styles.txt_price}>$ {total}</Text>
+                </View>
+
+                <View>
+                    <TouchableOpacity
+                        style={styles.btn_payment}
+                        onPress={() => paymentNavigation()}
+                    >
+                        <Text style={styles.txt_payment}>Payment</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </ScrollView>
     );

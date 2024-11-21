@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { TabStackParamList } from "./Tab.type";
+import { Product } from "../../interfaces";
 
 export type NavigationStackParamList = {
     homepage: {
@@ -22,7 +23,10 @@ export type NavigationStackParamList = {
     productDetails: {
         id: string;
     };
-    PaymentComponent: undefined;
+    PaymentComponent: {
+        productOrder: Product[];
+        total: number;
+    };
     MyOrder: undefined;
     MyComment: undefined;
     feedback: undefined;

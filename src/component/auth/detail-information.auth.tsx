@@ -3,6 +3,7 @@ import {
     Alert,
     Button,
     Image,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -19,6 +20,7 @@ import {
     useAppSelector,
 } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
+
 interface FileDetails {
     uri: string;
     name: string;
@@ -42,6 +44,7 @@ export const DetailInformationComponent = () => {
     const [file, setFile] = useState<FileDetails | null>(null);
 
     const [isEdit, setIsEdit] = useState(false);
+
     function fetchAccountOrigin() {
         setEmail(accountSelector.email);
         setUsername(accountSelector.username);
@@ -58,9 +61,7 @@ export const DetailInformationComponent = () => {
                 Authorization: `Bearer ${accountSelector.accessToken}`,
             },
         })
-            .then((res) => {
-                return res.data.data;
-            })
+            .then((res) => res.data.data)
             .then((data) => {
                 dispatch(AccountSlice.actions.saveDetail(data));
                 setUrl_avatar(data.avatar_url);
@@ -74,7 +75,7 @@ export const DetailInformationComponent = () => {
     const pickDocument = async () => {
         try {
             const result = await DocumentPicker.getDocumentAsync({
-                type: "image/*", // To allow only images.
+                type: "image/*",
                 copyToCacheDirectory: true,
             });
 
@@ -82,8 +83,8 @@ export const DetailInformationComponent = () => {
                 setFile({
                     uri: result.assets[0].uri,
                     name: result.assets[0].name,
-                    size: result.assets[0].size ?? 0, // Fallback to 0 if size is undefined.
-                    type: result.assets[0].mimeType ?? "unknown", // Optional mimeType or fallback.
+                    size: result.assets[0].size ?? 0,
+                    type: result.assets[0].mimeType ?? "unknown",
                 });
                 setIsEdit(true);
             }
@@ -140,298 +141,203 @@ export const DetailInformationComponent = () => {
             .then((res) => res.data.data)
             .then((data) => {
                 if (data.affected == 0) {
-                    Alert.alert("Something wrong");
+                    Alert.alert("Something went wrong");
                 } else {
-                    Alert.alert("Update success");
+                    Alert.alert("Update successful");
                 }
                 fetchDetailInformation();
                 setIsEdit(false);
             })
             .catch((err) => console.log(JSON.stringify(err)));
     }
+
     return (
-        <View>
-            <View>
-                <View
-                    style={[
-                        styles.containerAvatar,
-                        {
-                            backgroundColor: "#fe8c77",
-                            paddingVertical: 24,
-                        },
-                    ]}
-                >
-                    <View style={styles.container_nameAndAvatar}>
-                        <View style={styles.borderAvatar}>
-                            {detailSelector?.avatar_url ? (
-                                <>
-                                    {file?.uri ? (
-                                        <Image style={styles.avatar} source={{ uri: file?.uri }} />
-                                    ) : (
-                                        <Image style={styles.avatar} source={{ uri: url_avatar }} />
-                                    )}
-                                </>
+        <ScrollView style={styles.container}>
+            <View style={styles.avatarContainer}>
+                <View style={styles.avatarWrapper}>
+                    {detailSelector?.avatar_url ? (
+                        <>
+                            {file?.uri ? (
+                                <Image
+                                    style={styles.avatar}
+                                    source={{ uri: file?.uri || url_avatar }}
+                                />
                             ) : (
-                                <>
-                                    {file?.uri ? (
-                                        <Image style={styles.avatar} source={{ uri: file?.uri }} />
-                                    ) : (
-                                        <Image
-                                            style={styles.avatar}
-                                            source={require("../../../assets/auth/default-avatar.png")}
-                                        />
-                                    )}
-                                </>
+                                <Image style={styles.avatar} source={{ uri: url_avatar }} />
                             )}
-                        </View>
-
-                        <Text style={styles.bigName}>
-                            {detailSelector?.full_name
-                                ? detailSelector.full_name
-                                : accountSelector.username}
-                        </Text>
-                    </View>
+                        </>
+                    ) : (
+                        <>
+                            {file?.uri ? (
+                                <Image
+                                    style={styles.avatar}
+                                    source={{ uri: file?.uri || url_avatar }}
+                                />
+                            ) : (
+                                <Image
+                                    style={styles.avatar}
+                                    source={require("../../../assets/auth/default-avatar.png")}
+                                />
+                            )}
+                        </>
+                    )}
                 </View>
-                <TouchableOpacity style={styles.container_changeAvatar} onPress={pickDocument}>
-                    <Text style={styles.txt_changeAvatar}>+</Text>
-                </TouchableOpacity>
-                <View style={[styles.infors]}>
-                    <View style={styles.input_container}>
-                        <Text style={styles.txt_email}>Email</Text>
-                        <View style={styles.container_txt_input}>
-                            <TextInput
-                                style={styles.input}
-                                value={email}
-                                onChangeText={(text) => setEmail(text)}
-                                editable={false}
-                                focusable={false}
-                            />
-                        </View>
-                    </View>
 
-                    <View style={styles.input_container}>
-                        <Text style={styles.txt_username}>Username</Text>
-                        <View style={styles.container_txt_input}>
-                            <TextInput
-                                style={styles.input}
-                                value={username}
-                                onChangeText={(text) => setUsername(text)}
-                                editable={false}
-                                focusable={false}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.input_container}>
-                        <Text style={styles.txt_email}>Full name</Text>
-                        <View style={styles.container_txt_input}>
-                            <TextInput
-                                style={styles.input}
-                                value={fullname}
-                                onChangeText={(text) => setFullname(text)}
-                                editable={isEdit}
-                                focusable={isEdit}
-                            />
-                        </View>
-                    </View>
-
-                    <View style={styles.input_container}>
-                        <Text style={styles.txt_username}>Phone</Text>
-                        <View style={styles.container_txt_input}>
-                            <TextInput
-                                style={styles.input}
-                                value={phone}
-                                onChangeText={(text) => setPhone(text)}
-                                editable={isEdit}
-                                focusable={isEdit}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.input_container}>
-                        <Text style={styles.txt_username}>Address</Text>
-                        <View style={styles.container_txt_input}>
-                            <TextInput
-                                style={styles.input}
-                                value={address}
-                                onChangeText={(text) => setAddress(text)}
-                                editable={isEdit}
-                                focusable={isEdit}
-                            />
-                        </View>
-                    </View>
-                    <View
-                        style={[
-                            styles.input_container,
-                            {
-                                justifyContent: "space-between",
-                            },
-                        ]}
-                    ></View>
-                </View>
+                <Text style={styles.fullNameText}>
+                    {detailSelector?.full_name || accountSelector.username}
+                </Text>
             </View>
-            <View>
-                {isEdit ? (
-                    <View style={styles.container_CancelAndConfirm}>
-                        <TouchableOpacity
-                            style={styles.containerSmallFunction}
-                            onPress={() => {
-                                fetchAccountOrigin();
-                                setIsEdit(false);
-                            }}
-                        >
-                            <Text style={styles.txt_function}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.containerSmallFunction}
-                            onPress={() => {
-                                updateAccount();
-                            }}
-                        >
-                            <Text style={styles.txt_function}>Confirm</Text>
-                        </TouchableOpacity>
-                    </View>
-                ) : (
-                    <TouchableOpacity
-                        style={styles.btn_function}
+
+            <TouchableOpacity style={styles.changeAvatarButton} onPress={pickDocument}>
+                <Text style={styles.changeAvatarText}>+</Text>
+            </TouchableOpacity>
+
+            <View style={styles.formContainer}>
+                <FormInput label="Email" value={email} editable={false} />
+                <FormInput label="Username" value={username} editable={false} />
+                <FormInput
+                    label="Full Name"
+                    value={fullname}
+                    onChangeText={setFullname}
+                    editable={isEdit}
+                />
+                <FormInput label="Phone" value={phone} onChangeText={setPhone} editable={isEdit} />
+                <FormInput
+                    label="Address"
+                    value={address}
+                    onChangeText={setAddress}
+                    editable={isEdit}
+                />
+            </View>
+
+            {isEdit ? (
+                <View style={styles.actionsContainer}>
+                    <ActionButton
+                        text="Cancel"
                         onPress={() => {
-                            setIsEdit(true);
+                            fetchAccountOrigin();
+                            setIsEdit(false);
                         }}
-                    >
-                        <Text style={styles.txt_function}>Update</Text>
-                    </TouchableOpacity>
-                )}
-            </View>
-        </View>
+                    />
+                    <ActionButton text="Confirm" onPress={updateAccount} />
+                </View>
+            ) : (
+                <ActionButton text="Update" onPress={() => setIsEdit(true)} />
+            )}
+        </ScrollView>
     );
 };
 
+const FormInput = ({
+    label,
+    value,
+    editable = true,
+    onChangeText,
+}: {
+    label: string;
+    value: string;
+    editable?: boolean;
+    onChangeText?: (text: string) => void;
+}) => (
+    <View style={styles.inputContainer}>
+        <Text style={styles.label}>{label}</Text>
+        <TextInput
+            style={styles.input}
+            value={value}
+            onChangeText={onChangeText}
+            editable={editable}
+        />
+    </View>
+);
+
+const ActionButton = ({ text, onPress }: { text: string; onPress: () => void }) => (
+    <TouchableOpacity style={styles.actionButton} onPress={onPress}>
+        <Text style={styles.actionButtonText}>{text}</Text>
+    </TouchableOpacity>
+);
+
 const styles = StyleSheet.create({
-    containerAvatar: {
-        width: "100%",
-        height: 140,
+    container: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: "#f9f9f9",
     },
-    avatar: {
-        width: 140,
-        height: 140,
-        borderRadius: 100,
-        margin: "auto",
+    avatarContainer: {
+        alignItems: "center",
+        marginVertical: 20,
     },
-    borderAvatar: {
-        width: 147,
-        height: 147,
-        borderRadius: 200,
-        backgroundColor: "#fff",
-        margin: "auto",
+    avatarWrapper: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: "#ddd",
         alignItems: "center",
         justifyContent: "center",
     },
-    container_nameAndAvatar: {
-        position: "relative",
-        top: 40,
-        height: 200,
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
     },
-    bigName: {
-        textAlign: "center",
-        fontSize: 28,
-        fontWeight: "400",
+    fullNameText: {
+        fontSize: 24,
+        fontWeight: "600",
+        marginTop: 10,
     },
-    infors: {
-        marginTop: 132,
-        width: "80%",
-        marginHorizontal: 44,
-        marginVertical: 24,
-        borderWidth: 1,
-        margin: "auto",
+    changeAvatarButton: {
+        position: "absolute",
+        top: 95,
+        right: 95,
         backgroundColor: "#fff",
-        borderRadius: 24,
-        paddingVertical: 32,
-        paddingHorizontal: 8,
-    },
-    txt_username: { fontSize: 16, opacity: 0.7 },
-    txt_email: { fontSize: 16, opacity: 0.7 },
-    txt_password: { fontSize: 16, opacity: 0.7 },
-    input_container: {
-        paddingHorizontal: 8,
-    },
-    container_txt_input: {
-        flexDirection: "row",
+        borderRadius: 25,
+        padding: 10,
         borderWidth: 1,
-        paddingHorizontal: 4,
-        marginVertical: 4,
-        borderColor: "#ccc",
-        borderRadius: 8,
-        justifyContent: "space-between",
+        borderColor: "#ddd",
+    },
+    changeAvatarText: {
+        fontSize: 30,
+        fontWeight: "bold",
+        color: "#000",
+    },
+    formContainer: {
+        marginTop: 40,
+    },
+    inputContainer: {
+        marginBottom: 20,
+    },
+    label: {
+        fontSize: 16,
+        color: "#333",
+        marginBottom: 8,
     },
     input: {
-        width: "100%",
+        height: 40,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        fontSize: 16,
+        backgroundColor: "#fff",
     },
-    btn_function: {
+    actionsContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 30,
+    },
+    actionButton: {
+        flex: 1,
         backgroundColor: "#000",
-        width: "80%",
-        margin: "auto",
-        paddingHorizontal: 12,
         paddingVertical: 12,
-        borderRadius: 12,
-        marginVertical: 8,
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
-    txt_function: {
-        fontSize: 20,
-        color: "#fff",
-        fontWeight: "500",
-        margin: "auto",
-    },
-
-    container_CancelAndConfirm: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: "80%",
-        margin: "auto",
-    },
-
-    containerSmallFunction: {
-        backgroundColor: "#000",
-        width: "46%",
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 12,
-        marginVertical: 8,
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
-    container_changeAvatar: {
-        width: 50,
-        height: 50,
-        margin: "auto",
-        borderRadius: 3000,
-        backgroundColor: "#f8f8f8",
-        position: "relative",
-        top: 36,
-        left: 36,
-        borderWidth: 2,
-    },
-    txt_changeAvatar: {
-        textAlign: "center",
-        color: "#000",
-        fontSize: 32,
-        fontWeight: "700",
-        margin: "auto",
-    },
-    fileDetails: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: "#f8f8f8",
         borderRadius: 8,
         alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 1.41,
-        elevation: 2,
+        justifyContent: "center",
+        marginHorizontal: 10,
     },
-    fileText: {
-        fontSize: 14,
-        color: "#333",
-        marginVertical: 4,
+    actionButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "600",
     },
 });
+
+export default DetailInformationComponent;
