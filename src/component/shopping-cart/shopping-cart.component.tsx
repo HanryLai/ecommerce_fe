@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { ScrollView } from "react-native-virtualized-view";
 import { Option } from "../../interfaces/option.interface";
 import { Product } from "../../interfaces/product.interface";
 import api from "../../utils/axios/apiCuaHiu";
@@ -13,310 +12,229 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
     const [listChecked, setListChecked] = useState<boolean[]>([]);
     const [chooseList, setChooseList] = useState<boolean[]>([]);
     const [total, setTotal] = useState<number>(0);
-    function priceAdjust(option: Option[]) {
-        let price = 0;
-        option.forEach((item) => {
-            price += parseInt(item.optionsList.adjust);
-        });
-        return price;
-    }
 
-    function disableBtnPay() {
-        if (chooseList.includes(true)) {
-            return Color.primary;
-        }
-        return "#ccc";
-    }
+    const priceAdjust = (options: Option[]) =>
+        options.reduce((acc, item) => acc + parseInt(item.optionsList.adjust), 0);
 
-    function priceItem(product: Product) {
-        return parseInt(product.price) - priceAdjust(product.option);
-    }
-    function totalPrice() {
-        let total = 0;
-        productList.forEach((item, index) => {
+    const priceItem = (product: Product) => parseInt(product.price) - priceAdjust(product.option);
+
+    const totalPrice = () =>
+        productList.reduce((sum, item, index) => {
+            console.log(chooseList);
             if (chooseList[index]) {
-                total += priceItem(item) * parseInt(item.quantity as unknown as string);
+                sum += priceItem(item) * parseInt(item.quantity as unknown as string);
             }
-        });
-        return total;
-    }
+            return sum;
+        }, 0);
 
-    function deleteItem(index: number) {
-        console.log(index);
-    }
+    const adjustQuantity = (index: number, quantity: number) => {
+        const updatedList = [...productList];
+        updatedList[index].quantity =
+            parseInt(updatedList[index].quantity as unknown as string) + quantity;
 
-    function adjustQuantity(index: number, quantity: number) {
-        let list = productList;
-        const quantityItem = parseInt(list[index].quantity as unknown as string);
-        list[index].quantity = quantityItem + quantity;
-        setProductList([...list]);
+        setProductList(updatedList);
         setTotal(totalPrice());
-    }
+    };
 
-    function checkChoose(index: number) {
-        let list = listChecked;
-        let choose = chooseList;
-        list[index] = !list[index];
-        choose[index] = !chooseList[index];
-        setListChecked([...list]);
-        setChooseList([...chooseList]);
+    const toggleCheckbox = (index: number) => {
+        const updatedChecked = [...listChecked];
+        const updatedChooseList = [...chooseList];
+        updatedChecked[index] = !updatedChecked[index];
+        updatedChooseList[index] = !updatedChooseList[index];
+        setListChecked(updatedChecked);
+        setChooseList(updatedChooseList);
         setTotal(totalPrice());
-    }
+    };
 
-    function paymentNavigation() {
+    const handlePayment = () => {
         if (!chooseList.includes(true)) {
             alert("Please choose product to payment");
             return;
         }
-        const productOrder = productList.filter((item, index) => {
-            if (chooseList[index]) {
-                return item;
-            }
-        });
+        const productOrder = productList.filter((_, index) => chooseList[index]);
         navigation.navigate("PaymentComponent", {
-            productOrder: productOrder,
-            total: total,
+            productOrder,
+            total,
         });
-    }
+    };
+
     useEffect(() => {
         api.get("/shopping-cart/")
             .then((res) => {
-                return res.data;
-            })
-            .then((data) => {
+                const data = res.data;
                 setListChecked(new Array(data.length).fill(false));
                 setChooseList(new Array(data.length).fill(false));
                 setProductList(data);
-                setTotal(totalPrice());
             })
-            .catch((err) => {
-                console.log(err);
-            });
+            .catch((err) => console.error(err));
     }, []);
-    return (
-        <ScrollView style={styles.container}>
-            <ScrollView style={[styles.container]}>
-                <FlatList
-                    data={productList}
-                    style={styles.container_cart}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <View style={styles.container_item}>
-                                <Checkbox
-                                    status={listChecked[index] ? "checked" : "unchecked"}
-                                    onPress={() => {
-                                        checkChoose(index);
-                                    }}
-                                />
-                                <Image style={styles.img_item} source={{ uri: item.images_url }} />
-                                <View style={styles.container_info}>
-                                    <Text style={styles.title}>{item.name}</Text>
-                                    <FlatList
-                                        data={item.option}
-                                        renderItem={({ item }) => {
-                                            return (
-                                                <View style={styles.container_option}>
-                                                    <Text style={styles.option_name}>
-                                                        {item.name}:
-                                                    </Text>
-                                                    <Text style={styles.optionList_name}>
-                                                        {item.optionsList.name}
-                                                    </Text>
-                                                </View>
-                                            );
-                                        }}
-                                        style={styles.flatList}
-                                    />
-                                    <View style={styles.container_priceItem}>
-                                        <Text style={styles.txt_priceItem}>Price:</Text>
-                                        <Text style={styles.price}>{priceItem(item)}$</Text>
-                                    </View>
-                                </View>
-                                <View style={styles.container_right}>
-                                    <Text
-                                        style={styles.delete_item}
-                                        onPress={() => deleteItem(index)}
-                                    >
-                                        X
-                                    </Text>
-                                    <View style={styles.container_quantity}>
-                                        <TouchableOpacity
-                                            onPress={() => adjustQuantity(index, -1)}
-                                            style={styles.btn_adjustQuantity}
-                                        >
-                                            <Text style={styles.signQuantity}>-</Text>
-                                        </TouchableOpacity>
-                                        <Text style={styles.quantity}>{item.quantity}</Text>
-                                        <TouchableOpacity
-                                            onPress={() => adjustQuantity(index, 1)}
-                                            style={styles.btn_adjustQuantity}
-                                        >
-                                            <Text style={styles.signQuantity}>+</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        );
-                    }}
-                />
-            </ScrollView>
-            <View>
-                <View style={styles.container_total}>
-                    <Text style={styles.txt_total}>Total:</Text>
-                    <Text style={styles.txt_price}>$ {total}</Text>
-                </View>
 
-                <View>
-                    <TouchableOpacity
-                        style={[
-                            styles.btn_payment,
-                            {
-                                backgroundColor: disableBtnPay(),
-                            },
-                        ]}
-                        onPress={() => paymentNavigation()}
-                    >
-                        <Text style={styles.txt_payment}>Payment</Text>
-                    </TouchableOpacity>
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={productList}
+                style={styles.cartList}
+                renderItem={({ item, index }) => (
+                    <View style={styles.cartItem}>
+                        <Checkbox
+                            status={listChecked[index] ? "checked" : "unchecked"}
+                            onPress={() => toggleCheckbox(index)}
+                        />
+                        <Image style={styles.itemImage} source={{ uri: item.images_url }} />
+                        <View style={styles.itemDetails}>
+                            <Text style={styles.itemName}>{item.name}</Text>
+                            <FlatList
+                                data={item.option}
+                                renderItem={({ item }) => (
+                                    <View style={styles.optionRow}>
+                                        <Text style={styles.optionLabel}>{item.name}:</Text>
+                                        <Text style={styles.optionValue}>
+                                            {item.optionsList.name}
+                                        </Text>
+                                    </View>
+                                )}
+                            />
+                            <Text style={styles.itemPrice}>${priceItem(item)}</Text>
+                        </View>
+                        <View style={styles.itemActions}>
+                            <TouchableOpacity
+                                style={styles.quantityButton}
+                                onPress={() => adjustQuantity(index, -1)}
+                            >
+                                <Text style={styles.buttonText}>-</Text>
+                            </TouchableOpacity>
+                            <Text style={styles.quantityText}>{item.quantity}</Text>
+                            <TouchableOpacity
+                                style={styles.quantityButton}
+                                onPress={() => adjustQuantity(index, 1)}
+                            >
+                                <Text style={styles.buttonText}>+</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
+            />
+            <View style={styles.footer}>
+                <View style={styles.totalRow}>
+                    <Text style={styles.totalLabel}>Total:</Text>
+                    <Text style={styles.totalValue}>${total}</Text>
                 </View>
+                <TouchableOpacity
+                    style={[
+                        styles.paymentButton,
+                        { backgroundColor: chooseList.includes(true) ? Color.primary : "#ccc" },
+                    ]}
+                    onPress={handlePayment}
+                >
+                    <Text style={styles.paymentText}>Proceed to Payment</Text>
+                </TouchableOpacity>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#fff",
+        flex: 1,
+        backgroundColor: "#f5f5f5",
     },
-    container_cart: {
-        width: "100%",
+    cartList: {
+        marginBottom: 100,
     },
-    container_info: {
-        width: "60%",
-    },
-    container_item: {
+    cartItem: {
         flexDirection: "row",
+        alignItems: "center",
         padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
+        marginVertical: 5,
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 2,
     },
-    img_item: {
-        width: 100,
-        height: 100,
+    itemImage: {
+        width: 80,
+        height: 80,
+        borderRadius: 8,
         marginRight: 10,
-        marginTop: 4,
-        borderRadius: 4,
     },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
+    itemDetails: {
+        flex: 1,
     },
-    description: {
-        fontSize: 13,
-    },
-    price: {
+    itemName: {
         fontSize: 16,
         fontWeight: "bold",
+        marginBottom: 5,
     },
-    container_option: {
+    optionRow: {
         flexDirection: "row",
+        alignItems: "center",
     },
-    option_name: {
+    optionLabel: {
         fontWeight: "bold",
+        marginRight: 5,
     },
-    optionList_name: {},
-    flatList: {
-        height: 55, // Set a fixed height for the FlatList
+    optionValue: {
+        fontStyle: "italic",
     },
-    container_priceItem: {
-        flexDirection: "row",
-        gap: 12,
+    itemPrice: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: Color.primary,
+        marginTop: 10,
+    },
+    itemActions: {
+        alignItems: "center",
+    },
+    quantityButton: {
+        width: 30,
+        height: 30,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#ddd",
+        borderRadius: 5,
+    },
+    buttonText: {
+        fontSize: 18,
+    },
+    quantityText: {
+        fontSize: 16,
+        marginVertical: 5,
+    },
+    footer: {
         position: "absolute",
         bottom: 0,
-    },
-    container_right: {
-        margin: "auto",
-    },
-    quantity: {
-        marginTop: 12,
-        textAlign: "center",
-        fontSize: 20,
-    },
-
-    txt_priceItem: {
-        fontWeight: "bold",
-        fontSize: 16,
-    },
-
-    container_total: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        marginTop: 62,
-    },
-    container_listmethod: {
-        flexDirection: "column",
-        // backgroundColor: "#ccc",
-        width: "80%",
-        margin: "auto",
-        gap: 12,
-    },
-    container_method: {
-        flexDirection: "row",
-        padding: 10,
-        justifyContent: "space-between",
+        width: "100%",
+        padding: 15,
         backgroundColor: "#fff",
-        borderRadius: 12,
-        borderWidth: 1,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
     },
-    method_image: {
-        width: 50,
-        height: 50,
-        borderRadius: 12,
+    totalRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 10,
     },
-    method_name: {
-        width: 200,
-    },
-    txt_total: {
-        fontSize: 24,
-        textAlign: "center",
-    },
-    txt_price: {
-        fontSize: 32,
-        textAlign: "center",
-    },
-    btn_payment: {
-        backgroundColor: "#4296FF",
-        padding: 10,
-        borderRadius: 5,
-        margin: 10,
-    },
-    txt_payment: {
-        color: "#fff",
-        textAlign: "center",
-        fontSize: 20,
-    },
-    delete_item: {
-        position: "relative",
-        left: 70,
-        top: -10,
-        color: "red",
-        fontSize: 24,
+    totalLabel: {
+        fontSize: 18,
         fontWeight: "bold",
     },
-
-    container_quantity: {
-        flexDirection: "row",
-        paddingRight: 80,
+    totalValue: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: Color.primary,
     },
-    btn_adjustQuantity: {
-        backgroundColor: "#ccc",
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 12,
-        margin: 4,
+    paymentButton: {
+        padding: 15,
+        borderRadius: 8,
+        alignItems: "center",
     },
-    signQuantity: {
-        fontSize: 20,
+    paymentText: {
+        color: "#fff",
+        fontSize: 16,
         fontWeight: "bold",
     },
 });
