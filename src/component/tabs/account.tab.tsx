@@ -71,7 +71,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                             style={[
                                 styles.containerAvatar,
                                 {
-                                    backgroundColor: "#fe8c77",
+                                    // backgroundColor: "#fe8c77",
                                     paddingVertical: 24,
                                 },
                             ]}
