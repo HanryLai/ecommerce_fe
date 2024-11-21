@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import {
 	Text,
 	View,
@@ -6,307 +7,173 @@ import {
 	TextInput,
 	TouchableOpacity,
 	FlatList,
-	ListRenderItem,
-	ActivityIndicator,
 	Image,
 } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { AppDispatch, RootState, useAppSelector } from '../../utils/redux'
-import { selectCategory } from '../../utils/redux/reducers/category.redux'
-import { CategoryType } from '../../utils/types/type/category.type'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { ProductType } from '../../utils/types/type/product.type'
+import { useDispatch } from 'react-redux'
+import { AppDispatch, useAppSelector } from '../../utils/redux'
+import { AntDesign } from '@expo/vector-icons'
 import api from '../../utils/axios'
 import productSlice from '../../utils/redux/reducers/product.redux'
 import feedbackSlice from '../../utils/redux/reducers/feekback.redux'
 
 export function Feedback() {
 	const dispatch = useDispatch<AppDispatch>()
-	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
-	const feedbacks = useAppSelector((state) => state.feedbackReducer.value)
-	const [feedback, setFeedback] = useState('')
+	const products = useAppSelector((state) => state.productReducer.value)
+	const [ratings, setRatings] = useState<{ [key: string]: number }>({})
+	const [comments, setComments] = useState<{ [key: string]: string }>({})
+
 	useEffect(() => {
-		const feekbacks = api
-			.get('/feedbacks')
-			.then((response) => response.data)
-			.then((data) => {
-				dispatch(feedbackSlice.actions.storefeedback(data))
-			})
-			.catch((error) => {
+		const fetchProducts = async () => {
+			try {
+				const response = await api.get('/products')
+				dispatch(productSlice.actions.storeproduct(response.data))
+			} catch (error) {
 				console.error(error)
-			})
+			}
+		}
+		fetchProducts()
 	}, [])
 
-	function sendFeedback(feedback: string) {
-		console.log('feedback', feedback)
+	const selectedRating = (productId: string, rating: number) => {
+		setRatings((prev) => ({ ...prev, [productId]: rating }))
+	}
 
-		const data = {
-			comment: feedback,
+	const handleCommentChange = (productId: string, text: string) => {
+		setComments((prev) => ({ ...prev, [productId]: text }))
+	}
+
+	const sendFeedback = (productId: string) => {
+		const feedbackData = {
+			product_id: productId,
+			comment: comments[productId] || '',
+			rating: ratings[productId] || 0,
 			account: 'user',
 			image_url: 'https://picsum.photos/200',
-
-			product_id: 1,
 		}
-		api.post('/feedbacks', data)
 
-		api.get('/feedbacks').then((response) => {
-			dispatch(feedbackSlice.actions.storefeedback(response.data))
-		})
+		api
+			.post('/feedbacks', feedbackData)
+			.then(() => {
+				api.get('/feedbacks').then((response) => {
+					dispatch(feedbackSlice.actions.storefeedback(response.data))
+				})
+			})
+			.catch((error) => {
+				console.error('Error sending feedback:', error)
+			})
 
-		setFeedback('')
+		// Reset feedback for the product
+		setComments((prev) => ({ ...prev, [productId]: '' }))
+		setRatings((prev) => ({ ...prev, [productId]: 0 }))
 	}
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView
-				contentContainerStyle={{ flexGrow: 1, gap: 10 }}
-				showsVerticalScrollIndicator={false}
-				showsHorizontalScrollIndicator={false}
-			>
-				{/* show img */}
-				<View style={{ flexDirection: 'row' }}>
-					<Image
-						source={{ uri: selectedProduct?.image_url }}
-						style={{ width: '100%', height: 300 }}
-					/>
-				</View>
-				{/* name */}
-				<Text style={styles.TextBold}>{selectedProduct?.name}</Text>
-				{/* price and rate  */}
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-					<Text style={styles.TextBold}>${selectedProduct?.price}</Text>
-					<View style={{ flexDirection: 'row' }}>
-						<AntDesign name="star" size={16} color="yellow" />
-						<Text style={styles.TextBold}>4.5</Text>
-					</View>
-				</View>
-				{/* description */}
-				<Text style={styles.TextBold}>Description</Text>
-				<Text style={styles.TextLight}>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, purus nec ultricies
-					ultricies, metus purus ultricies sem, nec aliquam nisi nunc nec nunc. Quisque in nunc vel
-					nunc ultricies ultricies. Sed nec arcu ac nunc ultricies ultricies. Sed nec arcu ac nunc
-					ultricies ultricies.
-				</Text>
-				{/* service group */}
-				<View style={styles.services}>
-					<View style={styles.service}>
-						<AntDesign name="hearto" size={24} color="#00BDD6" />
-						<Text style={styles.textService}>Express</Text>
-					</View>
-					<View style={styles.service}>
-						<AntDesign name="hearto" size={24} color="#00BDD6" />
-						<Text style={styles.textService}>30 days free return</Text>
-					</View>
-					<View style={styles.service}>
-						<AntDesign name="hearto" size={24} color="#00BDD6" />
-						<Text style={styles.textService}>Good review</Text>
-					</View>
-					<View style={styles.service}>
-						<AntDesign name="hearto" size={24} color="#00BDD6" />
-						<Text style={styles.textService}>Express</Text>
-					</View>
-				</View>
+		<ScrollView contentContainerStyle={styles.container}>
+			<View style={styles.card}>
+				<Text style={styles.heading}>Feedback</Text>
 
-				{/* separator */}
-				<View style={styles.separator}></View>
-
-				{/* review  */}
-				<View>
-					<View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-						<Text style={styles.TextBold}>Review</Text>
-						<Text style={styles.TextLight}>SeeAll</Text>
-					</View>
-				</View>
-				<View style={{ flex: 1 }}>
-					{feedbacks.map((item) => (
-						<View
-							key={item.id}
-							style={{
-								flexDirection: 'row',
-								gap: 10,
-								justifyContent: 'space-between',
-								margin: 4,
-								padding: 10,
-							}}
-						>
+				{products.map((product) => (
+					<View key={product.id} style={styles.card}>
+						<View style={styles.item}>
+							{/* <Image source={{ uri: product.icon }} style={styles.icon} /> */}
+							<Text style={styles.title}>{product.name}</Text>
 							<View>
-								<Image
-									source={{ uri: item.image_url }}
-									style={{ width: 50, height: 50, borderRadius: 50 }}
+								<Text style={styles.description}>Chất lượng sản phẩm:</Text>
+								<FlatList
+									data={[1, 2, 3, 4, 5]}
+									keyExtractor={(item) => item.toString()}
+									horizontal
+									renderItem={({ item }) => (
+										<TouchableOpacity onPress={() => selectedRating(product.id, item)}>
+											<AntDesign
+												name="star"
+												size={24}
+												color={item <= (ratings[product.id] || 0) ? '#ffc107' : '#6c757d'}
+												style={styles.star}
+											/>
+										</TouchableOpacity>
+									)}
 								/>
 							</View>
-							<View style={{ flexDirection: 'column', flex: 1 }}>
-								<Text style={styles.TextBold}>{item.account}</Text>
-								<Text numberOfLines={5}> {item.comment}</Text>
-							</View>
-							<View style={styles.separator}></View>
-						</View>
-					))}
-
-					{/* input review */}
-					<View>
-						<View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-							<Image
-								source={{ uri: 'https://picsum.photos/200' }}
-								style={{ width: 50, height: 50, borderRadius: 50 }}
+							<Text style={styles.title}>Nhận xét của bạn</Text>
+							<TextInput
+								style={styles.textarea}
+								placeholder="Hãy chia sẻ nhận xét cho sản phẩm này của bạn nhé!"
+								multiline
+								numberOfLines={5}
+								value={comments[product.id] || ''}
+								onChangeText={(text) => handleCommentChange(product.id, text)}
 							/>
-							<View style={{ flex: 1 }}>
-								<TextInput
-									placeholder="Your comment...."
-									style={{
-										borderRadius: 5,
-										padding: 5,
-									}}
-									onChangeText={(text) => setFeedback(text)}
-									value={feedback}
-								/>
-							</View>
-
-							<TouchableOpacity
-								style={{
-									width: 50,
-									height: 50,
-									justifyContent: 'center',
-									alignItems: 'center',
-									borderRadius: 5,
-								}}
-								onPress={() => {
-									sendFeedback(feedback)
-								}}
-							>
-								{/* icon send */}
-								<AntDesign name="arrowright" size={24} color="#00BDD6" />
+							<TouchableOpacity style={styles.button} onPress={() => sendFeedback(product.id)}>
+								<Text style={styles.buttonText}>Gửi đánh giá</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
-				</View>
-
-				{/* button */}
-				<View style={{ flexDirection: 'row', gap: 10 }}>
-					<TouchableOpacity
-						style={{
-							backgroundColor: '#00BDD6',
-							width: '15%',
-							height: 50,
-							justifyContent: 'center',
-							alignItems: 'center',
-							borderRadius: 5,
-						}}
-					>
-						<AntDesign name="shoppingcart" size={30} color="black" />
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={{
-							backgroundColor: '#00BDD6',
-							flex: 1,
-							height: 50,
-							justifyContent: 'center',
-							alignItems: 'center',
-							borderRadius: 5,
-						}}
-					>
-						<Text style={styles.TextBold}>Mua ngay</Text>
-					</TouchableOpacity>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+				))}
+			</View>
+		</ScrollView>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
-		backgroundColor: 'white',
-		padding: 10,
-		gap: 20,
+		flexGrow: 1,
+		padding: 16,
+		backgroundColor: '#f9f9f9',
 	},
-	search: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		padding: 10,
-		borderRadius: 5,
+	card: {
+		backgroundColor: '#fff',
+		padding: 16,
+		borderRadius: 8,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.1,
+		shadowRadius: 4,
+		elevation: 2,
+		marginBottom: 16,
 	},
-	SearchBar: {
-		justifyContent: 'center',
-		alignItems: 'center',
-		flexDirection: 'row',
-		gap: 10,
-		borderRadius: 5,
+	heading: {
+		fontSize: 18,
+		fontWeight: '600',
+		marginBottom: 16,
 	},
-	TextBold: {
-		fontWeight: 'bold',
+	item: {
+		marginBottom: 16,
+	},
+	icon: {
+		width: 64,
+		height: 64,
+		marginBottom: 8,
+	},
+	title: {
 		fontSize: 16,
+		fontWeight: '500',
+		marginBottom: 8,
 	},
-	TextLight: {
-		fontWeight: '300',
-		fontSize: 12,
+	description: {
+		fontSize: 14,
+		color: '#6c757d',
+		marginBottom: 8,
 	},
-	category: {
-		backgroundColor: 'red',
-		width: 100,
-		height: 100,
-		justifyContent: 'center',
-		alignItems: 'center',
-		marginRight: 2,
-		borderRadius: 10,
-	},
-	errorText: {
-		color: 'red',
-		textAlign: 'center',
-	},
-	categories: {
-		marginBottom: 10,
-	},
-	options: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		gap: 10,
-	},
-	option: {
-		backgroundColor: 'pink',
-		padding: 4,
-		borderRadius: 10,
-	},
-	products: {
-		width: '100%',
-		marginVertical: 10,
-	},
-	product: {
-		width: '100%',
-		height: 80,
-		backgroundColor: 'white',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		padding: 10,
-	},
-	services: {
-		alignItems: 'center',
-		marginTop: 10,
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		alignContent: 'center',
-	},
-	service: {
-		flexDirection: 'row',
-		justifyContent: 'flex-start',
-		alignItems: 'center',
-		width: '45%',
-		gap: 10,
+	textarea: {
+		borderWidth: 1,
+		borderColor: '#ccc',
+		borderRadius: 8,
 		padding: 8,
+		textAlignVertical: 'top',
+		marginBottom: 8,
 	},
-	textService: {
-		color: 'gray',
-		fontSize: 12,
-		fontWeight: 'light',
+	star: {
+		marginHorizontal: 4,
 	},
-	separator: {
-		marginVertical: 10,
-		borderBottomColor: '#EFEEEE',
-		borderBottomWidth: 1,
+	button: {
+		backgroundColor: '#007bff',
+		padding: 10,
+		borderRadius: 8,
+		alignItems: 'center',
+	},
+	buttonText: {
+		color: '#fff',
+		fontWeight: '600',
 	},
 })
