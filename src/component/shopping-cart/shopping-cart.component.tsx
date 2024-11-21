@@ -19,13 +19,14 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
     const priceItem = (product: Product) => parseInt(product.price) - priceAdjust(product.option);
 
     const totalPrice = () =>
-        productList.reduce((sum, item, index) => {
-            console.log(chooseList);
-            if (chooseList[index]) {
-                sum += priceItem(item) * parseInt(item.quantity as unknown as string);
-            }
-            return sum;
-        }, 0);
+        setTotal(
+            productList.reduce((sum, item, index) => {
+                if (chooseList[index]) {
+                    sum += priceItem(item) * parseInt(item.quantity as unknown as string);
+                }
+                return sum;
+            }, 0)
+        );
 
     const adjustQuantity = (index: number, quantity: number) => {
         const updatedList = [...productList];
@@ -33,17 +34,17 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
             parseInt(updatedList[index].quantity as unknown as string) + quantity;
 
         setProductList(updatedList);
-        setTotal(totalPrice());
+        totalPrice();
     };
 
     const toggleCheckbox = (index: number) => {
-        const updatedChecked = [...listChecked];
-        const updatedChooseList = [...chooseList];
+        const updatedChecked = listChecked;
+        const updatedChooseList = chooseList;
         updatedChecked[index] = !updatedChecked[index];
         updatedChooseList[index] = !updatedChooseList[index];
         setListChecked(updatedChecked);
         setChooseList(updatedChooseList);
-        setTotal(totalPrice());
+        totalPrice();
     };
 
     const handlePayment = () => {
@@ -64,6 +65,7 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                 const data = res.data;
                 setListChecked(new Array(data.length).fill(false));
                 setChooseList(new Array(data.length).fill(false));
+
                 setProductList(data);
             })
             .catch((err) => console.error(err));
@@ -96,6 +98,14 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                             />
                             <Text style={styles.itemPrice}>${priceItem(item)}</Text>
                         </View>
+                        <TouchableOpacity
+                            style={styles.deleteBtn}
+                            onPress={() => {
+                                console.log("delete");
+                            }}
+                        >
+                            <Text style={styles.deleteTxt}>x</Text>
+                        </TouchableOpacity>
                         <View style={styles.itemActions}>
                             <TouchableOpacity
                                 style={styles.quantityButton}
@@ -184,8 +194,21 @@ const styles = StyleSheet.create({
         color: Color.primary,
         marginTop: 10,
     },
+    deleteBtn: {
+        position: "absolute",
+        top: 0,
+        right: 10,
+        paddingHorizontal: 12,
+    },
+    deleteTxt: {
+        fontSize: 28,
+        color: "#073a4d",
+        fontWeight: "bold",
+    },
     itemActions: {
+        marginTop: 20,
         alignItems: "center",
+        flexDirection: "row",
     },
     quantityButton: {
         width: 30,

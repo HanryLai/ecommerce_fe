@@ -63,7 +63,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const colorRan = ["#ff8d76", "#213a58", "#09d1c7", "#f04772", "#c3c7f4", "#e3aadd"];
 
     return (
-        <ScrollView>
+        <ScrollView style={{ backgroundColor: "#fff" }}>
             {isLoading && (
                 <View>
                     <View style={styles.container}>
@@ -71,7 +71,6 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                             style={[
                                 styles.containerAvatar,
                                 {
-                                    // backgroundColor: "#fe8c77",
                                     paddingVertical: 24,
                                 },
                             ]}
@@ -161,7 +160,8 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#fff",
+        flex: 1,
+        // backgroundColor: "#fff",
         height: "100%",
     },
     containerAvatar: {
