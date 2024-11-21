@@ -13,7 +13,8 @@ export type NavigationStackParamList = {
     Tab: undefined;
     main: undefined;
     shoppingCart: {
-        id: string;
+        productOrder: Product[];
+        total: number;
     };
     category: {
         id: string;

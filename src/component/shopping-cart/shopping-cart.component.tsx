@@ -6,6 +6,7 @@ import { Option } from "../../interfaces/option.interface";
 import { Product } from "../../interfaces/product.interface";
 import api from "../../utils/axios/apiCuaHiu";
 import { PropsNavigate } from "../../utils/types";
+import { Color } from "../../style";
 
 export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
     const [productList, setProductList] = useState<Product[]>([]);
@@ -18,6 +19,13 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
             price += parseInt(item.optionsList.adjust);
         });
         return price;
+    }
+
+    function disableBtnPay() {
+        if (chooseList.includes(true)) {
+            return Color.primary;
+        }
+        return "#ccc";
     }
 
     function priceItem(product: Product) {
@@ -56,6 +64,10 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
     }
 
     function paymentNavigation() {
+        if (!chooseList.includes(true)) {
+            alert("Please choose product to payment");
+            return;
+        }
         const productOrder = productList.filter((item, index) => {
             if (chooseList[index]) {
                 return item;
@@ -156,7 +168,12 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
 
                 <View>
                     <TouchableOpacity
-                        style={styles.btn_payment}
+                        style={[
+                            styles.btn_payment,
+                            {
+                                backgroundColor: disableBtnPay(),
+                            },
+                        ]}
                         onPress={() => paymentNavigation()}
                     >
                         <Text style={styles.txt_payment}>Payment</Text>
@@ -188,6 +205,7 @@ const styles = StyleSheet.create({
         height: 100,
         marginRight: 10,
         marginTop: 4,
+        borderRadius: 4,
     },
     title: {
         fontSize: 20,

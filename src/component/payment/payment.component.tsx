@@ -1,301 +1,184 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Checkbox, RadioButton } from "react-native-paper";
-import { ScrollView } from "react-native-virtualized-view";
-import { EditShoppingCartSVG } from "../../common/svg";
-import { Option } from "../../interfaces/option.interface";
+import { RadioButton } from "react-native-paper";
 import { Product } from "../../interfaces/product.interface";
-import api from "../../utils/axios/apiCuaHiu";
 import { PropsNavigate } from "../../utils/types";
+
 const codImg = require("../../../assets/components/payment/cod.png");
 const momoImg = require("../../../assets/components/payment/momo.png");
 
 export const PaymentComponent = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
-    const [productList, setProductList] = useState<Product[]>([]);
-    const [listChecked, setListChecked] = useState<boolean[]>([]);
-    const [checked, setChecked] = useState(0);
+    const [productList, setProductList] = useState<Product[]>(route.params.productOrder);
+    const [total, setTotal] = useState<number>(route.params.total);
+    const [checked, setChecked] = useState(1); // Default selected payment method
 
-    function priceAdjust(option: Option[]) {
-        let price = 0;
-        option.forEach((item) => {
-            price += parseInt(item.optionsList.adjust);
-        });
-        return price;
-    }
-
-    function priceItem(product: Product) {
-        return parseInt(product.price) - priceAdjust(product.option);
-    }
-    function totalPrice() {
-        let total = 0;
-        productList.forEach((item) => {
-            total += priceItem(item) * item.quantity;
-        });
-        return total;
-    }
-
-    function deleteItem(index: number) {
-        console.log(index);
-    }
-
-    function adjustQuantity(index: number, quantity: number) {
-        let list = productList;
-        const quantityItem = parseInt(list[index].quantity as unknown as string);
-        list[index].quantity = quantityItem + quantity;
-        setProductList([...list]);
-    }
-    useEffect(() => {
-        api.get("/shopping-cart/")
-            .then((res) => {
-                return res.data;
-            })
-            .then((data) => {
-                console.log(data);
-                setListChecked(new Array(data.length).fill(false));
-                setProductList(data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
-    return (
-        <ScrollView style={styles.container}>
-            <ScrollView style={{ height: "50%" }}>
+    const renderProductItem = ({ item }: { item: Product }) => (
+        <View style={styles.productItem}>
+            <Image style={styles.productImage} source={{ uri: item.images_url }} />
+            <View style={styles.productInfo}>
+                <Text style={styles.productTitle}>{item.name}</Text>
                 <FlatList
-                    data={productList}
-                    style={styles.container_cart}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <View style={styles.container_item}>
-                                <Checkbox
-                                    status={listChecked[index] ? "checked" : "unchecked"}
-                                    onPress={() => {
-                                        let list = listChecked;
-                                        list[index] = !list[index];
-                                        setListChecked([...list]);
-                                    }}
-                                />
-                                <Image style={styles.img_item} source={{ uri: item.images_url }} />
-                                <View style={styles.container_info}>
-                                    <Text style={styles.title}>{item.name}</Text>
-                                    <FlatList
-                                        data={item.option}
-                                        renderItem={({ item }) => {
-                                            return (
-                                                <View style={styles.container_option}>
-                                                    <Text style={styles.option_name}>
-                                                        {item.name}:
-                                                    </Text>
-                                                    <Text style={styles.optionList_name}>
-                                                        {item.optionsList.name}
-                                                    </Text>
-                                                </View>
-                                            );
-                                        }}
-                                        style={styles.flatList}
-                                    />
-                                    <View style={styles.container_priceItem}>
-                                        <Text style={styles.txt_priceItem}>Price:</Text>
-                                        <Text style={styles.price}>{priceItem(item)}$</Text>
-                                    </View>
-                                </View>
-                                <View style={styles.container_right}>
-                                    <Text
-                                        style={styles.delete_item}
-                                        onPress={() => deleteItem(index)}
-                                    >
-                                        X
-                                    </Text>
-                                    <View style={styles.container_quantity}>
-                                        <TouchableOpacity
-                                            onPress={() => adjustQuantity(index, -1)}
-                                            style={styles.btn_adjustQuantity}
-                                        >
-                                            <Text style={styles.signQuantity}>-</Text>
-                                        </TouchableOpacity>
-                                        <Text style={styles.quantity}>{item.quantity}</Text>
-                                        <TouchableOpacity
-                                            onPress={() => adjustQuantity(index, 1)}
-                                            style={styles.btn_adjustQuantity}
-                                        >
-                                            <Text style={styles.signQuantity}>+</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        );
-                    }}
+                    data={item.option}
+                    renderItem={({ item }) => (
+                        <View style={styles.productOption}>
+                            <Text style={styles.optionName}>{item.name}:</Text>
+                            <Text style={styles.optionValue}>{item.optionsList.name}</Text>
+                        </View>
+                    )}
+                    keyExtractor={(_, index) => index.toString()}
                 />
-            </ScrollView>
-            <View style={styles.container_total}>
-                <Text style={styles.txt_total}>Total:</Text>
-                <Text style={styles.txt_price}>$ {totalPrice()}</Text>
+                <Text style={styles.productPrice}>Price: ${item.price}</Text>
             </View>
-            <View style={styles.container_listmethod}>
-                <View style={styles.container_method}>
-                    <Image style={styles.method_image} source={momoImg} />
-                    <Text style={styles.method_name}>Momo</Text>
-                    <RadioButton
-                        value="1"
-                        status={checked === 1 ? "checked" : "unchecked"}
-                        onPress={() => setChecked(1)}
-                    />
-                </View>
-                <View style={styles.container_method}>
-                    <Image style={styles.method_image} source={codImg} />
-                    <Text style={styles.method_name}>Thanh toán khi giao hàng</Text>
-                    <RadioButton
-                        value="first"
-                        status={checked === 2 ? "checked" : "unchecked"}
-                        onPress={() => setChecked(2)}
-                    />
-                </View>
+            <View style={styles.productQuantity}>
+                <Text style={styles.quantityLabel}>SL: {item.quantity}</Text>
             </View>
+        </View>
+    );
 
-            <View>
-                <TouchableOpacity
-                    style={styles.btn_payment}
-                    onPress={() => navigation.navigate("PaymentComponent")}
-                >
-                    <Text style={styles.txt_payment}>Payment</Text>
+    const renderPaymentMethod = (id: number, label: string, image: any) => (
+        <View style={styles.paymentMethod}>
+            <Image style={styles.methodImage} source={image} />
+            <Text style={styles.methodLabel}>{label}</Text>
+            <RadioButton
+                value={id.toString()}
+                status={checked === id ? "checked" : "unchecked"}
+                onPress={() => setChecked(id)}
+            />
+        </View>
+    );
+
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={productList}
+                renderItem={renderProductItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.productList}
+            />
+
+            <View style={styles.footer}>
+                <View style={styles.totalContainer}>
+                    <Text style={styles.totalLabel}>Total:</Text>
+                    <Text style={styles.totalPrice}>$ {total}</Text>
+                </View>
+                <View style={styles.paymentMethods}>
+                    {renderPaymentMethod(1, "Momo", momoImg)}
+                    {renderPaymentMethod(2, "Thanh toán khi giao hàng", codImg)}
+                </View>
+                <TouchableOpacity style={styles.paymentButton} onPress={() => {}}>
+                    <Text style={styles.paymentButtonText}>Payment</Text>
                 </TouchableOpacity>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#fff",
+        flex: 1,
+        backgroundColor: "#f8f9fa",
+        paddingHorizontal: 16,
     },
-    container_cart: {
-        width: "100%",
+    productList: {
+        paddingBottom: 250, // To ensure footer is not overlapped
     },
-    container_info: {
-        width: "60%",
-    },
-    container_item: {
+    productItem: {
         flexDirection: "row",
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: "#ccc",
     },
-    img_item: {
+    productImage: {
         width: 100,
         height: 100,
         marginRight: 10,
-        marginTop: 4,
+        borderRadius: 4,
     },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
+    productInfo: {
+        flex: 1,
     },
-    description: {
-        fontSize: 13,
-    },
-    price: {
+    productTitle: {
         fontSize: 16,
         fontWeight: "bold",
+        marginBottom: 4,
     },
-    container_option: {
+    productOption: {
         flexDirection: "row",
+        marginBottom: 4,
     },
-    option_name: {
+    optionName: {
         fontWeight: "bold",
     },
-    optionList_name: {},
-    flatList: {
-        height: 55, // Set a fixed height for the FlatList
+    optionValue: {
+        marginLeft: 4,
     },
-    container_priceItem: {
-        flexDirection: "row",
-        gap: 12,
+    productPrice: {
+        marginTop: 8,
+        fontSize: 14,
+        fontWeight: "bold",
+        color: "#333",
+    },
+    productQuantity: {
+        justifyContent: "center",
+        alignItems: "flex-end",
+    },
+    quantityLabel: {
+        fontSize: 14,
+    },
+    footer: {
         position: "absolute",
         bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: "#fff",
+        padding: 16,
+        borderTopWidth: 1,
+        borderTopColor: "#ccc",
     },
-    container_right: {
-        margin: "auto",
+    totalContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 16,
     },
-    quantity: {
-        marginTop: 12,
-        textAlign: "center",
-        fontSize: 20,
-    },
-
-    txt_priceItem: {
+    totalLabel: {
+        fontSize: 18,
         fontWeight: "bold",
+    },
+    totalPrice: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "#4296FF",
+    },
+    paymentMethods: {
+        marginBottom: 16,
+    },
+    paymentMethod: {
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 8,
+        backgroundColor: "#f1f1f1",
+        borderRadius: 8,
+        marginBottom: 8,
+    },
+    methodImage: {
+        width: 40,
+        height: 40,
+        borderRadius: 8,
+        marginRight: 12,
+    },
+    methodLabel: {
+        flex: 1,
         fontSize: 16,
     },
-
-    container_total: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        marginTop: 62,
-    },
-    container_listmethod: {
-        flexDirection: "column",
-        // backgroundColor: "#ccc",
-        width: "80%",
-        margin: "auto",
-        gap: 12,
-    },
-    container_method: {
-        flexDirection: "row",
-        padding: 10,
-        justifyContent: "space-between",
-        backgroundColor: "#fff",
-        borderRadius: 12,
-        borderWidth: 1,
-    },
-    method_image: {
-        width: 50,
-        height: 50,
-        borderRadius: 12,
-    },
-    method_name: {
-        width: 200,
-    },
-    txt_total: {
-        fontSize: 24,
-        textAlign: "center",
-    },
-    txt_price: {
-        fontSize: 32,
-        textAlign: "center",
-    },
-    btn_payment: {
+    paymentButton: {
         backgroundColor: "#4296FF",
-        padding: 10,
-        borderRadius: 5,
-        margin: 10,
+        padding: 12,
+        borderRadius: 8,
+        alignItems: "center",
     },
-    txt_payment: {
+    paymentButtonText: {
         color: "#fff",
-        textAlign: "center",
-        fontSize: 20,
-    },
-    delete_item: {
-        position: "relative",
-        left: 70,
-        top: -10,
-        color: "red",
-        fontSize: 24,
-        fontWeight: "bold",
-    },
-
-    container_quantity: {
-        flexDirection: "row",
-        paddingRight: 80,
-    },
-    btn_adjustQuantity: {
-        backgroundColor: "#ccc",
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 12,
-        margin: 4,
-    },
-    signQuantity: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: "bold",
     },
 });
