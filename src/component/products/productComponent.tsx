@@ -17,6 +17,7 @@ const ProductComponent = ({ item }: { item: ProductType }) => {
 		try {
 			const response = await api.get(`/products/${id}`)
 			const data = response.data.data
+
 			dispatch(productSlice.actions.selectproduct(data))
 			navigationHook.navigate('productDetails', { id: id })
 		} catch (error) {

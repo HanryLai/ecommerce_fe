@@ -1,28 +1,9 @@
-import {
-	Text,
-	View,
-	StyleSheet,
-	ScrollView,
-	TextInput,
-	TouchableOpacity,
-	FlatList,
-	ListRenderItem,
-	ActivityIndicator,
-	Image,
-	Alert,
-} from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { AppDispatch, RootState, selectProduct, useAppSelector } from '../../utils/redux'
-import { selectCategory } from '../../utils/redux/reducers/category.redux'
-import { CategoryType } from '../../utils/types/type/category.type'
 import AntDesign from '@expo/vector-icons/AntDesign'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { ProductType } from '../../utils/types/type/product.type'
-import api from '../../utils/axios'
-import productSlice from '../../utils/redux/reducers/product.redux'
-import feedbackSlice from '../../utils/redux/reducers/feekback.redux'
+import { useState } from 'react'
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Modal, PaperProvider, Portal, RadioButton } from 'react-native-paper'
+import { useDispatch } from 'react-redux'
+import { AppDispatch, useAppSelector } from '../../utils/redux'
 
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
@@ -31,6 +12,8 @@ export function ProductDetails() {
 	const [quantity, setQuantity] = useState(1)
 
 	const [visible, setVisible] = useState(false)
+
+	console.log('selectedProduct', selectedProduct)
 
 	const increaseQuantity = () => setQuantity((prev) => prev + 1)
 	const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev))
@@ -196,30 +179,30 @@ export function ProductDetails() {
 						</View>
 					</View>
 					<View style={{ flex: 1 }}>
-						{/* {feedbacks.map((item) => (
-						<View
-							key={item.id}
-							style={{
-								flexDirection: 'row',
-								gap: 10,
-								justifyContent: 'space-between',
-								margin: 4,
-								padding: 10,
-							}}
-						>
-							<View>
-								<Image
-									source={{ uri: item.image_url }}
-									style={{ width: 50, height: 50, borderRadius: 50 }}
-								/>
+						{selectedProduct?.feedbacks?.map((item) => (
+							<View
+								key={item.id}
+								style={{
+									flexDirection: 'row',
+									gap: 10,
+									justifyContent: 'space-between',
+									margin: 4,
+									padding: 10,
+								}}
+							>
+								<View>
+									<Image
+										source={{ uri: item.account.detailInformation?.avatar_url }}
+										style={{ width: 50, height: 50, borderRadius: 50 }}
+									/>
+								</View>
+								<View style={{ flexDirection: 'column', flex: 1 }}>
+									<Text style={styles.TextBold}>{item.account.detailInformation?.full_name}</Text>
+									<Text numberOfLines={5}> {item.comment}</Text>
+								</View>
+								<View style={styles.separator}></View>
 							</View>
-							<View style={{ flexDirection: 'column', flex: 1 }}>
-								<Text style={styles.TextBold}>{item.account}</Text>
-								<Text numberOfLines={5}> {item.comment}</Text>
-							</View>
-							<View style={styles.separator}></View>
-						</View>
-					))} */}
+						))}
 
 						{/* input review */}
 						{/* <View>

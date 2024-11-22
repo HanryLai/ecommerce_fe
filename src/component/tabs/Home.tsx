@@ -64,7 +64,7 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 
 	useEffect(() => {
 		const categories = api
-			.get('/category')
+			.get('/categories')
 			.then((response) => response.data.data)
 			.then((data) => {
 				dispatch(categorySlice.actions.storeCategory(data))
