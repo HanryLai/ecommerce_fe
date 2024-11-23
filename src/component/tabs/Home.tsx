@@ -114,8 +114,8 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 								<TouchableOpacity
 									style={styles.category}
 									onPress={() => {
-										navigationHook.navigate('category', { id: item.id })
 										dispatch(categorySlice.actions.selectCategory(item))
+										navigationHook.navigate('category', { id: item.id })
 									}}
 								>
 									<View style={styles.circle}>
