@@ -25,39 +25,6 @@ export function ProductDetails() {
 		setSelectedOptions((prev) => ({ ...prev, [optionId]: listOptionId }))
 	}
 
-	// const feedbacks = useAppSelector((state) => state.feedbackReducer.value)
-	// const [feedback, setFeedback] = useState('')
-	// useEffect(() => {
-	// 	const feekbacks = api
-	// 		.get('/feedbacks')
-	// 		.then((response) => response.data)
-	// 		.then((data) => {
-	// 			dispatch(feedbackSlice.actions.storefeedback(data))
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error(error)
-	// 		})
-	// }, [])
-
-	// function sendFeedback(feedback: string) {
-	// 	console.log('feedback', feedback)
-
-	// 	const data = {
-	// 		comment: feedback,
-	// 		account: 'user',
-	// 		image_url: 'https://picsum.photos/200',
-
-	// 		product_id: 1,
-	// 	}
-	// 	api.post('/feedbacks', data)
-
-	// 	api.get('/feedbacks').then((response) => {
-	// 		dispatch(feedbackSlice.actions.storefeedback(response.data))
-	// 	})
-
-	// 	setFeedback('')
-	// }
-
 	return (
 		<PaperProvider>
 			<View style={styles.container}>
@@ -192,12 +159,21 @@ export function ProductDetails() {
 							>
 								<View>
 									<Image
-										source={{ uri: item.account.detailInformation?.avatar_url }}
+										source={{
+											uri: item.account.detailInformation?.avatar_url
+												? item.account.detailInformation.avatar_url
+												: 'https://i.pinimg.com/originals/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg',
+										}}
 										style={{ width: 50, height: 50, borderRadius: 50 }}
 									/>
 								</View>
 								<View style={{ flexDirection: 'column', flex: 1 }}>
-									<Text style={styles.TextBold}>{item.account.detailInformation?.full_name}</Text>
+									<Text style={styles.TextBold}>
+										{item.account.detailInformation?.full_name
+											? item.account.detailInformation.full_name
+											: 'Người dùng chưa có tên'}
+									</Text>
+
 									<Text numberOfLines={5}> {item.comment}</Text>
 								</View>
 								<View style={styles.separator}></View>
