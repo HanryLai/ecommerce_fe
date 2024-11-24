@@ -65,12 +65,9 @@ const ProductComponent = ({ item }: { item: ProductType }) => {
 					</Text>
 				</View>
 
-				<View style={{ flexDirection: 'row', marginVertical: 4 }}>
-					{Array(5)
-						.fill(0)
-						.map((_, index) => (
-							<AntDesign key={index} name="star" size={12} color="#FFD700" />
-						))}
+				<View style={{ flexDirection: 'row', marginVertical: 4, alignItems: 'center' }}>
+					<AntDesign name="star" size={12} color="#FFD700" />
+					<Text style={{ fontSize: 12, color: '#333' }}>4.8</Text>
 				</View>
 				<View
 					style={{

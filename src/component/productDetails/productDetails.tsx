@@ -4,6 +4,7 @@ import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } fr
 import { Modal, PaperProvider, Portal, RadioButton } from 'react-native-paper'
 import { useDispatch } from 'react-redux'
 import { AppDispatch, useAppSelector } from '../../utils/redux'
+import { pink100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors'
 
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
@@ -62,52 +63,58 @@ export function ProductDetails() {
 							onDismiss={hideModal}
 							contentContainerStyle={styles.containerStyle}
 						>
-							<View style={styles.options}>
-								{selectedProduct?.options.map((item) => (
-									<View key={item.id} style={styles.option}>
-										<Text style={styles.optionTitle}>{item.name}</Text>
-										<RadioButton.Group
-											onValueChange={(value) => handleOptionSelect(item.id, value)}
-											value={selectedOptions[item.id]}
-										>
-											{item.listOptions?.map((option) => (
-												<View key={option.id} style={styles.optionItem}>
-													<RadioButton value={option.id.toString()} />
-													<Text style={styles.optionText}>{option.name}</Text>
-												</View>
-											))}
-										</RadioButton.Group>
+							<ScrollView
+								contentContainerStyle={{ gap: 10 }}
+								showsVerticalScrollIndicator={false}
+								showsHorizontalScrollIndicator={false}
+							>
+								<View style={styles.options}>
+									{selectedProduct?.options.map((item) => (
+										<View key={item.id} style={styles.option}>
+											<Text style={styles.optionTitle}>{item.name}</Text>
+											<RadioButton.Group
+												onValueChange={(value) => handleOptionSelect(item.id, value)}
+												value={selectedOptions[item.id]}
+											>
+												{item.listOptions?.map((option) => (
+													<View key={option.id} style={styles.optionItem}>
+														<RadioButton value={option.id.toString()} />
+														<Text style={styles.optionText}>{option.name}</Text>
+													</View>
+												))}
+											</RadioButton.Group>
+										</View>
+									))}
+									<View style={styles.quantityContainer}>
+										<Text style={styles.quantityLabel}>Quantity:</Text>
+										<View style={styles.quantityControls}>
+											<TouchableOpacity style={styles.quantityButton} onPress={decreaseQuantity}>
+												<Text style={styles.quantityButtonText}>-</Text>
+											</TouchableOpacity>
+											<Text style={styles.quantityText}>{quantity}</Text>
+											<TouchableOpacity style={styles.quantityButton} onPress={increaseQuantity}>
+												<Text style={styles.quantityButtonText}>+</Text>
+											</TouchableOpacity>
+										</View>
 									</View>
-								))}
-								<View style={styles.quantityContainer}>
-									<Text style={styles.quantityLabel}>Quantity:</Text>
-									<View style={styles.quantityControls}>
-										<TouchableOpacity style={styles.quantityButton} onPress={decreaseQuantity}>
-											<Text style={styles.quantityButtonText}>-</Text>
-										</TouchableOpacity>
-										<Text style={styles.quantityText}>{quantity}</Text>
-										<TouchableOpacity style={styles.quantityButton} onPress={increaseQuantity}>
-											<Text style={styles.quantityButtonText}>+</Text>
-										</TouchableOpacity>
-									</View>
+									<TouchableOpacity
+										style={{
+											backgroundColor: '#00BDD6',
+											flex: 1,
+											height: 50,
+											justifyContent: 'center',
+											alignItems: 'center',
+											borderRadius: 5,
+										}}
+										onPress={() => {
+											Alert.alert('Add to cak')
+											hideModal()
+										}}
+									>
+										<Text style={styles.TextBold}>Add to cart</Text>
+									</TouchableOpacity>
 								</View>
-								<TouchableOpacity
-									style={{
-										backgroundColor: '#00BDD6',
-										flex: 1,
-										height: 50,
-										justifyContent: 'center',
-										alignItems: 'center',
-										borderRadius: 5,
-									}}
-									onPress={() => {
-										Alert.alert('Add to cak')
-										hideModal()
-									}}
-								>
-									<Text style={styles.TextBold}>Add to cart</Text>
-								</TouchableOpacity>
-							</View>
+							</ScrollView>
 						</Modal>
 					</Portal>
 
@@ -366,6 +373,7 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		left: 0,
 		right: 0,
+		maxHeight: '80%',
 	},
 	quantityContainer: {
 		flexDirection: 'row',

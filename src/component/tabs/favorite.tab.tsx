@@ -9,41 +9,79 @@ import {
 	ListRenderItem,
 	ActivityIndicator,
 	Image,
+	Alert,
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import { AppDispatch, RootState, useAppSelector } from '../../utils/redux'
+import { useEffect, useState } from 'react'
+import { accountHook, AppDispatch, RootState, useAppSelector } from '../../utils/redux'
 import { CategoryType } from '../../utils/types/type/category.type'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-virtualized-view'
 import axios from 'axios'
 import api from '../../utils/axios'
 import productSlice from '../../utils/redux/reducers/product.redux'
-import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native'
 import { NavigationStackParamList, PropsTab } from '../../utils/types'
+import { ProductType } from '../../utils/types/type/product.type'
+import { IAccountEntity } from '../../interfaces'
+import ProductComponent from '../products/productComponent'
 
 export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 	const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>()
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedCategory = useAppSelector((state) => state.categoryReducer.selectedCategory)
-	const products = useAppSelector((state) => state.productReducer.value).slice(0, 4)
+	const accountSelector = useAppSelector(accountHook) as IAccountEntity
+	const [products, setProducts] = useState<ProductType[]>([])
+	const focus = useIsFocused()
 
+	// kiểm tra xem người dùng đã đăng nhập chưa
 	useEffect(() => {
-		const categories = api
-			.get('/products')
-			.then((response) => response.data)
-			.then((data) => {
-				dispatch(productSlice.actions.storeproduct(data))
-			})
-			.catch((error) => {
-				console.error(error)
-			})
-	}, [])
+		setProducts([])
+		console.log('acc' + accountSelector)
+
+		if (Object.keys(accountSelector).length === 0) {
+			console.log('Bạn chua đăng nhập')
+
+			Alert.alert(
+				'Inform',
+				'Please Sign In to check your profile, and you can Sign Up if not have account',
+				[
+					{
+						text: 'Home Page',
+						onPress: () => navigation.navigate('Home'),
+						style: 'cancel',
+					},
+					{ text: 'Sign in', onPress: () => navigationHook.navigate('login') },
+					{ text: 'Sign up', onPress: () => navigationHook.navigate('register') },
+				]
+			)
+		} else {
+			api
+				.get('/favorites/my-favorites')
+				.then((response) => response.data.data)
+				.then((data) => {
+					const products: ProductType[] = data.map((item: any) => {
+						return {
+							id: item.product.id,
+							title: item.product.title,
+							description: item.product.description,
+							image_url: item.product.image_url,
+							price: item.product.price,
+							name: item.product.name,
+						}
+					})
+					setProducts(products)
+				})
+				.catch((error) => {
+					console.error(error)
+				})
+		}
+	}, [focus])
 
 	// Lấy danh sách products, trạng thái loading và error từ store
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<ScrollView
 				contentContainerStyle={{ flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
@@ -85,136 +123,9 @@ export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 				<View>
 					<FlatList
 						data={products}
-						renderItem={({ item }) => (
-							<TouchableOpacity
-								style={{
-									width: '48%',
-									padding: 10,
-									backgroundColor: 'white',
-									borderWidth: 1,
-									borderColor: '#F3F4F6',
-									borderRadius: 10,
-									justifyContent: 'center',
-									alignItems: 'center',
-									margin: 4,
-								}}
-								onPress={() => {
-									navigationHook.navigate('productDetails', { id: item.id })
-									dispatch(productSlice.actions.selectproduct(item))
-								}}
-							>
-								<Image
-									source={{ uri: item.image_url }}
-									width={140}
-									height={140}
-									style={{ marginHorizontal: 4, borderRadius: 10 }}
-								/>
-
-								<View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-									<View style={{ gap: 5 }}>
-										<Text style={{ fontSize: 18, fontWeight: 700, textAlign: 'left' }}>
-											{item.name}
-										</Text>
-										<Text style={{ color: '#00BDD6', fontWeight: 500 }}>${item.price}</Text>
-									</View>
-
-									<View
-										style={{
-											flex: 1,
-											alignItems: 'flex-end',
-											justifyContent: 'center',
-											gap: 5,
-										}}
-									>
-										<TouchableOpacity
-											style={{
-												justifyContent: 'center',
-												alignItems: 'center',
-												borderRadius: 5,
-											}}
-										>
-											<AntDesign name="shoppingcart" size={20} color="#00BDD6" />
-										</TouchableOpacity>
-
-										<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-											<AntDesign name="star" size={12} color="#FFD700" />
-											<Text style={{ fontSize: 12 }}>4.5</Text>
-										</View>
-									</View>
-								</View>
-							</TouchableOpacity>
-						)}
-						keyExtractor={(item) => item.id}
+						renderItem={({ item }) => <ProductComponent item={item} />}
+						keyExtractor={(item, index) => index.toString()}
 						numColumns={2}
-					/>
-				</View>
-
-				{/* category2 */}
-
-				<View
-					style={{
-						justifyContent: 'space-between',
-						flexDirection: 'row',
-						marginVertical: 10,
-					}}
-				>
-					<Text style={styles.TextBold}>Categories</Text>
-					<Text style={styles.TextLight}>See all</Text>
-				</View>
-
-				{/* products */}
-				<View style={styles.products}>
-					<FlatList
-						data={products}
-						renderItem={({ item }) => (
-							<TouchableOpacity
-								style={styles.product}
-								onPress={() => {
-									navigationHook.navigate('productDetails', { id: item.id })
-									dispatch(productSlice.actions.selectproduct(item))
-								}}
-							>
-								<View style={{ flexDirection: 'row' }}>
-									<Image
-										source={{ uri: item.image_url }}
-										width={60}
-										height={60}
-										style={{ marginHorizontal: 4 }}
-									/>
-									<View>
-										<View>
-											<Text style={styles.TextBold}>{item.name}</Text>
-
-											<View style={{ flexDirection: 'row' }}>
-												<AntDesign name="star" size={12} color="yellow" />
-												<AntDesign name="star" size={12} color="yellow" />
-												<AntDesign name="star" size={12} color="yellow" />
-												<AntDesign name="star" size={12} color="yellow" />
-												<AntDesign name="star" size={12} color="yellow" />
-											</View>
-										</View>
-									</View>
-								</View>
-								<View style={{ alignItems: 'flex-end', alignSelf: 'center' }}>
-									<TouchableOpacity
-										style={{
-											backgroundColor: '#00BDD6',
-											width: 30,
-											height: 30,
-											justifyContent: 'center',
-											alignItems: 'center',
-											borderRadius: 5,
-										}}
-									>
-										<AntDesign name="shoppingcart" size={20} color="black" />
-									</TouchableOpacity>
-									<Text style={{ fontSize: 15, fontWeight: 500 }}>${item.price}</Text>
-								</View>
-							</TouchableOpacity>
-						)} // Truyền handleCategorySelect vào đây
-						keyExtractor={(item) => item.id}
-						ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
-						showsHorizontalScrollIndicator={false}
 					/>
 				</View>
 
@@ -251,7 +162,7 @@ export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 					/>
 				</View>
 			</ScrollView>
-		</SafeAreaView>
+		</View>
 	)
 }
 
