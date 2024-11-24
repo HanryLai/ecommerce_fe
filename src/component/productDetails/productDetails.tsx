@@ -5,13 +5,13 @@ import { Modal, PaperProvider, Portal, RadioButton } from 'react-native-paper'
 import { useDispatch } from 'react-redux'
 import { AppDispatch, useAppSelector } from '../../utils/redux'
 import { pink100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors'
+import api from '../../utils/axios'
 
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
 	const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>({})
 	const [quantity, setQuantity] = useState(1)
-
 	const [visible, setVisible] = useState(false)
 
 	console.log('selectedProduct', selectedProduct)
@@ -22,8 +22,32 @@ export function ProductDetails() {
 	const showModal = () => setVisible(true)
 	const hideModal = () => setVisible(false)
 
-	const handleOptionSelect = (optionId: string, listOptionId: string) => {
-		setSelectedOptions((prev) => ({ ...prev, [optionId]: listOptionId }))
+	// Hàm xử lý khi chọn một option
+	const handleOptionSelect = (itemId: string, value: string) => {
+		setSelectedOptions((prev) => ({
+			...prev,
+			[itemId]: value,
+		}))
+	}
+
+	// Hàm lấy danh sách các ID đã chọn
+	const getSelectedIds = () => {
+		return Object.values(selectedOptions)
+	}
+
+	//add to cart
+	const addToCart = async () => {
+		const itemId = selectedProduct?.id
+		const response = await api.post('/carts/add-product', {
+			itemId,
+			quantity,
+			listOptionId: getSelectedIds(),
+		})
+		if (response.data.statusCode === 200) {
+			Alert.alert('Inform', 'Add to cart success')
+		} else {
+			Alert.alert('Inform', 'Add to cart fail')
+		}
 	}
 
 	return (
@@ -107,7 +131,7 @@ export function ProductDetails() {
 											borderRadius: 5,
 										}}
 										onPress={() => {
-											Alert.alert('Add to cak')
+											addToCart()
 											hideModal()
 										}}
 									>
