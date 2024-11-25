@@ -45,6 +45,8 @@ export function ProductDetails() {
 		})
 		if (response.data.statusCode === 200) {
 			Alert.alert('Inform', 'Add to cart success')
+			setQuantity(1)
+			setSelectedOptions({})
 		} else {
 			Alert.alert('Inform', 'Add to cart fail')
 		}
