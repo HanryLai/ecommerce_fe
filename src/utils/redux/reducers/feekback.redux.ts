@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import axios from 'axios'
+import { FeedbackType } from '../../types/type/feekback.type'
 
 // Tạo slice cho feedback
 const feedbackSlice = createSlice({

@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { URL_Zy } from '../../../env'
+import { URL_BE, URL_Zy } from '../../../env'
 
 // Create an Axios instance
 const api = axios.create({
-	baseURL: URL_Zy,
+	baseURL: URL_BE,
 })
 // Function to set the access token
 export const setAccessToken = (token: string) => {

@@ -30,6 +30,7 @@ import axios from 'axios'
 import api from '../../utils/axios'
 import categorySlice from '../../utils/redux/reducers/category.redux'
 import productSlice from '../../utils/redux/reducers/product.redux'
+import ProductComponent from '../products/productComponent'
 // import { navigationHook } from "../../utils/stacks/RootNavigation.stack";
 
 // category
@@ -50,8 +51,10 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 	useEffect(() => {
 		api
 			.get('/products')
-			.then((response) => response.data)
+			.then((response) => response.data.data)
 			.then((data) => {
+				console.log(data)
+
 				dispatch(productSlice.actions.storeproduct(data))
 			})
 			.catch((error) => {
@@ -62,7 +65,7 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 	useEffect(() => {
 		const categories = api
 			.get('/categories')
-			.then((response) => response.data)
+			.then((response) => response.data.data)
 			.then((data) => {
 				dispatch(categorySlice.actions.storeCategory(data))
 			})
@@ -71,16 +74,16 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 			})
 	}, [])
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<ScrollView
-				contentContainerStyle={{ flexGrow: 1 }}
+				contentContainerStyle={{ flexGrow: 1, gap: 20 }}
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
 				nestedScrollEnabled={true}
 			>
 				{/* search bar */}
 				<View style={styles.SearchBar}>
-					<View style={[styles.search, { backgroundColor: '#F3F4F6', width: '90%' }]}>
+					<View style={[styles.search, { backgroundColor: '#F3F4F6', width: '85%' }]}>
 						<AntDesign name="search1" size={20} color="black" />
 						<TextInput placeholder="Search..." placeholderTextColor="gray" />
 					</View>
@@ -100,6 +103,9 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 				</View>
 
 				{/* category */}
+				<View>
+					<Text style={{ fontSize: 16, fontWeight: 'bold' }}>Categories:</Text>
+				</View>
 				<View style={styles.categories}>
 					<FlatList
 						data={storeCategoriescont}
@@ -108,8 +114,8 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 								<TouchableOpacity
 									style={styles.category}
 									onPress={() => {
-										navigationHook.navigate('category', { id: item.id })
 										dispatch(categorySlice.actions.selectCategory(item))
+										navigationHook.navigate('category', { id: item.id })
 									}}
 								>
 									<View style={styles.circle}>
@@ -118,7 +124,7 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 											style={{ width: 85, height: 85, borderRadius: 50 }}
 										/>
 									</View>
-									<Text style={{ textAlign: 'center' }}>{item.name}</Text>
+									<Text style={{ textAlign: 'center' }}>{item.title}</Text>
 								</TouchableOpacity>
 							)
 						}}
@@ -162,71 +168,13 @@ export const Home = ({ navigation, route }: PropsTab<'Home'>) => {
 					</View>
 					<FlatList
 						data={products}
-						renderItem={({ item }) => (
-							<TouchableOpacity
-								style={{
-									width: 160,
-									padding: 10,
-									backgroundColor: 'white',
-									borderWidth: 1,
-									borderColor: '#F3F4F6',
-									borderRadius: 10,
-									justifyContent: 'center',
-									alignItems: 'center',
-									margin: 4,
-								}}
-								onPress={() => {
-									navigationHook.navigate('productDetails', { id: item.id })
-									dispatch(productSlice.actions.selectproduct(item))
-								}}
-							>
-								<Image
-									source={{ uri: item.image_url }}
-									width={140}
-									height={140}
-									style={{ marginHorizontal: 4, borderRadius: 10 }}
-								/>
-
-								<View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-									<View style={{ gap: 5 }}>
-										<Text style={{ fontSize: 18, fontWeight: 700, textAlign: 'left' }}>
-											{item.name}
-										</Text>
-										<Text style={{ color: '#00BDD6', fontWeight: 500 }}>${item.price}</Text>
-									</View>
-
-									<View
-										style={{
-											flex: 1,
-											alignItems: 'flex-end',
-											justifyContent: 'center',
-											gap: 5,
-										}}
-									>
-										<TouchableOpacity
-											style={{
-												justifyContent: 'center',
-												alignItems: 'center',
-												borderRadius: 5,
-											}}
-										>
-											<AntDesign name="shoppingcart" size={20} color="#00BDD6" />
-										</TouchableOpacity>
-
-										<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-											<AntDesign name="star" size={12} color="#FFD700" />
-											<Text style={{ fontSize: 12 }}>4.5</Text>
-										</View>
-									</View>
-								</View>
-							</TouchableOpacity>
-						)}
+						renderItem={({ item }) => <ProductComponent item={item} />}
 						keyExtractor={(item) => item.id}
 						horizontal={true}
 					/>
 				</View>
 			</ScrollView>
-		</SafeAreaView>
+		</View>
 	)
 }
 
@@ -235,7 +183,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		backgroundColor: 'pink',
+		backgroundColor: 'white',
 		paddingHorizontal: 10,
 		paddingVertical: 0,
 	},
@@ -244,6 +192,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 10,
 		borderRadius: 5,
+		marginVertical: 20,
 	},
 	SearchBar: {
 		justifyContent: 'center',

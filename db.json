@@ -316,6 +316,58 @@
       "account": "user",
       "image_url": "https://picsum.photos/200",
       "product_id": 1
+    },
+    {
+      "id": "bc37",
+      "comment": "4",
+      "account": "user",
+      "image_url": "https://picsum.photos/200",
+      "product_id": 1
+    },
+    {
+      "id": "671e",
+      "comment": "5",
+      "account": "user",
+      "image_url": "https://picsum.photos/200",
+      "product_id": 1
+    },
+    {
+      "id": "a039",
+      "comment": 5,
+      "account": "user",
+      "image_url": "https://picsum.photos/200",
+      "product_id": 1
+    },
+    {
+      "id": "20c7",
+      "comment": 4,
+      "account": "user",
+      "image_url": "https://picsum.photos/200",
+      "product_id": 1
+    },
+    {
+      "id": "ce96",
+      "product_id": "1",
+      "comment": "",
+      "rating": 0,
+      "account": "user",
+      "image_url": "https://picsum.photos/200"
+    },
+    {
+      "id": "2de0",
+      "product_id": "1",
+      "comment": "",
+      "rating": 0,
+      "account": "user",
+      "image_url": "https://picsum.photos/200"
+    },
+    {
+      "id": "b81a",
+      "product_id": "1",
+      "comment": "",
+      "rating": 0,
+      "account": "user",
+      "image_url": "https://picsum.photos/200"
     }
   ],
   "categories": [
