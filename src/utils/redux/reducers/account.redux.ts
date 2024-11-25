@@ -16,6 +16,7 @@ export const AccountSlice = createSlice({
         },
         logout: (state) => {
             state.value = {} as IAccountEntity;
+            state.detail = {} as IDetailInformationEntity;
         },
         saveDetail: (state, value: PayloadAction<IDetailInformationEntity>) => {
             state.detail = value.payload;
