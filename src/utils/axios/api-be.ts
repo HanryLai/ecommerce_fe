@@ -5,6 +5,7 @@ import { URL_BE } from "../../../env";
 const api = axios.create({
     baseURL: URL_BE,
 });
+
 // Function to set the access token
 export const setAccessToken = (token: string) => {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;

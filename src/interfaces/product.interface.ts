@@ -1,11 +1,11 @@
-import { Option } from "./option.interface";
+import { IOption } from "./option.interface";
 
-export interface Product {
+export interface IProduct {
     id: string;
     name: string;
     description: string;
-    images_url: string;
-    price: string;
+    image_url: string;
+    price: number;
     quantity: number;
-    option: Option[];
+    options: IOption[];
 }

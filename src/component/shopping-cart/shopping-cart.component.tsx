@@ -1,28 +1,40 @@
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Checkbox } from "react-native-paper";
-import { Option } from "../../interfaces/option.interface";
-import { Product } from "../../interfaces/product.interface";
-import api from "../../utils/axios/apiCuaHiu";
-import { PropsNavigate } from "../../utils/types";
+import { ICartItem } from "../../interfaces/cart-item.interface";
+import { IOption } from "../../interfaces/option.interface";
 import { Color } from "../../style";
+import api from "../../utils/axios/api-be";
+import { accountHook, useAppSelector } from "../../utils/redux";
+import { PropsNavigate } from "../../utils/types";
 
 export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
-    const [productList, setProductList] = useState<Product[]>([]);
+    const account = useAppSelector(accountHook);
+    const [productList, setProductList] = useState<ICartItem[]>([]);
     const [listChecked, setListChecked] = useState<boolean[]>([]);
     const [chooseList, setChooseList] = useState<boolean[]>([]);
     const [total, setTotal] = useState<number>(0);
 
-    const priceAdjust = (options: Option[]) =>
-        options.reduce((acc, item) => acc + parseInt(item.optionsList.adjust), 0);
+    const priceAdjust = (options: IOption[]) => {
+        console.log(
+            "listOption",
+            options.map((item) => item.listOption)
+        );
+        const itemPrice = options.reduce((acc, item) => acc + item.listOption.adjustPrice, 0);
+        console.log("itemPrice", itemPrice);
+        return itemPrice;
+    };
 
-    const priceItem = (product: Product) => parseInt(product.price) - priceAdjust(product.option);
+    const priceItem = (product: ICartItem) => {
+        console.log("product", product);
+        return product.item.price - priceAdjust(product.options);
+    };
 
     const totalPrice = () =>
         setTotal(
             productList.reduce((sum, item, index) => {
                 if (chooseList[index]) {
-                    sum += priceItem(item) * parseInt(item.quantity as unknown as string);
+                    sum += priceItem(item) * item.quantity;
                 }
                 return sum;
             }, 0)
@@ -30,8 +42,7 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
 
     const adjustQuantity = (index: number, quantity: number) => {
         const updatedList = [...productList];
-        updatedList[index].quantity =
-            parseInt(updatedList[index].quantity as unknown as string) + quantity;
+        updatedList[index].quantity = updatedList[index].quantity + quantity;
 
         setProductList(updatedList);
         totalPrice();
@@ -59,17 +70,50 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
         });
     };
 
-    useEffect(() => {
-        api.get("/shopping-cart/")
+    const deleteCartItem = (id: string) => {
+        api.delete(`/carts/remove-product/${id}`, {
+            headers: {
+                Authorization: `Bearer ${account.accessToken}`,
+            },
+        })
             .then((res) => {
-                const data = res.data;
-                setListChecked(new Array(data.length).fill(false));
-                setChooseList(new Array(data.length).fill(false));
-
-                setProductList(data);
+                if (res.status < 300) {
+                    setProductList(productList.filter((item) => item.id !== id));
+                    setListChecked(
+                        listChecked.filter(
+                            (_, index) => index !== productList.findIndex((item) => item.id === id)
+                        )
+                    );
+                    setChooseList(
+                        chooseList.filter(
+                            (_, index) => index !== productList.findIndex((item) => item.id === id)
+                        )
+                    );
+                }
             })
-            .catch((err) => console.error(err));
+            .catch((err) => console.error(JSON.stringify(err)));
+    };
+
+    useEffect(() => {
+        api.get("/carts", {
+            headers: {
+                Authorization: `Bearer ${account.accessToken}`,
+            },
+        })
+            .then((res) => {
+                const data = res.data.data;
+                console.log(data.cartItems);
+                setListChecked(new Array(data.cartItems.length).fill(false));
+                setChooseList(new Array(data.cartItems.length).fill(false));
+
+                setProductList(data.cartItems);
+            })
+            .catch((err) => console.error(JSON.stringify(err)));
     }, []);
+
+    useEffect(() => {
+        totalPrice();
+    }, [productList]);
 
     return (
         <View style={styles.container}>
@@ -82,18 +126,15 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                             status={listChecked[index] ? "checked" : "unchecked"}
                             onPress={() => toggleCheckbox(index)}
                         />
-                        <Image style={styles.itemImage} source={{ uri: item.images_url }} />
+                        <Image style={styles.itemImage} source={{ uri: item.item.image_url }} />
                         <View style={styles.itemDetails}>
-                            <Text style={styles.itemName}>{item.name}</Text>
+                            <Text style={styles.itemName}>{item.item.name}</Text>
                             <FlatList
-                                data={item.option}
+                                data={item.options}
                                 renderItem={({ item }) => (
-                                    <View style={styles.optionRow}>
-                                        <Text style={styles.optionLabel}>{item.name}:</Text>
-                                        <Text style={styles.optionValue}>
-                                            {item.optionsList.name}
-                                        </Text>
-                                    </View>
+                                    // <View style={styles.optionRow}>
+                                    <Text style={styles.optionValue}>{item.listOption.name} X</Text>
+                                    // {/* </View> */}
                                 )}
                             />
                             <Text style={styles.itemPrice}>${priceItem(item)}</Text>
@@ -101,7 +142,7 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                         <TouchableOpacity
                             style={styles.deleteBtn}
                             onPress={() => {
-                                console.log("delete");
+                                deleteCartItem(item.id);
                             }}
                         >
                             <Text style={styles.deleteTxt}>x</Text>

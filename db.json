@@ -32,6 +32,50 @@
       "address": "",
       "phone": "",
       "fullname": "hieu"
+    },
+    {
+      "id": "3388",
+      "email": "customerhieu@gmail.com",
+      "username": "hieu",
+      "password": "123",
+      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112",
+      "role": "customer",
+      "address": "",
+      "phone": "",
+      "fullname": "hieu"
+    },
+    {
+      "id": "4207",
+      "email": "hieu@gmail.com",
+      "username": "hieu1",
+      "password": "123",
+      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112",
+      "role": "customer",
+      "address": "",
+      "phone": "",
+      "fullname": "hieu1"
+    },
+    {
+      "id": "191d",
+      "email": "asdfasdf",
+      "username": "adsf",
+      "password": "asdf",
+      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112",
+      "role": "customer",
+      "address": "",
+      "phone": "",
+      "fullname": "adsf"
+    },
+    {
+      "id": "9ffe",
+      "email": "hieu@",
+      "username": "hieu",
+      "password": "123",
+      "url_avatar": "https://loremflickr.com/640/480?lock=4089431155802112",
+      "role": "customer",
+      "address": "",
+      "phone": "",
+      "fullname": "hieu"
     }
   ],
   "shopping-cart": [

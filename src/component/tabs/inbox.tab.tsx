@@ -1,255 +1,179 @@
-import { useEffect, useRef, useState } from "react";
-import {
-    ImageBackground,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import io, { Socket, WebSocket } from "socket.io-client";
-import { MessageInterface } from "../../interfaces";
-import { PropsTab } from "../../utils/types";
+// src/Chat.tsx
+import React, { useState, useEffect } from "react";
+import { View, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { io, Socket } from "socket.io-client";
+import { Text, TextInput } from "react-native-paper";
+import { NavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { accountHook, detailInformationHook, useAppSelector } from "../../utils/redux";
+import { NavigationStackParamList } from "../../utils/types";
+import { URL_BE_SOCKET } from "../../../env";
+import { Color } from "../../style";
+import { ChatComponent } from "./inbox-child.tab";
 
-export interface TestMessage {
-    username: string;
+interface Message {
+    sender: string;
     message: string;
+    image?: string;
 }
 
-export const Inbox = ({ navigation, route }: PropsTab<"Inbox">) => {
-    const [messages, setMessages] = useState<TestMessage[]>([]);
-    const [newMessage, setNewMessage] = useState<string>("");
-    const socketUrl = "http://192.168.1.6:6996";
-    let socket: WebSocket | null = null;
-    // useEffect(() => {
-    //     // Establish WebSocket connection
-    //     socket = new WebSocket(socketUrl);
+export const Inbox: React.FC = () => {
+    const [socket, setSocket] = useState<Socket | null>(null);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
-    //     // Handle connection open
-    //     socket.onopen = () => {
-    //         console.log("Connected to WebSocket");
-    //     };
+    const navigation = useNavigation<NavigationProp<NavigationStackParamList>>();
 
-    //     // Handle incoming messages
-    //     socket.onmessage = (event) => {
-    //         const parsedData = JSON.parse(event.data);
+    const [message, setMessage] = useState<string>("");
+    const account = useAppSelector(accountHook);
+    const accessToken = account.accessToken;
 
-    //         // Check if the event is "events" (or any other event name)
-    //         if (parsedData.event === "events") {
-    //             const messageData = parsedData.data;
-    //             setMessages((prevMessages) => [...prevMessages, messageData]);
-    //         }
-    //     };
+    const accountId = account.id;
 
-    //     // Handle errors
-    //     socket.onerror = (error) => {
-    //         console.error("WebSocket error:", error);
-    //     };
+    const detailInformation = useAppSelector(detailInformationHook);
+    const focus = useIsFocused();
+    useEffect(() => {
+        setMessages([]);
+        const token = async () => {
+            if (!accessToken) {
+                return;
+            }
+            const newSocket = io(`${URL_BE_SOCKET}`, {
+                transports: ["websocket"],
+                extraHeaders: {
+                    authorization: accessToken ? `${accessToken}` : "",
+                },
+            });
 
-    //     // Handle connection close
-    //     socket.onclose = () => {
-    //         console.log("WebSocket disconnected");
-    //     };
+            newSocket.emit("joinRoom", {
+                owner_id: accountId,
+            });
 
-    //     // Cleanup on unmount
-    //     return () => {
-    //         if (socket) socket.close();
-    //     };
-    // }, [socketUrl]);
+            newSocket.on("oldMessages", (messages: any) => {
+                const messageArray: Message[] = messages.messages.map((message: any) => {
+                    return {
+                        sender: message.account.id,
+                        message: message.content,
+                    };
+                });
 
-    // Send a message to the server in the required format
-    const sendMessage = () => {
-        // if (socket && socket.readyState === WebSocket.OPEN) {
-        //     const message = {
-        //         event: "events",
-        //         data: {
-        //             username: username,
-        //             message: newMessage,
-        //         },
-        //     };
-        //     socket.send(JSON.stringify(message));
-        //     setNewMessage(""); // Clear input after sending
-        // } else {
-        //     console.log("WebSocket not connected");
-        // }
+                setMessages(messageArray);
+                setLoading(false);
+            });
+            setSocket(newSocket);
+            console.log("connected");
+        };
+
+        if (focus) {
+            setLoading(true);
+        }
+        if (accessToken) {
+            token();
+        } else {
+            navigation.navigate("login");
+        }
+
+        if (socket && focus === false) {
+            socket.disconnect();
+        }
+    }, [focus]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("message", (message: any) => {
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        sender: message.sender.id,
+                        message: message.message,
+                    },
+                ]);
+            });
+        }
+    }, [socket?.on]);
+
+    const handleSendMessage = () => {
+        if (socket && message) {
+            socket.emit("message", {
+                content: message,
+            });
+
+            setMessage("");
+        }
     };
 
     return (
-        <ImageBackground
-            source={require("../../../assets/components/chat/background.png")}
-            resizeMode="cover"
-            style={styles.container}
+        <View
+            style={{
+                flex: 1,
+                justifyContent: "flex-start",
+                backgroundColor: "#fff",
+            }}
         >
-            <View style={styles.scrollContainer}>
-                <View style={styles.container_title}>
-                    <Text style={styles.title}>Support | Admin</Text>
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <ActivityIndicator size={"large"} color={Color.primary} />
                 </View>
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    <View style={styles.messagesContainer}>
-                        {messages.map((msg, index) => (
-                            <Text key={index} style={styles.message}>
-                                {msg.username}: {msg.message}
-                            </Text>
-                        ))}
+            ) : (
+                <View
+                    style={{
+                        gap: 10,
+                        flex: 1,
+                        justifyContent: "flex-end",
+                    }}
+                >
+                    <FlatList
+                        inverted
+                        style={{ paddingHorizontal: 8 }}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={true}
+                        data={messages.toReversed()}
+                        renderItem={({ item }) => (
+                            <ChatComponent
+                                message={item.message}
+                                image={
+                                    item.sender === accountId
+                                        ? detailInformation?.avatar_url
+                                            ? detailInformation.avatar_url
+                                            : "https://i.pinimg.com/736x/e9/6f/fb/e96ffb0a7aba1f17f686a15f368b5d58.jpg"
+                                        : "https://i.pinimg.com/736x/e9/6f/fb/e96ffb0a7aba1f17f686a15f368b5d58.jpg"
+                                }
+                                sender={item.sender === accountId ? "sending" : "receiving"}
+                            />
+                        )}
+                    />
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: 8,
+                            flexDirection: "row",
+                            paddingHorizontal: 8,
+                        }}
+                    >
+                        <TextInput
+                            style={{ height: 40, flex: 1 }}
+                            placeholder="Message"
+                            mode="outlined"
+                            contentStyle={{ paddingVertical: 2 }}
+                            activeOutlineColor={Color.primary}
+                            value={message}
+                            onChangeText={(text) => setMessage(text)}
+                        />
+                        <Pressable
+                            onPress={handleSendMessage}
+                            style={{
+                                backgroundColor: Color.primary,
+                                borderRadius: 4,
+                                padding: 8,
+                            }}
+                        >
+                            <Text>Send</Text>
+                            {/* <Send color={"#fff"} /> */}
+                        </Pressable>
                     </View>
-                </ScrollView>
-                <TextInput
-                    style={styles.input}
-                    value={newMessage}
-                    onChangeText={setNewMessage}
-                    placeholder="Type your message..."
-                />
-                <TouchableOpacity onPress={() => sendMessage()} style={styles.sendButton}>
-                    <Text style={styles.sendButtonText}>Send</Text>
-                </TouchableOpacity>
-            </View>
-        </ImageBackground>
+                </View>
+            )}
+        </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: "space-between",
-    },
-    container_title: {
-        padding: 10,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
-    },
-    messagesContainer: {
-        flex: 1,
-        padding: 10,
-    },
-    message: {
-        fontSize: 16,
-        marginVertical: 5,
-        color: "#fff",
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        padding: 10,
-        margin: 10,
-        borderRadius: 5,
-        color: "#fff",
-    },
-    sendButton: {
-        backgroundColor: "#007BFF",
-        padding: 10,
-        margin: 10,
-        borderRadius: 5,
-        alignItems: "center",
-    },
-    sendButtonText: {
-        color: "#fff",
-        fontSize: 16,
-    },
-});
-
-// src/Chat.tsx
-// import React, { useState, useEffect } from "react";
-// import { View, Text, TextInput, Button, FlatList, StyleSheet } from "react-native";
-// import { io, Socket } from "socket.io-client";
-// import { PropsTab } from "../../utils/types";
-
-// interface Message {
-//     user: string;
-//     message: string;
-// }
-
-// export const Inbox = ({ navigation, route }: PropsTab<"Inbox">) => {
-//     const [socket, setSocket] = useState<Socket | null>(null);
-//     const [messages, setMessages] = useState<Message[]>([]);
-//     const [message, setMessage] = useState<string>("");
-//     const [sender, setSender] = useState<string>(""); // Có thể thay đổi thành tên người dùng thực tế
-//     let newSocket: Socket;
-//     useEffect(() => {
-//         // Initialize WebSocket connection
-//         newSocket = io("ws://192.168.1.3:6996");
-//         setSocket(newSocket);
-
-//         newSocket.on("message", (data: Message) => {
-//             console.log("received event:", data);
-//             setMessages((prevMessages) => [...prevMessages, data]);
-//         });
-
-//         newSocket.on("connect", () => {
-//             console.log("a user connected");
-//         });
-
-//         newSocket.on("disconnect", () => {
-//             console.log("user disconnected");
-//         });
-
-//         newSocket.on("connect_error", (error: any) => {
-//             console.log("Connection Error: ", error);
-//         });
-
-//         return () => {
-//             if (newSocket) {
-//                 newSocket.disconnect();
-//             }
-//         };
-//     }, []);
-
-//     const handleSendMessage = () => {
-//         if (socket && message) {
-//         }
-//     };
-
-//     return (
-//         <View style={styles.container}>
-//             <FlatList
-//                 data={messages}
-//                 keyExtractor={(item, index) => index.toString()}
-//                 renderItem={({ item }) => (
-//                     <View style={styles.messageContainer}>
-//                         <Text style={styles.sender}>{item.user}: </Text>
-//                         <Text>{item.message}</Text>
-//                     </View>
-//                 )}
-//             />
-//             <TextInput
-//                 style={styles.input}
-//                 placeholder="Nhập tin nhắn..."
-//                 value={message}
-//                 onChangeText={setMessage}
-//             />
-//             <TextInput
-//                 style={styles.input}
-//                 placeholder="user."
-//                 value={sender}
-//                 onChangeText={setSender}
-//             />
-//             <Button title="Gửi" onPress={handleSendMessage} />
-//         </View>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         padding: 10,
-//     },
-//     messageContainer: {
-//         flexDirection: "row",
-//         marginBottom: 5,
-//     },
-//     sender: {
-//         fontWeight: "bold",
-//     },
-//     input: {
-//         borderWidth: 1,
-//         borderColor: "#ccc",
-//         padding: 10,
-//         marginVertical: 10,
-//         borderRadius: 5,
-//     },
-// });
