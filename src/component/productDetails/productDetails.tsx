@@ -1,5 +1,5 @@
 import AntDesign from '@expo/vector-icons/AntDesign'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Modal, PaperProvider, Portal, RadioButton } from 'react-native-paper'
 import { useDispatch } from 'react-redux'
@@ -14,7 +14,21 @@ export function ProductDetails() {
 	const [quantity, setQuantity] = useState(1)
 	const [visible, setVisible] = useState(false)
 
-	console.log('selectedProduct', selectedProduct)
+	const [rating, setRating] = useState(() => {
+		const feedbacks = selectedProduct?.feedbacks
+		if (feedbacks) {
+			const ratings = feedbacks.map((feedback) => Number(feedback.rating))
+			const totalRating = ratings.reduce((total, rating) => total + rating, 0)
+			return totalRating / ratings.length
+		}
+	})
+
+	const [numOfRating, setNumOfRating] = useState(() => {
+		const feedbacks = selectedProduct?.feedbacks
+		if (feedbacks) {
+			return feedbacks.length
+		}
+	})
 
 	const increaseQuantity = () => setQuantity((prev) => prev + 1)
 	const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev))
@@ -76,8 +90,8 @@ export function ProductDetails() {
 						<Text style={{ fontSize: 20, fontWeight: 700 }}>${selectedProduct?.price}</Text>
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							<AntDesign name="star" size={16} color="#FFD700" />
-							<Text style={{ fontSize: 16, fontWeight: 700 }}>4.5</Text>
-							<Text style={styles.TextLight}> (150 reviews)</Text>
+							<Text style={{ fontSize: 16, fontWeight: 700 }}>{rating?.toFixed(2)}</Text>
+							<Text style={styles.TextLight}> ({numOfRating} reviews)</Text>
 						</View>
 					</View>
 					{/* separator */}

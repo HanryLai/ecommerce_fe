@@ -65,19 +65,20 @@ const ProductComponent = ({ item }: { item: ProductType }) => {
 					</Text>
 				</View>
 
-				<View style={{ flexDirection: 'row', marginVertical: 4, alignItems: 'center' }}>
+				{/* <View style={{ flexDirection: 'row', marginVertical: 4, alignItems: 'center' }}>
 					<AntDesign name="star" size={12} color="#FFD700" />
 					<Text style={{ fontSize: 12, color: '#333' }}>4.8</Text>
-				</View>
+				</View> */}
 				<View
 					style={{
 						justifyContent: 'space-between',
 						alignItems: 'center',
 						flexDirection: 'row',
 						width: '100%',
+						marginTop: 4,
 					}}
 				>
-					<Text style={{ fontWeight: '600', fontSize: 18 }}>${item.price}</Text>
+					<Text style={{ fontWeight: '600', fontSize: 16 }}>${item.price}</Text>
 					<TouchableOpacity
 						style={{
 							justifyContent: 'center',
