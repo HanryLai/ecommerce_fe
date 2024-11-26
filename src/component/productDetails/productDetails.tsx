@@ -43,6 +43,13 @@ export function ProductDetails() {
 		}
 	})
 
+	const [feedbacks, setFeedbacks] = useState(() => {
+		const feedbacks = selectedProduct?.feedbacks
+		if (feedbacks) {
+			return feedbacks.slice(0, 3)
+		}
+	})
+
 	const increaseQuantity = () => setQuantity((prev) => prev + 1)
 	const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev))
 
@@ -218,11 +225,17 @@ export function ProductDetails() {
 					<View>
 						<View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
 							<Text style={styles.TextBold}>Review</Text>
-							<Text style={styles.TextLight}>SeeAll</Text>
+							<TouchableOpacity
+								onPress={() => {
+									setFeedbacks(selectedProduct?.feedbacks)
+								}}
+							>
+								<Text style={styles.TextLight}>SeeAll</Text>
+							</TouchableOpacity>
 						</View>
 					</View>
 					<View style={{ flex: 1 }}>
-						{selectedProduct?.feedbacks?.map((item) => (
+						{feedbacks?.map((item) => (
 							<View
 								key={item.id}
 								style={{
@@ -249,6 +262,25 @@ export function ProductDetails() {
 											? item.account.detailInformation.full_name
 											: 'Người dùng chưa có tên'}
 									</Text>
+
+									<View
+										style={{
+											flexDirection: 'row',
+											gap: 5,
+											alignItems: 'center',
+										}}
+									>
+										{Array(5)
+											.fill(0) // Tạo một mảng 5 phần tử
+											.map((_, index) => (
+												<AntDesign
+													key={index}
+													name="star"
+													size={12}
+													color={index < Number(item.rating) ? '#FFD700' : '#D3D3D3'} // Sao vàng nếu index < item.rating
+												/>
+											))}
+									</View>
 
 									<Text numberOfLines={5}> {item.comment}</Text>
 								</View>
