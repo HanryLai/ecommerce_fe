@@ -3,16 +3,29 @@ import { useEffect, useState } from 'react'
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Modal, PaperProvider, Portal, RadioButton } from 'react-native-paper'
 import { useDispatch } from 'react-redux'
-import { AppDispatch, useAppSelector } from '../../utils/redux'
+import { accountHook, AppDispatch, useAppSelector } from '../../utils/redux'
 import { pink100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors'
 import api from '../../utils/axios'
+import { IAccountEntity } from '../../interfaces'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { NavigationStackParamList } from '../../utils/types'
 
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
-	const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>({})
+	const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>(() => {
+		const initialSelections: { [key: string]: string } = {}
+		selectedProduct?.options.forEach((item) => {
+			if (item.listOptions?.length > 0) {
+				initialSelections[item.id] = item.listOptions[0].id.toString() // Chọn giá trị đầu tiên
+			}
+		})
+		return initialSelections
+	})
 	const [quantity, setQuantity] = useState(1)
 	const [visible, setVisible] = useState(false)
+	const accountSelector = useAppSelector(accountHook) as IAccountEntity
+	const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>()
 
 	const [rating, setRating] = useState(() => {
 		const feedbacks = selectedProduct?.feedbacks
@@ -51,18 +64,34 @@ export function ProductDetails() {
 
 	//add to cart
 	const addToCart = async () => {
-		const itemId = selectedProduct?.id
-		const response = await api.post('/carts/add-product', {
-			itemId,
-			quantity,
-			listOptionId: getSelectedIds(),
-		})
-		if (response.data.statusCode === 200) {
-			Alert.alert('Inform', 'Add to cart success')
-			setQuantity(1)
-			setSelectedOptions({})
+		if (Object.keys(accountSelector).length === 0) {
+			Alert.alert(
+				'Inform',
+				'Please Sign In to add favorite, and you can Sign Up if not have account',
+				[
+					{
+						text: 'Home Page',
+						onPress: () => navigationHook.navigate('homepage', { screen: 'Home' }),
+						style: 'cancel',
+					},
+					{ text: 'Sign in', onPress: () => navigationHook.navigate('login') },
+					{ text: 'Sign up', onPress: () => navigationHook.navigate('register') },
+				]
+			)
 		} else {
-			Alert.alert('Inform', 'Add to cart fail')
+			const itemId = selectedProduct?.id
+			const response = await api.post('/carts/add-product', {
+				itemId,
+				quantity,
+				listOptionId: getSelectedIds(),
+			})
+			if (response.data.statusCode === 200) {
+				Alert.alert('Inform', 'Add to cart success')
+				setQuantity(1)
+				setSelectedOptions({})
+			} else {
+				Alert.alert('Inform', 'Add to cart fail')
+			}
 		}
 	}
 
