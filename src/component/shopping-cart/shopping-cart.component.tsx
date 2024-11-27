@@ -131,7 +131,6 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                 console.log(data.cartItems);
                 setListChecked(new Array(data.cartItems.length).fill(false));
                 setChooseList(new Array(data.cartItems.length).fill(false));
-
                 setProductList(data.cartItems);
             })
             .catch((err) => console.error(JSON.stringify(err)));
@@ -157,11 +156,22 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                             <Text style={styles.itemName}>{item.item.name}</Text>
                             <FlatList
                                 data={item.options}
-                                renderItem={({ item }) => (
-                                    // <View style={styles.optionRow}>
-                                    <Text style={styles.optionValue}>{item.listOption.name} X</Text>
-                                    // {/* </View> */}
-                                )}
+                                renderItem={({ item, index }) => {
+                                    return (
+                                        <>
+                                            {index == 0 ? (
+                                                <Text style={styles.optionValue}>
+                                                    {item.listOption.name}
+                                                </Text>
+                                            ) : (
+                                                <Text style={styles.optionValue}>
+                                                    <></> x {item.listOption.name}
+                                                </Text>
+                                            )}
+                                        </>
+                                    );
+                                }}
+                                style={{ flexDirection: "row" }}
                             />
                             <Text style={styles.itemPrice}>${priceItem(item)}</Text>
                         </View>
