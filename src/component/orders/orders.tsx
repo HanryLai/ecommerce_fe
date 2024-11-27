@@ -25,6 +25,7 @@ import ProductComponent from '../products/productComponent'
 import { ProductType } from '../../utils/types/type/product.type'
 import { Order } from '../../utils/types/type/order.type'
 import { grey100, pink100, white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors'
+import orderSlice from '../../utils/redux/reducers/order.redux'
 
 export function Orders() {
 	const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>()
@@ -44,6 +45,10 @@ export function Orders() {
 			})
 	}, [])
 
+	const handleOrder = (order: Order) => {
+		dispatch(orderSlice.actions.selectorder(order))
+		navigationHook.navigate('feedback', { order: order })
+	}
 	return (
 		<View style={styles.container}>
 			<ScrollView
@@ -84,7 +89,7 @@ export function Orders() {
 										<TouchableOpacity
 											style={{ alignSelf: 'flex-end' }}
 											onPress={() => {
-												// navigationHook.navigate('feedback', { orders: item })
+												handleOrder(item)
 											}}
 										>
 											<Text>Đánh giá</Text>

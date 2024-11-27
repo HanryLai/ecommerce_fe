@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	FlatList,
 	Image,
+	Alert,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { AppDispatch, useAppSelector } from '../../utils/redux'
@@ -15,13 +16,17 @@ import { AntDesign } from '@expo/vector-icons'
 import api from '../../utils/axios'
 import productSlice from '../../utils/redux/reducers/product.redux'
 import feedbackSlice from '../../utils/redux/reducers/feekback.redux'
-import { PropsTab } from '../../utils/types'
+import { PropsTab, NavigationStackParamList } from '../../utils/types'
 
 export function Feedback({ navigation, route }: PropsTab<'Feedback'>) {
 	const dispatch = useDispatch<AppDispatch>()
 	const products = useAppSelector((state) => state.productReducer.value)
 	const [ratings, setRatings] = useState<{ [key: string]: number }>({})
 	const [comments, setComments] = useState<{ [key: string]: string }>({})
+
+	const selectorder = useAppSelector((state) => state.orderReducer.selectedorder)
+
+	console.log('selectorder', selectorder?.orderItems.at(1)?.feedback_id)
 
 	const selectedRating = (productId: string, rating: number) => {
 		setRatings((prev) => ({ ...prev, [productId]: rating }))
@@ -31,29 +36,27 @@ export function Feedback({ navigation, route }: PropsTab<'Feedback'>) {
 		setComments((prev) => ({ ...prev, [productId]: text }))
 	}
 
-	const sendFeedback = (productId: string) => {
-		const feedbackData = {
-			product_id: productId,
-			comment: comments[productId] || '',
-			rating: ratings[productId] || 0,
-			account: 'user',
-			image_url: 'https://picsum.photos/200',
+	const sendFeedback = async (productId: string, feedback_id: string) => {
+		try {
+			const feedbackData = {
+				// product_id: productId,
+				comment: comments[productId] || '',
+				rating: ratings[productId] || 0,
+				image_url: '',
+			}
+
+			await api.put(`/feedbacks/${feedback_id}`, feedbackData)
+			const response = await api.get('/feedbacks')
+			dispatch(feedbackSlice.actions.storefeedback(response.data))
+
+			// Reset feedback for the product
+			setComments((prev) => ({ ...prev, [productId]: '' }))
+			setRatings((prev) => ({ ...prev, [productId]: 0 }))
+
+			Alert.alert('Success', 'Feedback sent successfully!')
+		} catch (error) {
+			console.error('Error sending feedback:', error)
 		}
-
-		api
-			.post('/feedbacks', feedbackData)
-			.then(() => {
-				api.get('/feedbacks').then((response) => {
-					dispatch(feedbackSlice.actions.storefeedback(response.data))
-				})
-			})
-			.catch((error) => {
-				console.error('Error sending feedback:', error)
-			})
-
-		// Reset feedback for the product
-		setComments((prev) => ({ ...prev, [productId]: '' }))
-		setRatings((prev) => ({ ...prev, [productId]: 0 }))
 	}
 
 	return (
@@ -61,11 +64,11 @@ export function Feedback({ navigation, route }: PropsTab<'Feedback'>) {
 			<View style={styles.card}>
 				<Text style={styles.heading}>Feedback</Text>
 
-				{products.map((product) => (
-					<View key={product.id} style={styles.card}>
+				{selectorder?.orderItems.map((orderItem) => (
+					<View key={orderItem.id} style={styles.card}>
 						<View style={styles.item}>
 							{/* <Image source={{ uri: product.icon }} style={styles.icon} /> */}
-							<Text style={styles.title}>{product.name}</Text>
+							<Text style={styles.title}>{orderItem.products.name}</Text>
 							<View>
 								<Text style={styles.description}>Chất lượng sản phẩm:</Text>
 								<FlatList
@@ -73,11 +76,13 @@ export function Feedback({ navigation, route }: PropsTab<'Feedback'>) {
 									keyExtractor={(item) => item.toString()}
 									horizontal
 									renderItem={({ item }) => (
-										<TouchableOpacity onPress={() => selectedRating(product.id, item)}>
+										<TouchableOpacity onPress={() => selectedRating(orderItem.products.id, item)}>
 											<AntDesign
 												name="star"
 												size={24}
-												color={item <= (ratings[product.id] || 0) ? '#ffc107' : '#6c757d'}
+												color={
+													item <= (ratings[orderItem.products.id] || 0) ? '#ffc107' : '#6c757d'
+												}
 												style={styles.star}
 											/>
 										</TouchableOpacity>
@@ -90,10 +95,13 @@ export function Feedback({ navigation, route }: PropsTab<'Feedback'>) {
 								placeholder="Hãy chia sẻ nhận xét cho sản phẩm này của bạn nhé!"
 								multiline
 								numberOfLines={5}
-								value={comments[product.id] || ''}
-								onChangeText={(text) => handleCommentChange(product.id, text)}
+								value={comments[orderItem.products.id] || ''}
+								onChangeText={(text) => handleCommentChange(orderItem.products.id, text)}
 							/>
-							<TouchableOpacity style={styles.button} onPress={() => sendFeedback(product.id)}>
+							<TouchableOpacity
+								style={styles.button}
+								onPress={() => sendFeedback(orderItem.products.id, orderItem.feedback_id)}
+							>
 								<Text style={styles.buttonText}>Gửi đánh giá</Text>
 							</TouchableOpacity>
 						</View>
