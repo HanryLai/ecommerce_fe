@@ -17,7 +17,7 @@ export const HeaderRight = ({ navigation, route }: PropsNavigate<"homepage">) =>
     return (
         <View style={styles.container}>
             <TouchableOpacity style={{ marginHorizontal: 16 }} onPress={() => moveToCart()}>
-                <CartSVG width={44} height={44} />
+                <CartSVG width={32} height={32} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("login")}>
                 {selector.detail ? (
