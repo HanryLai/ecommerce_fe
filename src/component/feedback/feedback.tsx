@@ -15,24 +15,13 @@ import { AntDesign } from '@expo/vector-icons'
 import api from '../../utils/axios'
 import productSlice from '../../utils/redux/reducers/product.redux'
 import feedbackSlice from '../../utils/redux/reducers/feekback.redux'
+import { PropsTab } from '../../utils/types'
 
-export function Feedback() {
+export function Feedback({ navigation, route }: PropsTab<'Feedback'>) {
 	const dispatch = useDispatch<AppDispatch>()
 	const products = useAppSelector((state) => state.productReducer.value)
 	const [ratings, setRatings] = useState<{ [key: string]: number }>({})
 	const [comments, setComments] = useState<{ [key: string]: string }>({})
-
-	useEffect(() => {
-		const fetchProducts = async () => {
-			try {
-				const response = await api.get('/products')
-				dispatch(productSlice.actions.storeproduct(response.data))
-			} catch (error) {
-				console.error(error)
-			}
-		}
-		fetchProducts()
-	}, [])
 
 	const selectedRating = (productId: string, rating: number) => {
 		setRatings((prev) => ({ ...prev, [productId]: rating }))

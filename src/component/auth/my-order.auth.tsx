@@ -1,9 +1,9 @@
-import { Text, View } from "react-native";
+import { Text, View } from 'react-native'
 
 export const MyOrder = () => {
-    return (
-        <View>
-            <Text>My order</Text>
-        </View>
-    );
-};
+	return (
+		<View>
+			<Text>My order</Text>
+		</View>
+	)
+}

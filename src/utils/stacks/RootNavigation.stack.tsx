@@ -18,6 +18,7 @@ import { Image, Text, TouchableOpacity, View } from 'react-native'
 import { TabStackParamList } from '../types'
 import { PaymentComponent } from '../../component/payment'
 import { Feedback } from '../../component/feedback'
+import { Orders } from '../../component/orders'
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>()
 export const RootNavigation = () => {
@@ -124,7 +125,7 @@ export const RootNavigation = () => {
 			{/* My Order */}
 			<Stack.Screen
 				name="MyOrder"
-				component={MyOrder}
+				component={Orders}
 				options={{ title: 'My Order', headerTitleAlign: 'center' }}
 			></Stack.Screen>
 			{/* My Comment */}
@@ -136,7 +137,12 @@ export const RootNavigation = () => {
 			<Stack.Screen
 				name="feedback"
 				component={Feedback}
-				options={{ title: 'My Comment', headerTitleAlign: 'center' }}
+				options={{ title: 'Feedback', headerTitleAlign: 'center' }}
+			></Stack.Screen>
+			<Stack.Screen
+				name="orders"
+				component={Orders}
+				options={{ title: 'My Orders', headerTitleAlign: 'center' }}
 			></Stack.Screen>
 		</Stack.Navigator>
 	)

@@ -26,6 +26,7 @@ export type NavigationStackParamList = {
 	MyOrder: undefined
 	MyComment: undefined
 	feedback: undefined
+	orders: undefined
 }
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =
