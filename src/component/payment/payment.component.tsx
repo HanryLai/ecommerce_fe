@@ -7,8 +7,8 @@ import { PropsNavigate } from "../../utils/types";
 const codImg = require("../../../assets/components/payment/cod.png");
 const momoImg = require("../../../assets/components/payment/momo.png");
 
-export const PaymentComponent = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
-    const [productList, setProductList] = useState<Product[]>(route.params.productOrder);
+export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentComponent">) => {
+    const [productList, setProductList] = useState<ICartItem[]>(route.params.productOrder);
     const [total, setTotal] = useState<number>(route.params.total);
     const [checked, setChecked] = useState(1); // Default selected payment method
 

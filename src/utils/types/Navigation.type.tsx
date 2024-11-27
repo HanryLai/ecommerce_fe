@@ -1,4 +1,3 @@
-
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { TabStackParamList } from "./Tab.type";
 import { Product } from "../../interfaces";
@@ -32,7 +31,9 @@ export type NavigationStackParamList = {
     MyOrder: undefined;
     MyComment: undefined;
     feedback: undefined;
+    paymentSuccess: undefined;
+    paymentFailed: undefined;
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =
-	NativeStackScreenProps<NavigationStackParamList, NavigationName>
+    NativeStackScreenProps<NavigationStackParamList, NavigationName>;

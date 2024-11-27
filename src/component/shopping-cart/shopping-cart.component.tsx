@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { Option } from "../../interfaces/option.interface";
@@ -12,9 +12,16 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
     const [listChecked, setListChecked] = useState<boolean[]>([]);
     const [chooseList, setChooseList] = useState<boolean[]>([]);
     const [total, setTotal] = useState<number>(0);
-
-    const priceAdjust = (options: Option[]) =>
-        options.reduce((acc, item) => acc + parseInt(item.optionsList.adjust), 0);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const priceAdjust = (options: IOption[]) => {
+        console.log(
+            "listOption",
+            options.map((item) => item.listOption)
+        );
+        const itemPrice = options.reduce((acc, item) => acc + item.listOption.adjustPrice, 0);
+        console.log("itemPrice", itemPrice);
+        return itemPrice;
+    };
 
     const priceItem = (product: Product) => parseInt(product.price) - priceAdjust(product.option);
 
@@ -28,11 +35,36 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
             }, 0)
         );
 
-    const adjustQuantity = (index: number, quantity: number) => {
-        const updatedList = [...productList];
-        updatedList[index].quantity =
-            parseInt(updatedList[index].quantity as unknown as string) + quantity;
+    function updateQuantity(quantity: number, productId: string) {
+        console.log("quantity", quantity);
+        console.log("productId", productId);
+        api.patch(
+            "/carts/update-product/" + productId,
+            {
+                quantity: quantity,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${account.accessToken}`,
+                },
+            }
+        )
+            .then((res) => {
+                return res.data;
+            })
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((err) => console.error(JSON.stringify(err)));
+    }
 
+    const adjustQuantity = (index: number, quantity: number, productId: string) => {
+        const updatedList = [...productList];
+        updatedList[index].quantity = updatedList[index].quantity + quantity;
+        if (timeoutRef.current) clearInterval(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+            updateQuantity(updatedList[index].quantity, productId);
+        }, 2000);
         setProductList(updatedList);
         totalPrice();
     };
@@ -109,14 +141,14 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
                         <View style={styles.itemActions}>
                             <TouchableOpacity
                                 style={styles.quantityButton}
-                                onPress={() => adjustQuantity(index, -1)}
+                                onPress={() => adjustQuantity(index, -1, item.id)}
                             >
                                 <Text style={styles.buttonText}>-</Text>
                             </TouchableOpacity>
                             <Text style={styles.quantityText}>{item.quantity}</Text>
                             <TouchableOpacity
                                 style={styles.quantityButton}
-                                onPress={() => adjustQuantity(index, 1)}
+                                onPress={() => adjustQuantity(index, 1, item.id)}
                             >
                                 <Text style={styles.buttonText}>+</Text>
                             </TouchableOpacity>
