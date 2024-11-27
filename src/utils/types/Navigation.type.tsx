@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { TabStackParamList } from "./Tab.type";
-import { Product } from "../../interfaces";
+import { IProduct } from "../../interfaces";
+import { ICartItem } from "../../interfaces/cart-item.interface";
 
 export type NavigationStackParamList = {
     homepage: {
@@ -13,7 +14,7 @@ export type NavigationStackParamList = {
     Tab: undefined;
     main: undefined;
     shoppingCart: {
-        productOrder: Product[];
+        productOrder: ICartItem[];
         total: number;
     };
     category: {
@@ -25,7 +26,7 @@ export type NavigationStackParamList = {
         id: string;
     };
     PaymentComponent: {
-        productOrder: Product[];
+        productOrder: ICartItem[];
         total: number;
     };
     MyOrder: undefined;

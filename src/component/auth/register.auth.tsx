@@ -1,6 +1,13 @@
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-virtualized-view";
+import {
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { LoginLogo } from "../../common/svg";
 import { IAccountEntity } from "../../interfaces";
 import { Color } from "../../style";
@@ -42,7 +49,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
 
     return (
         // <ScrollView keyboardShouldPersistTaps={"never"}>
-        <View>
+        <ScrollView keyboardShouldPersistTaps={"never"}>
             <LoginLogo
                 width={240}
                 height={240}
@@ -167,7 +174,7 @@ export const Register = ({ navigation, route }: PropsNavigate<"register">) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     );
     {
         /* </ScrollView> */

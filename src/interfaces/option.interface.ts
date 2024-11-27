@@ -1,7 +1,7 @@
-import { OptionList } from "./option-list.interface";
+import { IOptionList } from "./option-list.interface";
 
-export interface Option {
+export interface IOption {
     id: string;
     name: string;
-    optionsList: OptionList;
+    listOption: IOptionList;
 }

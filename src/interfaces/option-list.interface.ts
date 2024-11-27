@@ -1,5 +1,5 @@
-export interface OptionList {
+export interface IOptionList {
     id: string;
     name: string;
-    adjust: string;
+    adjustPrice: number;
 }
