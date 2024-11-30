@@ -1,33 +1,34 @@
 import React, { useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RadioButton } from "react-native-paper";
-import { Product } from "../../interfaces/product.interface";
+import { IProduct } from "../../interfaces/product.interface";
 import { PropsNavigate } from "../../utils/types";
+import { ICartItem } from "../../interfaces/cart-item.interface";
 
 const codImg = require("../../../assets/components/payment/cod.png");
 const momoImg = require("../../../assets/components/payment/momo.png");
 
-export const PaymentComponent = ({ navigation, route }: PropsNavigate<"shoppingCart">) => {
-    const [productList, setProductList] = useState<Product[]>(route.params.productOrder);
+export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentComponent">) => {
+    const [productList, setProductList] = useState<ICartItem[]>(route.params.productOrder);
     const [total, setTotal] = useState<number>(route.params.total);
     const [checked, setChecked] = useState(1); // Default selected payment method
 
-    const renderProductItem = ({ item }: { item: Product }) => (
+    const renderProductItem = ({ item }: { item: ICartItem }) => (
         <View style={styles.productItem}>
-            <Image style={styles.productImage} source={{ uri: item.images_url }} />
+            <Image style={styles.productImage} source={{ uri: item.item.image_url }} />
             <View style={styles.productInfo}>
-                <Text style={styles.productTitle}>{item.name}</Text>
+                <Text style={styles.productTitle}>{item.item.name}</Text>
                 <FlatList
-                    data={item.option}
+                    data={item.options}
                     renderItem={({ item }) => (
                         <View style={styles.productOption}>
                             <Text style={styles.optionName}>{item.name}:</Text>
-                            <Text style={styles.optionValue}>{item.optionsList.name}</Text>
+                            <Text style={styles.optionValue}>{item.listOption.name}</Text>
                         </View>
                     )}
                     keyExtractor={(_, index) => index.toString()}
                 />
-                <Text style={styles.productPrice}>Price: ${item.price}</Text>
+                <Text style={styles.productPrice}>Price: ${item.item.price}</Text>
             </View>
             <View style={styles.productQuantity}>
                 <Text style={styles.quantityLabel}>SL: {item.quantity}</Text>
