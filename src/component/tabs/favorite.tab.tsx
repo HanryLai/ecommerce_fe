@@ -56,27 +56,53 @@ export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 				]
 			)
 		} else {
-			api
-				.get('/favorites/my-favorites')
-				.then((response) => response.data.data)
-				.then((data) => {
-					const products: ProductType[] = data.map((item: any) => {
-						return {
-							id: item.product.id,
-							title: item.product.title,
-							description: item.product.description,
-							image_url: item.product.image_url,
-							price: item.product.price,
-							name: item.product.name,
-						}
-					})
-					setProducts(products)
-				})
-				.catch((error) => {
-					console.error(error)
-				})
+			getFavorite()
 		}
 	}, [focus])
+
+	function getFavorite() {
+		api
+			.get('/favorites/my-favorites')
+			.then((response) => response.data.data)
+			.then((data) => {
+				const products: ProductType[] = data.map((item: any) => {
+					return {
+						id: item.product.id,
+						title: item.product.title,
+						description: item.product.description,
+						image_url: item.product.image_url,
+						price: item.product.price,
+						name: item.product.name,
+					}
+				})
+				setProducts(products.slice(0, 4))
+			})
+			.catch((error) => {
+				console.error(error)
+			})
+	}
+
+	function getAllFavorite() {
+		api
+			.get('/favorites/my-favorites')
+			.then((response) => response.data.data)
+			.then((data) => {
+				const products: ProductType[] = data.map((item: any) => {
+					return {
+						id: item.product.id,
+						title: item.product.title,
+						description: item.product.description,
+						image_url: item.product.image_url,
+						price: item.product.price,
+						name: item.product.name,
+					}
+				})
+				setProducts(products)
+			})
+			.catch((error) => {
+				console.error(error)
+			})
+	}
 
 	// Lấy danh sách products, trạng thái loading và error từ store
 
@@ -116,8 +142,7 @@ export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 						marginVertical: 10,
 					}}
 				>
-					<Text style={styles.TextBold}>Categories</Text>
-					<Text style={styles.TextLight}>See all</Text>
+					<Text style={styles.TextBold}>Favorites: </Text>
 				</View>
 
 				<View>
@@ -131,7 +156,13 @@ export const Favorite = ({ navigation, route }: PropsTab<'Favorite'>) => {
 
 				{/* button see all */}
 
-				<TouchableOpacity style={{ backgroundColor: '#F3F4F6', borderRadius: 5, padding: 8 }}>
+				<TouchableOpacity
+					style={{ backgroundColor: '#F3F4F6', borderRadius: 5, padding: 8 }}
+					onPress={() => {
+						getAllFavorite()
+						//ẩn button
+					}}
+				>
 					<Text
 						style={{
 							textAlign: 'center',

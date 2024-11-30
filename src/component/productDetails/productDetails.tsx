@@ -1,20 +1,54 @@
 import AntDesign from '@expo/vector-icons/AntDesign'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Modal, PaperProvider, Portal, RadioButton } from 'react-native-paper'
 import { useDispatch } from 'react-redux'
-import { AppDispatch, useAppSelector } from '../../utils/redux'
+import { accountHook, AppDispatch, useAppSelector } from '../../utils/redux'
 import { pink100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors'
 import api from '../../utils/axios'
+import { IAccountEntity } from '../../interfaces'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { NavigationStackParamList } from '../../utils/types'
 
 export function ProductDetails() {
 	const dispatch = useDispatch<AppDispatch>()
 	const selectedProduct = useAppSelector((state) => state.productReducer.selectedproduct)
-	const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>({})
+	const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>(() => {
+		const initialSelections: { [key: string]: string } = {}
+		selectedProduct?.options.forEach((item) => {
+			if (item.listOptions?.length > 0) {
+				initialSelections[item.id] = item.listOptions[0].id.toString() // Chọn giá trị đầu tiên
+			}
+		})
+		return initialSelections
+	})
 	const [quantity, setQuantity] = useState(1)
 	const [visible, setVisible] = useState(false)
+	const accountSelector = useAppSelector(accountHook) as IAccountEntity
+	const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>()
 
-	console.log('selectedProduct', selectedProduct)
+	const [rating, setRating] = useState(() => {
+		const feedbacks = selectedProduct?.feedbacks
+		if (feedbacks) {
+			const ratings = feedbacks.map((feedback) => Number(feedback.rating))
+			const totalRating = ratings.reduce((total, rating) => total + rating, 0)
+			return totalRating / ratings.length
+		}
+	})
+
+	const [numOfRating, setNumOfRating] = useState(() => {
+		const feedbacks = selectedProduct?.feedbacks
+		if (feedbacks) {
+			return feedbacks.length
+		}
+	})
+
+	const [feedbacks, setFeedbacks] = useState(() => {
+		const feedbacks = selectedProduct?.feedbacks
+		if (feedbacks) {
+			return feedbacks.slice(0, 3)
+		}
+	})
 
 	const increaseQuantity = () => setQuantity((prev) => prev + 1)
 	const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev))
@@ -37,18 +71,34 @@ export function ProductDetails() {
 
 	//add to cart
 	const addToCart = async () => {
-		const itemId = selectedProduct?.id
-		const response = await api.post('/carts/add-product', {
-			itemId,
-			quantity,
-			listOptionId: getSelectedIds(),
-		})
-		if (response.data.statusCode === 200) {
-			Alert.alert('Inform', 'Add to cart success')
-			setQuantity(1)
-			setSelectedOptions({})
+		if (Object.keys(accountSelector).length === 0) {
+			Alert.alert(
+				'Inform',
+				'Please Sign In to add favorite, and you can Sign Up if not have account',
+				[
+					{
+						text: 'Home Page',
+						onPress: () => navigationHook.navigate('homepage', { screen: 'Home' }),
+						style: 'cancel',
+					},
+					{ text: 'Sign in', onPress: () => navigationHook.navigate('login') },
+					{ text: 'Sign up', onPress: () => navigationHook.navigate('register') },
+				]
+			)
 		} else {
-			Alert.alert('Inform', 'Add to cart fail')
+			const itemId = selectedProduct?.id
+			const response = await api.post('/carts/add-product', {
+				itemId,
+				quantity,
+				listOptionId: getSelectedIds(),
+			})
+			if (response.data.statusCode === 200) {
+				Alert.alert('Inform', 'Add to cart success')
+				setQuantity(1)
+				setSelectedOptions({})
+			} else {
+				Alert.alert('Inform', 'Add to cart fail')
+			}
 		}
 	}
 
@@ -76,8 +126,8 @@ export function ProductDetails() {
 						<Text style={{ fontSize: 20, fontWeight: 700 }}>${selectedProduct?.price}</Text>
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							<AntDesign name="star" size={16} color="#FFD700" />
-							<Text style={{ fontSize: 16, fontWeight: 700 }}>4.5</Text>
-							<Text style={styles.TextLight}> (150 reviews)</Text>
+							<Text style={{ fontSize: 16, fontWeight: 700 }}>{rating?.toFixed(2)}</Text>
+							<Text style={styles.TextLight}> ({numOfRating} reviews)</Text>
 						</View>
 					</View>
 					{/* separator */}
@@ -175,11 +225,17 @@ export function ProductDetails() {
 					<View>
 						<View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
 							<Text style={styles.TextBold}>Review</Text>
-							<Text style={styles.TextLight}>SeeAll</Text>
+							<TouchableOpacity
+								onPress={() => {
+									setFeedbacks(selectedProduct?.feedbacks)
+								}}
+							>
+								<Text style={styles.TextLight}>SeeAll</Text>
+							</TouchableOpacity>
 						</View>
 					</View>
 					<View style={{ flex: 1 }}>
-						{selectedProduct?.feedbacks?.map((item) => (
+						{feedbacks?.map((item) => (
 							<View
 								key={item.id}
 								style={{
@@ -206,6 +262,25 @@ export function ProductDetails() {
 											? item.account.detailInformation.full_name
 											: 'Người dùng chưa có tên'}
 									</Text>
+
+									<View
+										style={{
+											flexDirection: 'row',
+											gap: 5,
+											alignItems: 'center',
+										}}
+									>
+										{Array(5)
+											.fill(0) // Tạo một mảng 5 phần tử
+											.map((_, index) => (
+												<AntDesign
+													key={index}
+													name="star"
+													size={12}
+													color={index < Number(item.rating) ? '#FFD700' : '#D3D3D3'} // Sao vàng nếu index < item.rating
+												/>
+											))}
+									</View>
 
 									<Text numberOfLines={5}> {item.comment}</Text>
 								</View>
