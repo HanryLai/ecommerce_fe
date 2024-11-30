@@ -32,8 +32,14 @@ export type NavigationStackParamList = {
     MyOrder: undefined;
     MyComment: undefined;
     feedback: undefined;
-    paymentSuccess: undefined;
-    paymentFailed: undefined;
+    paymentSuccess: {
+        order: any;
+        method: number;
+    };
+    paymentFailed: {
+        order: any;
+        method: number;
+    };
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =

@@ -1,4 +1,3 @@
-// src/Chat.tsx
 import React, { useState, useEffect } from "react";
 import { View, FlatList, Pressable, ActivityIndicator } from "react-native";
 import { io, Socket } from "socket.io-client";
@@ -169,7 +168,6 @@ export const Inbox: React.FC = () => {
                             }}
                         >
                             <Text>Send</Text>
-                            {/* <Send color={"#fff"} /> */}
                         </Pressable>
                     </View>
                 </View>

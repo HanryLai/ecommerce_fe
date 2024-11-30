@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useRef, useState } from "react";
+import { FlatList, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { IProduct } from "../../interfaces/product.interface";
 import { PropsNavigate } from "../../utils/types";
 import { ICartItem } from "../../interfaces/cart-item.interface";
+import api from "../../utils/axios";
+import { accountHook, useAppSelector } from "../../utils/redux";
 
 const codImg = require("../../../assets/components/payment/cod.png");
 const momoImg = require("../../../assets/components/payment/momo.png");
@@ -12,7 +14,9 @@ export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentCo
     const [productList, setProductList] = useState<ICartItem[]>(route.params.productOrder);
     const [total, setTotal] = useState<number>(route.params.total);
     const [checked, setChecked] = useState(1); // Default selected payment method
-
+    const account = useAppSelector(accountHook);
+    const timeCheckOrderRef = useRef<NodeJS.Timeout | null>(null);
+    const timeFailed = useRef<NodeJS.Timeout | null>(null);
     const renderProductItem = ({ item }: { item: ICartItem }) => (
         <View style={styles.productItem}>
             <Image style={styles.productImage} source={{ uri: item.item.image_url }} />
@@ -48,6 +52,86 @@ export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentCo
         </View>
     );
 
+    async function CheckOrderSpam(orderId: string) {
+        api.get("/orders/" + orderId, {
+            headers: {
+                Authorization: `Bearer ${account.accessToken}`,
+            },
+        })
+            .then((res) => {
+                if (timeCheckOrderRef.current) clearInterval(timeCheckOrderRef.current);
+                if (res.data.data.isActive == true) {
+                    navigation.navigate("paymentSuccess", {
+                        order: res.data.data,
+                        method: checked,
+                    });
+                } else {
+                    timeCheckOrderRef.current = setInterval(() => {
+                        CheckOrderSpam(orderId);
+                    }, 5000);
+                }
+            })
+            .catch((err) => {
+                alert("Error check order spam");
+            });
+    }
+
+    async function handlePayment() {
+        //create order
+        const listIds = productList.map((item) => item.id);
+        console.log(listIds);
+        api.post(
+            "/orders",
+            {
+                cartItemIds: listIds,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${account.accessToken}`,
+                },
+            }
+        )
+            .then((res) => {
+                const orderId = res.data.data.id;
+                const order = res.data.data;
+                console.log("order id", orderId);
+                if (!orderId) throw new Error("Order is not created");
+                if (checked === 1) {
+                    api.post("/payment/" + orderId, {
+                        headers: {
+                            Authorization: `Bearer ${account.accessToken}`,
+                        },
+                    })
+                        .then((res) => {
+                            console.log(res.data);
+                            timeCheckOrderRef.current = setInterval(() => {
+                                CheckOrderSpam(orderId);
+                            }, 5000);
+                            timeFailed.current = setTimeout(() => {
+                                if (timeCheckOrderRef.current)
+                                    clearInterval(timeCheckOrderRef.current);
+                                navigation.navigate("paymentFailed", {
+                                    order: order,
+                                    method: checked,
+                                });
+                            }, 30000);
+                            Linking.openURL(res.data.data.shortLink);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            alert("Payment MO MO error");
+                        });
+                } else {
+                    navigation.navigate("paymentSuccess", { order: order, method: checked });
+                }
+            })
+            .catch((err) => {
+                alert("Error create order");
+            });
+
+        // Call API to process payment
+    }
+
     return (
         <View style={styles.container}>
             <FlatList
@@ -66,7 +150,12 @@ export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentCo
                     {renderPaymentMethod(1, "Momo", momoImg)}
                     {renderPaymentMethod(2, "Thanh toán khi giao hàng", codImg)}
                 </View>
-                <TouchableOpacity style={styles.paymentButton} onPress={() => {}}>
+                <TouchableOpacity
+                    style={styles.paymentButton}
+                    onPress={() => {
+                        handlePayment();
+                    }}
+                >
                     <Text style={styles.paymentButtonText}>Payment</Text>
                 </TouchableOpacity>
             </View>
