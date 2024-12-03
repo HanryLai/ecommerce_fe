@@ -98,22 +98,13 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         </View>
 
                         <View style={styles.view_functionList}>
-                            <View style={styles.container_view_order_and_rating}>
-                                <TouchableOpacity
-                                    style={styles.containerSmallFunction}
-                                    onPress={() => navigationHook.navigate("orders")}
-                                >
-                                    <Text style={styles.txt_function}>Order</Text>
-                                    <DeliverAuthSVG width={24} height={24} />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.containerSmallFunction}
-                                    onPress={() => navigationHook.navigate("MyComment")}
-                                >
-                                    <Text style={styles.txt_function}>Rating</Text>
-                                    <RatingAuthSVG width={24} height={24} />
-                                </TouchableOpacity>
-                            </View>
+                            <TouchableOpacity
+                                style={styles.btn_function}
+                                onPress={() => navigationHook.navigate("orders")}
+                            >
+                                <Text style={styles.txt_function}>Order</Text>
+                                <DeliverAuthSVG width={24} height={24} />
+                            </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.btn_function}
                                 onPress={() => navigationHook.navigate("detailInformation")}

@@ -1,16 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { TabStackParamList } from "../types";
-import { Favorite, Home, Inbox, Search } from "../../component/tabs";
+import { AccountIconSVG, FavoriteSVG, HomeIconSVG, InboxSVG } from "../../common/svg";
+import { Favorite, Home, Inbox } from "../../component/tabs";
 import { Account } from "../../component/tabs/account.tab";
-import {
-    AccountIconSVG,
-    FavoriteSVG,
-    HomeIconSVG,
-    InboxSVG,
-    PersonalSVG,
-    SearchSVG,
-} from "../../common/svg";
 import { Color } from "../../style";
+import { TabStackParamList } from "../types";
 
 const Tab = createBottomTabNavigator<TabStackParamList>();
 

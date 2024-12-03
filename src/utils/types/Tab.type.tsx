@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Category } from "../../component/tabs";
 
 export type TabStackParamList = {
     TabRoot: undefined;
