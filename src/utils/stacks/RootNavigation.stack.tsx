@@ -18,6 +18,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { TabStackParamList } from "../types";
 import { PaymentComponent, PaymentFailed, PaymentSuccess } from "../../component/payment";
 import { Feedback } from "../../component/feedback";
+import { Orders } from "../../component/orders";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -134,11 +135,11 @@ export const RootNavigation = () => {
                 options={{ title: "My Comment", headerTitleAlign: "center" }}
             ></Stack.Screen>
             {/* My Feedback */}
-            <Stack.Screen
-                name="feedback"
+            {/* <Stack.Screen
+                name="Feedback"
                 component={Feedback}
                 options={{ title: "My Comment", headerTitleAlign: "center" }}
-            ></Stack.Screen>
+            ></Stack.Screen> */}
             {/* Payment success */}
             <Stack.Screen
                 name="paymentSuccess"
@@ -149,6 +150,16 @@ export const RootNavigation = () => {
             <Stack.Screen
                 name="paymentFailed"
                 component={PaymentFailed}
+                options={{ headerShown: false }}
+            ></Stack.Screen>
+            <Stack.Screen
+                name="orders"
+                component={Orders}
+                options={{ headerShown: false }}
+            ></Stack.Screen>
+            <Stack.Screen
+                name="feedback"
+                component={Feedback}
                 options={{ headerShown: false }}
             ></Stack.Screen>
         </Stack.Navigator>

@@ -7,7 +7,6 @@ export type TabStackParamList = {
     Favorite: undefined;
     Inbox: undefined;
     Account: undefined;
-    Feedback: undefined;
 };
 
 export type PropsTab<RouteName extends keyof TabStackParamList> = NativeStackScreenProps<
