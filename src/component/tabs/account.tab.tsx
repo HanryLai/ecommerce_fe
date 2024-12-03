@@ -1,12 +1,8 @@
 import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import {
-    DeliverAuthSVG,
-    DetailInformationSVG,
-    HomeAuthSVG,
-    RatingAuthSVG,
-} from "../../common/svg/auth";
+import { DeliverAuthSVG, DetailInformationSVG, HomeAuthSVG } from "../../common/svg/auth";
+import { LogOutAuthSVG } from "../../common/svg/auth/log-out";
 import { IAccountEntity } from "../../interfaces";
 import {
     accountHook,
@@ -17,7 +13,6 @@ import {
 } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
 import { NavigationStackParamList, PropsTab } from "../../utils/types";
-import { LogOutAuthSVG } from "../../common/svg/auth/log-out";
 export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
