@@ -24,12 +24,20 @@ export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentCo
                 <Text style={styles.productTitle}>{item.item.name}</Text>
                 <FlatList
                     data={item.options}
-                    renderItem={({ item }) => (
-                        <View style={styles.productOption}>
-                            <Text style={styles.optionName}>{item.name}:</Text>
-                            <Text style={styles.optionValue}>{item.listOption.name}</Text>
-                        </View>
-                    )}
+                    style={{ flexDirection: "row" }}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <>
+                                {index == 0 ? (
+                                    <Text style={styles.optionValue}>{item.listOption.name}</Text>
+                                ) : (
+                                    <Text style={styles.optionValue}>
+                                        <></> x {item.listOption.name}
+                                    </Text>
+                                )}
+                            </>
+                        );
+                    }}
                     keyExtractor={(_, index) => index.toString()}
                 />
                 <Text style={styles.productPrice}>Price: ${item.item.price}</Text>
