@@ -101,7 +101,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                             <View style={styles.container_view_order_and_rating}>
                                 <TouchableOpacity
                                     style={styles.containerSmallFunction}
-                                    onPress={() => navigationHook.navigate("MyOrder")}
+                                    onPress={() => navigationHook.navigate("orders")}
                                 >
                                     <Text style={styles.txt_function}>Order</Text>
                                     <DeliverAuthSVG width={24} height={24} />
