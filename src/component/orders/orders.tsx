@@ -56,25 +56,26 @@ export function Orders() {
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
 			>
-				<View style={{ flex: 1, width: '100%', backgroundColor: 'pink' }}>
+				<View style={{ flex: 1, width: '100%' }}>
 					<FlatList
 						data={orders}
 						renderItem={({ item }) => (
 							<TouchableOpacity
 								style={{
 									backgroundColor: 'white',
-									borderWidth: 1,
+									borderWidth: 0.5,
 									borderColor: 'gray',
 									padding: 15,
 									width: '100%',
 									gap: 20,
+									marginVertical: 5,
 								}}
 							>
 								<View
 									style={{
 										flex: 1,
 										flexDirection: 'row',
-										backgroundColor: 'pink',
+
 										width: '100%',
 									}}
 								>
@@ -82,19 +83,29 @@ export function Orders() {
 										source={{ uri: item.orderItems.at(0)?.products.image_url }}
 										width={80}
 										height={80}
+										style={{ marginLeft: 10, marginRight: 4 }}
 									/>
-									<View>
-										<Text>{item.orderItems.at(0)?.products.name}</Text>
+									<View style={{ width: 140 }}>
+										<Text style={styles.TextBold}>{item.orderItems.at(0)?.products.name}</Text>
 										<Text>{item.orderItems.length} sản phẩm</Text>
-										<TouchableOpacity
-											style={{ alignSelf: 'flex-end' }}
-											onPress={() => {
-												handleOrder(item)
-											}}
-										>
-											<Text>Đánh giá</Text>
-										</TouchableOpacity>
 									</View>
+									<TouchableOpacity
+										style={{
+											backgroundColor: '#00BDD6',
+											padding: 5,
+											width: 100,
+											height: 30,
+											borderRadius: 5,
+											justifyContent: 'center',
+											alignItems: 'center',
+											alignSelf: 'flex-end',
+										}}
+										onPress={() => {
+											handleOrder(item)
+										}}
+									>
+										<Text>Đánh giá</Text>
+									</TouchableOpacity>
 								</View>
 							</TouchableOpacity>
 						)}
@@ -108,11 +119,8 @@ export function Orders() {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
 		backgroundColor: 'white',
-		padding: 10,
+		paddingTop: 50,
 		gap: 20,
 	},
 	search: {
@@ -158,7 +166,6 @@ const styles = StyleSheet.create({
 		gap: 10,
 	},
 	option: {
-		backgroundColor: 'pink',
 		padding: 4,
 		borderRadius: 10,
 	},
