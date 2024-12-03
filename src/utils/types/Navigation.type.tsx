@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { TabStackParamList } from "./Tab.type";
 import { IProduct } from "../../interfaces";
 import { ICartItem } from "../../interfaces/cart-item.interface";
+import { Order } from "./type/order.type";
 
 export type NavigationStackParamList = {
     homepage: {
@@ -31,7 +32,10 @@ export type NavigationStackParamList = {
     };
     MyOrder: undefined;
     MyComment: undefined;
-    feedback: undefined;
+    feedback: {
+        order: Order;
+    };
+    orders: undefined;
     paymentSuccess: {
         order: any;
         method: number;

@@ -129,17 +129,7 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                                 <Text style={styles.txt_function}>Go Back Home</Text>
                                 <HomeAuthSVG width={24} height={24} />
                             </TouchableOpacity>
-                            {accountSelector.role === "admin" && (
-                                <TouchableOpacity
-                                    style={styles.btn_function}
-                                    onPress={() => {
-                                        Alert.alert("Inform", "Chưa có cái cc gì hết :))");
-                                    }}
-                                >
-                                    <Text style={styles.txt_function}>Add Product</Text>
-                                    <LogOutAuthSVG width={24} height={24} />
-                                </TouchableOpacity>
-                            )}
+
                             <TouchableOpacity
                                 style={styles.btn_function}
                                 onPress={() => {
