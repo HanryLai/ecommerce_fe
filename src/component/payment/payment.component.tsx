@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { IProduct } from "../../interfaces/product.interface";
@@ -114,7 +114,7 @@ export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentCo
                                     order: order,
                                     method: checked,
                                 });
-                            }, 30000);
+                            }, 300000);
                             Linking.openURL(res.data.data.shortLink);
                         })
                         .catch((err) => {
@@ -131,6 +131,17 @@ export const PaymentComponent = ({ navigation, route }: PropsNavigate<"PaymentCo
 
         // Call API to process payment
     }
+
+    useEffect(() => {
+        return () => {
+            if (timeCheckOrderRef.current) {
+                clearInterval(timeCheckOrderRef.current);
+            }
+            if (timeFailed.current) {
+                clearInterval(timeFailed.current);
+            }
+        };
+    }, []);
 
     return (
         <View style={styles.container}>

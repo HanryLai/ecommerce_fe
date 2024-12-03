@@ -35,13 +35,7 @@ export const RootTab = () => {
                     tabBarIcon: () => <HomeIconSVG width={28} height={28} />,
                 }}
             />
-            <Tab.Screen
-                name="Search"
-                component={Search}
-                options={{
-                    tabBarIcon: () => <SearchSVG width={28} height={28} color={"red"} />,
-                }}
-            />
+
             <Tab.Screen
                 name="Favorite"
                 component={Favorite}

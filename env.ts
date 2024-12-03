@@ -1,4 +1,2 @@
-export const URL_Zy = "http://192.168.99.146:4000";
-export const URL = "http://192.168.99.146:4000";
-export const URL_BE = "https://congenial-engine-r9q6ggjpgwvfpp6r-3030.app.github.dev/api";
-export const URL_BE_SOCKET = "https://congenial-engine-r9q6ggjpgwvfpp6r-6996.app.github.dev";
+export const URL_BE = "https://a6fb-2402-800-63af-82b9-60de-e6e3-5bad-5ec8.ngrok-free.app/api";
+export const URL_BE_SOCKET = "https://a8ef-2402-800-63af-82b9-60de-e6e3-5bad-5ec8.ngrok-free.app";
