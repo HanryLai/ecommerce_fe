@@ -93,6 +93,15 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         </View>
 
                         <View style={styles.view_functionList}>
+                            {accountSelector.role === "admin" && (
+                                <TouchableOpacity
+                                    style={styles.btn_function}
+                                    onPress={() => navigationHook.navigate("ListChat")}
+                                >
+                                    <Text style={styles.txt_function}>Chat admin</Text>
+                                    <DeliverAuthSVG width={24} height={24} />
+                                </TouchableOpacity>
+                            )}
                             <TouchableOpacity
                                 style={styles.btn_function}
                                 onPress={() => navigationHook.navigate("orders")}

@@ -44,6 +44,10 @@ export type NavigationStackParamList = {
         order: any;
         method: number;
     };
+    ChatAdmin: {
+        userId: string;
+    };
+    ListChat: undefined;
 };
 
 export type PropsNavigate<NavigationName extends keyof NavigationStackParamList> =

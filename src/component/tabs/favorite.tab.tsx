@@ -1,29 +1,23 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { NavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
-    Text,
-    View,
+    Alert,
+    FlatList,
+    Image,
     StyleSheet,
+    Text,
     TextInput,
     TouchableOpacity,
-    FlatList,
-    ListRenderItem,
-    ActivityIndicator,
-    Image,
-    Alert,
+    View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { accountHook, AppDispatch, RootState, useAppSelector } from "../../utils/redux";
-import { CategoryType } from "../../utils/types/type/category.type";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-virtualized-view";
-import axios from "axios";
+import { useDispatch } from "react-redux";
+import { IAccountEntity } from "../../interfaces";
 import api from "../../utils/axios";
-import productSlice from "../../utils/redux/reducers/product.redux";
-import { NavigationProp, useIsFocused, useNavigation } from "@react-navigation/native";
+import { accountHook, AppDispatch, useAppSelector } from "../../utils/redux";
 import { NavigationStackParamList, PropsTab } from "../../utils/types";
 import { ProductType } from "../../utils/types/type/product.type";
-import { IAccountEntity } from "../../interfaces";
 import ProductComponent from "../products/productComponent";
 
 export const Favorite = ({ navigation, route }: PropsTab<"Favorite">) => {
