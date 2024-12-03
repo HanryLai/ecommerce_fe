@@ -7,4 +7,5 @@ export interface FeedbackType {
 	rating: string
 	comment: string
 	account: IAccountEntity
+	isFeedback: boolean
 }
