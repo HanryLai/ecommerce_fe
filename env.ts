@@ -1,2 +1,2 @@
-export const URL_BE = 'https://c6b6-2402-800-63a6-9581-6598-cf15-cf18-efda.ngrok-free.app/api'
-export const URL_BE_SOCKET = 'https://4b74-2402-800-63a6-9581-6598-cf15-cf18-efda.ngrok-free.app'
+export const URL_BE = "https://d365-2402-800-63af-82b9-fd6f-8527-4a5d-c27e.ngrok-free.app/api";
+export const URL_BE_SOCKET = "https://1236-2402-800-63af-82b9-fd6f-8527-4a5d-c27e.ngrok-free.app";
