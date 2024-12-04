@@ -1,4 +1,5 @@
 import { Product } from '../../../interfaces'
+import { FeedbackType } from './feekback.type'
 import { ProductType } from './product.type'
 
 export interface OrderItem {
@@ -9,4 +10,5 @@ export interface OrderItem {
 	single_price: number
 	product_description: string
 	products: ProductType
+	feedback: FeedbackType
 }
