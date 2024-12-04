@@ -1,12 +1,8 @@
 import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import {
-    DeliverAuthSVG,
-    DetailInformationSVG,
-    HomeAuthSVG,
-    RatingAuthSVG,
-} from "../../common/svg/auth";
+import { DeliverAuthSVG, DetailInformationSVG, HomeAuthSVG } from "../../common/svg/auth";
+import { LogOutAuthSVG } from "../../common/svg/auth/log-out";
 import { IAccountEntity } from "../../interfaces";
 import {
     accountHook,
@@ -17,7 +13,6 @@ import {
 } from "../../utils/redux";
 import { AccountSlice } from "../../utils/redux/reducers";
 import { NavigationStackParamList, PropsTab } from "../../utils/types";
-import { LogOutAuthSVG } from "../../common/svg/auth/log-out";
 export const Account = ({ navigation, route }: PropsTab<"Account">) => {
     const dispatch = useAppDispatch<AppDispatch>();
     const navigationHook = useNavigation<NavigationProp<NavigationStackParamList>>();
@@ -98,22 +93,22 @@ export const Account = ({ navigation, route }: PropsTab<"Account">) => {
                         </View>
 
                         <View style={styles.view_functionList}>
-                            <View style={styles.container_view_order_and_rating}>
+                            {accountSelector.role === "admin" && (
                                 <TouchableOpacity
-                                    style={styles.containerSmallFunction}
-                                    onPress={() => navigationHook.navigate("orders")}
+                                    style={styles.btn_function}
+                                    onPress={() => navigationHook.navigate("ListChat")}
                                 >
-                                    <Text style={styles.txt_function}>Order</Text>
+                                    <Text style={styles.txt_function}>Chat admin</Text>
                                     <DeliverAuthSVG width={24} height={24} />
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.containerSmallFunction}
-                                    onPress={() => navigationHook.navigate("MyComment")}
-                                >
-                                    <Text style={styles.txt_function}>Rating</Text>
-                                    <RatingAuthSVG width={24} height={24} />
-                                </TouchableOpacity>
-                            </View>
+                            )}
+                            <TouchableOpacity
+                                style={styles.btn_function}
+                                onPress={() => navigationHook.navigate("orders")}
+                            >
+                                <Text style={styles.txt_function}>Order</Text>
+                                <DeliverAuthSVG width={24} height={24} />
+                            </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.btn_function}
                                 onPress={() => navigationHook.navigate("detailInformation")}

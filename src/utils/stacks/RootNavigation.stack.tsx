@@ -19,6 +19,7 @@ import { TabStackParamList } from "../types";
 import { PaymentComponent, PaymentFailed, PaymentSuccess } from "../../component/payment";
 import { Feedback } from "../../component/feedback";
 import { Orders } from "../../component/orders";
+import { ChatAdmin, ListChat } from "../../component/chat";
 
 const Stack = createNativeStackNavigator<NavigationStackParamList>();
 export const RootNavigation = () => {
@@ -160,6 +161,16 @@ export const RootNavigation = () => {
             <Stack.Screen
                 name="feedback"
                 component={Feedback}
+                options={{ headerShown: false }}
+            ></Stack.Screen>
+            <Stack.Screen
+                name="ChatAdmin"
+                component={ChatAdmin}
+                options={{ headerShown: false }}
+            ></Stack.Screen>
+            <Stack.Screen
+                name="ListChat"
+                component={ListChat}
                 options={{ headerShown: false }}
             ></Stack.Screen>
         </Stack.Navigator>

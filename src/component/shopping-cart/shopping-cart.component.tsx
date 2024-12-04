@@ -66,12 +66,14 @@ export const ShoppingCart = ({ navigation, route }: PropsNavigate<"shoppingCart"
     const adjustQuantity = (index: number, quantity: number, productId: string) => {
         const updatedList = [...productList];
         updatedList[index].quantity = updatedList[index].quantity + quantity;
-        if (timeoutRef.current) clearInterval(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => {
-            updateQuantity(updatedList[index].quantity, productId);
-        }, 2000);
-        setProductList(updatedList);
-        totalPrice();
+        if (updatedList[index].quantity >= 0) {
+            if (timeoutRef.current) clearInterval(timeoutRef.current);
+            timeoutRef.current = setTimeout(() => {
+                updateQuantity(updatedList[index].quantity, productId);
+            }, 2000);
+            setProductList(updatedList);
+            totalPrice();
+        }
     };
 
     const toggleCheckbox = (index: number) => {
@@ -279,7 +281,7 @@ const styles = StyleSheet.create({
     },
     deleteTxt: {
         fontSize: 28,
-        color: "#073a4d",
+        color: "#000",
         fontWeight: "bold",
     },
     itemActions: {
@@ -299,6 +301,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     quantityText: {
+        marginHorizontal: 10,
         fontSize: 16,
         marginVertical: 5,
     },
